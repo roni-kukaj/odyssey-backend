@@ -1,10 +1,10 @@
-package com.ssh.odyssey;
+package com.odysseybackend.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class OdysseyApplicationTests {
+class BackendApplicationTests {
 
 	@Test
 	void contextLoads() {
