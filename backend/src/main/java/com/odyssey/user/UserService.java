@@ -45,16 +45,17 @@ public class UserService {
         userDao.insertUser(user);
     }
 
-    public void deleteUser(Integer id) {
+    public boolean deleteUser(Integer id) {
         if (userDao.existsUserById(id)) {
             userDao.deleteUserById(id);
         }
         else {
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(id));
         }
+        return false;
     }
 
-    public void updateUser(Integer id, UserUpdateRequest updateRequest) {
+    public boolean updateUser(Integer id, UserUpdateRequest updateRequest) {
         User user = getUser(id);
         boolean changes = false;
 
@@ -89,6 +90,7 @@ public class UserService {
             throw new RequestValidationException("no data changes found");
         }
         userDao.updateUser(user);
+        return changes;
     }
 
 }
