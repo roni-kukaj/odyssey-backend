@@ -1,6 +1,5 @@
-package com.odyssey.User;
+package com.odyssey.user;
 
-import com.odyssey.User.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository <User, Integer>{

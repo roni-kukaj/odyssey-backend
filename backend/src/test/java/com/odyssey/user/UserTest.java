@@ -1,6 +1,5 @@
-package com.odysseybackend.backend;
+package com.odyssey.user;
 
-import com.odyssey.User.User;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

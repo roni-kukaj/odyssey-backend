@@ -1,19 +1,15 @@
-package com.odysseybackend.backend;
+package com.odyssey.user;
 
-import com.odyssey.User.User;
-import com.odyssey.User.UserDataAccessService;
-import com.odyssey.User.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
-class UserDataAccessServiceTest {
-    private UserDataAccessService userDataAccessService;
+class UserJPADataAccessServiceTest {
+    private UserJPADataAccessService userDataAccessService;
     private AutoCloseable autoCloseable;
 
     @Mock
@@ -22,7 +18,7 @@ class UserDataAccessServiceTest {
     @BeforeEach
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
-        userDataAccessService = new UserDataAccessService(userRepository);
+        userDataAccessService = new UserJPADataAccessService(userRepository);
     }
 
     @AfterEach

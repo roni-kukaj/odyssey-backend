@@ -1,16 +1,48 @@
-package com.odyssey.User;
+package com.odyssey.user;
 
+import jakarta.persistence.*;
 
+@Entity
+@Table(
+        name = "user",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "user_email_unique",
+                        columnNames = "email"
+                ),
+                @UniqueConstraint(
+                        name = "user_username_unique",
+                        columnNames = "username"
+                )
+        }
+)
 public class User {
-
+    @Id
+    @SequenceGenerator(
+            name = "user_id_seq",
+            sequenceName = "user_id_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_id_seq"
+    )
     private Integer id;
-    private String fullName;
-    private String username;
-    private String email;
-    private String password;
-    private String location;
+    @Column(nullable = false) private String fullName;
+    @Column(nullable = false) private String username;
+    @Column(nullable = false) private String email;
+    @Column(nullable = false) private String password;
+    @Column(nullable = false) private String location;
 
     public User() {}
+
+    public User(String fullName, String username, String email, String password, String location) {
+        this.fullName = fullName;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.location = location;
+    }
 
     public User(Integer id, String fullName, String username, String email, String password, String location) {
         this.id = id;
