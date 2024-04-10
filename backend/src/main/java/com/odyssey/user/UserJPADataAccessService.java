@@ -1,4 +1,4 @@
-package com.odyssey.User;
+package com.odyssey.user;
 
 import org.springframework.stereotype.Repository;
 
@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository("jpa")
-public class UserDataAccessService implements UserDao
+public class UserJPADataAccessService implements UserDao
 {
 
     private final UserRepository userRepository;
 
-    public UserDataAccessService(UserRepository userRepository) {
+    public UserJPADataAccessService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -45,4 +45,11 @@ public class UserDataAccessService implements UserDao
     public boolean existsUserByUsername(String username) {
         return userRepository.existsUserByUsername(username);
     }
+
+    @Override
+    public void deleteUserById(Integer id) {userRepository.deleteById(id);}
+
+    @Override
+    public void updateUser(User user) {userRepository.save(user);}
+
 }
