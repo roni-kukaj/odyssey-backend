@@ -34,7 +34,6 @@ public class User {
     @Column(nullable = false) private String password;
     @Column(nullable = false) private String location;
 
-    public User() {}
 
     public User(String fullName, String username, String email, String password, String location) {
         this.fullName = fullName;

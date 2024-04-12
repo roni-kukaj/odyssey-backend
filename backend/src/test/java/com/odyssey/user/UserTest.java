@@ -8,7 +8,7 @@ class UserTest {
     @Test
     void testUserGettersAndSetters() {
 
-        User user = new User();
+        User user = new User(id, newName, email, age);
         user.setId(1);
         user.setFullName("admin");
         user.setUsername("admin");
