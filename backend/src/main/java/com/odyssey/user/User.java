@@ -35,7 +35,7 @@ public class User {
     @Column(nullable = false) private String location;
 
 
-    public User(String fullName, String username, String email, String password, String location) {
+    public User(int fullName, String username, String email, String password, String location) {
         this.fullName = fullName;
         this.username = username;
         this.email = email;
