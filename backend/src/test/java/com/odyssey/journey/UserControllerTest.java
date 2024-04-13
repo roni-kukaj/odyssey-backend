@@ -1,7 +1,10 @@
-package com.odyssey.user;
+package com.odyssey.journey;
 
 import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
+import com.odyssey.user.User;
+import com.odyssey.user.UserRegistrationRequest;
+import com.odyssey.user.UserUpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,25 +23,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserControllerTest {
 
     @Autowired
-    private WebTestClient webTestClient; // this will be out postman
+    private WebTestClient webTestClient;
 
     private static final Random RANDOM = new Random();
     private static final String USER_URI = "/api/v1/users";
 
-    // When it comes to API testing, never invoke the controller directly
-    // because we don't want to call the methods, but we want to send requests
-
     @Test
-    void canRegisterAUser(Integer id,String fullname, String username, String password, String location) {
+    void canRegisterAUser() {
         // Create a registration request
         Faker faker = new Faker();
         Name fakerName = faker.name();
         String name = fakerName.fullName();
+        String username = name;
         String email = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
-        int age = RANDOM.nextInt(1, 100);
+        String password = "123";
+        String location = "Prishtina, Kosova";
 
         UserRegistrationRequest request = new UserRegistrationRequest(
-                fullname, username, email, password, location
+            name, username, email, password, location
         );
 
         // send a post request
@@ -62,18 +64,18 @@ public class UserControllerTest {
                 .returnResult()
                 .getResponseBody();
 
-        // make sure that the user is present
+        // make sure that the customer is present
         User expectedUser = new User(
-                 id,  fullname, username, email, password, location
+                name, username, email, password, location
         );
 
         assertThat(allUsers)
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .contains(expectedUser);
 
-        // get user by id
+        // get customer by id
 
-        id = allUsers.stream()
+        int id = allUsers.stream()
                 .filter(user -> user.getEmail().equals(email))
                 .map(User::getId)
                 .findFirst()
@@ -127,7 +129,7 @@ public class UserControllerTest {
 
         // make sure that the user is present
         User expectedUser = new User(
-                 id, username, email, password, location
+                 fullname, username, email, password, location
         );
 
         assertThat(allUsers)
@@ -225,7 +227,7 @@ public class UserControllerTest {
                 .getResponseBody();
 
         User expected = new User(
-                id, username, email, password, location
+                fullname, username, email, password, location
         );
         assertThat(updatedUser).isEqualTo(expected);
     }

@@ -15,44 +15,27 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public List<User> getUser() {
+        return userService.getAllUsers();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Integer id) {
-        User user = userService.getUser(id);
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("{userId}")
+    public User getUserById(@PathVariable("userId") Integer userId) {
+        return userService.getUser(userId);
     }
 
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user, UserRegistrationRequest UserRegistrationRequest) {
-        userService.addUser(UserRegistrationRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @PostMapping()
+    public void registerUser(@RequestBody UserRegistrationRequest request) {
+        userService.addUser(request);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable("id") Integer id, @RequestBody UserUpdateRequest user) {
-        boolean updated = userService.updateUser(id, user);
-        if (updated) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @DeleteMapping("{userId}")
+    public void deleteUser(@PathVariable("userId") Integer userId) {
+        userService.deleteUser(userId);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") Integer id) {
-        boolean deleted = userService.deleteUser(id);
-        if (deleted) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("{userId}")
+    public void updateCustomer(@PathVariable("userId") Integer userId, @RequestBody UserUpdateRequest updateRequest) {
+        userService.updateUser(userId, updateRequest);
     }
 }

@@ -3,25 +3,11 @@ package com.odyssey.user;
 import jakarta.persistence.*;
 
 @Entity
-@Table(
-        name = "user",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "user_email_unique",
-                        columnNames = "email"
-                ),
-                @UniqueConstraint(
-                        name = "user_username_unique",
-                        columnNames = "username"
-                )
-        }
-)
 public class User {
     @Id
     @SequenceGenerator(
             name = "user_id_seq",
-            sequenceName = "user_id_seq",
-            allocationSize = 1
+            sequenceName = "user_id_seq"
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -29,13 +15,14 @@ public class User {
     )
     private Integer id;
     @Column(nullable = false) private String fullName;
-    @Column(nullable = false) private String username;
-    @Column(nullable = false) private String email;
+    @Column(nullable = false, unique = true) private String username;
+    @Column(nullable = false, unique = true) private String email;
     @Column(nullable = false) private String password;
     @Column(nullable = false) private String location;
 
+    public User() {}
 
-    public User(int fullName, String username, String email, String password, String location) {
+    public User(String fullName, String username, String email, String password, String location) {
         this.fullName = fullName;
         this.username = username;
         this.email = email;

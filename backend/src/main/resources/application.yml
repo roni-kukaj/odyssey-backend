@@ -5,7 +5,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5555/user
+    url: jdbc:postgresql://localhost:5555/odyssey
     username: odyssey
     password: odyssey
   jpa:
