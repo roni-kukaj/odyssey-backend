@@ -93,17 +93,18 @@ public class UserControllerTest {
     }
 
     @Test
-    void canDeleteUser(
-            Integer id, String fullname, String username, String password, String location) {
+    void canDeleteUser() {
         // Create a registration request
         Faker faker = new Faker();
         Name fakerName = faker.name();
         String name = fakerName.fullName();
+        String username = name;
         String email = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
-        int age = RANDOM.nextInt(1, 100);
+        String password = "123";
+        String location = "Prishtina, Kosova";
 
         UserRegistrationRequest request = new UserRegistrationRequest(
-                fullname, username, email, password, location
+                name, username, email, password, location
         );
 
         // send a post request
@@ -129,7 +130,7 @@ public class UserControllerTest {
 
         // make sure that the user is present
         User expectedUser = new User(
-                 fullname, username, email, password, location
+                name, username, email, password, location
         );
 
         assertThat(allUsers)
@@ -138,7 +139,7 @@ public class UserControllerTest {
 
         // get customer by id
 
-        id = allUsers.stream()
+        int id = allUsers.stream()
                 .filter(customer -> customer.getEmail().equals(email))
                 .map(User::getId)
                 .findFirst()
@@ -160,16 +161,18 @@ public class UserControllerTest {
     }
 
     @Test
-    void canUpdateUser(String fullname, String username, String email, String password, String location) {
+    void canUpdateUser() {
         // Create a registration request
         Faker faker = new Faker();
         Name fakerName = faker.name();
         String name = fakerName.fullName();
-        email = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
-        int age = RANDOM.nextInt(1, 100);
+        String username = name;
+        String email = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
+        String password = "123";
+        String location = "Prishtina, Kosova";
 
         UserRegistrationRequest request = new UserRegistrationRequest(
-                 fullname, username, email, password, location
+                name, username, email, password, location
         );
 
         // send a post request
@@ -203,7 +206,7 @@ public class UserControllerTest {
         // update user
         String newName = "Ali";
         UserUpdateRequest updateRequest = new UserUpdateRequest(
-                fullname, username, email, password, location
+                newName, null, null, null, null
         );
 
         webTestClient.put()
@@ -227,7 +230,7 @@ public class UserControllerTest {
                 .getResponseBody();
 
         User expected = new User(
-                fullname, username, email, password, location
+                id, newName, username, email, password, location
         );
         assertThat(updatedUser).isEqualTo(expected);
     }

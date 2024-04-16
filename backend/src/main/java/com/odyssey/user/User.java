@@ -2,7 +2,18 @@ package com.odyssey.user;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
+@Table(
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "user_email_unique",
+                        columnNames = "email"
+                )
+        }
+)
 public class User {
     @Id
     @SequenceGenerator(
@@ -16,7 +27,7 @@ public class User {
     private Integer id;
     @Column(nullable = false) private String fullName;
     @Column(nullable = false, unique = true) private String username;
-    @Column(nullable = false, unique = true) private String email;
+    @Column(nullable = false) private String email;
     @Column(nullable = false) private String password;
     @Column(nullable = false) private String location;
 
@@ -85,5 +96,30 @@ public class User {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(fullName, user.fullName) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(location, user.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, fullName, username, email, password, location);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", location='" + location + '\'' +
+                '}';
     }
 }
