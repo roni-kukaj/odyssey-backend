@@ -20,7 +20,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerTest {
+public class UserIntegrationTest {
 
     @Autowired
     private WebTestClient webTestClient;
@@ -161,7 +161,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void canUpdateUser() {
+    void canUpdateUserAllFields() {
         // Create a registration request
         Faker faker = new Faker();
         Name fakerName = faker.name();
@@ -205,8 +205,12 @@ public class UserControllerTest {
 
         // update user
         String newName = "Ali";
+        String newUsername = "ak";
+        String newEmail = "emaili@email.com";
+        String newPassword = "passi";
+        String newLocation = "DC";
         UserUpdateRequest updateRequest = new UserUpdateRequest(
-                newName, null, null, null, null
+                newName, newUsername, newEmail, newPassword, newLocation
         );
 
         webTestClient.put()
@@ -230,7 +234,7 @@ public class UserControllerTest {
                 .getResponseBody();
 
         User expected = new User(
-                id, newName, username, email, password, location
+                id, newName, newUsername, newEmail, newPassword, newLocation
         );
         assertThat(updatedUser).isEqualTo(expected);
     }
