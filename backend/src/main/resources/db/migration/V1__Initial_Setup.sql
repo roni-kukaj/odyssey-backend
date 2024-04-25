@@ -1,7 +1,7 @@
 
 CREATE TABLE locations(
-	id BIGSERIAL PRIMARY KEY, 
-	city TEXT NOT NULL, 
+	id BIGSERIAL PRIMARY KEY,
+	city TEXT NOT NULL,
 	country TEXT NOT NULL,
 	picture TEXT NOT NULL
 );
@@ -34,7 +34,7 @@ CREATE TABLE activities(
 	duration INTEGER NOT NULL,
 	location_id BIGINT NOT NULL,
 	CONSTRAINT activities_fk FOREIGN KEY(location_id) REFERENCES locations(id)
-	
+
 );
 
 CREATE TABLE events(
@@ -47,7 +47,7 @@ CREATE TABLE events(
 	duration INTEGER NOT NULL,
 	location_id BIGINT NOT NULL,
 	CONSTRAINT events_fk FOREIGN KEY(location_id) REFERENCES locations(id)
-); 
+);
 
 CREATE TABLE administrators(
 	id BIGSERIAL PRIMARY KEY,
@@ -56,7 +56,7 @@ CREATE TABLE administrators(
 	email TEXT NOT NULL,
 	password TEXT NOT NULL,
 	profile_picture TEXT NOT NULL,
-	is_head BOOLEAN DEFAULT FALSE 
+	is_head BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE followers(
@@ -106,7 +106,7 @@ CREATE TABLE news(
 	description TEXT NOT NULL,
 	picture TEXT NOT NULL,
 	CONSTRAINT news_fk FOREIGN KEY(author_id) REFERENCES users(id)
-	
+
 );
 
 CREATE TABLE hotels(
@@ -136,7 +136,7 @@ CREATE TABLE flights(
 	time TIMESTAMP NOT NULL,
 	CONSTRAINT flights_origin_fk FOREIGN KEY(origin_id) REFERENCES locations(id),
 	CONSTRAINT flights_destination_fk FOREIGN KEY(destination_id) REFERENCES locations(id)
-	
+
 );
 
 
