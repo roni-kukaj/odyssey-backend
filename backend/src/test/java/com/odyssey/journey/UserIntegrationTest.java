@@ -38,9 +38,10 @@ public class UserIntegrationTest {
         String email = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
         String password = "123";
         String location = "Prishtina, Kosova";
+        String avatar = "avatar1";
 
         UserRegistrationRequest request = new UserRegistrationRequest(
-            name, username, email, password, location
+            name, username, email, password, location, avatar
         );
 
         // send a post request
@@ -66,7 +67,7 @@ public class UserIntegrationTest {
 
         // make sure that the customer is present
         User expectedUser = new User(
-                name, username, email, password, location
+                name, username, email, password, location, avatar
         );
 
         assertThat(allUsers)
@@ -102,9 +103,10 @@ public class UserIntegrationTest {
         String email = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
         String password = "123";
         String location = "Prishtina, Kosova";
+        String avatar = "avatar";
 
         UserRegistrationRequest request = new UserRegistrationRequest(
-                name, username, email, password, location
+                name, username, email, password, location, avatar
         );
 
         // send a post request
@@ -130,7 +132,7 @@ public class UserIntegrationTest {
 
         // make sure that the user is present
         User expectedUser = new User(
-                name, username, email, password, location
+                name, username, email, password, location, avatar
         );
 
         assertThat(allUsers)
@@ -170,9 +172,10 @@ public class UserIntegrationTest {
         String email = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
         String password = "123";
         String location = "Prishtina, Kosova";
+        String avatar = "avatar";
 
         UserRegistrationRequest request = new UserRegistrationRequest(
-                name, username, email, password, location
+                name, username, email, password, location, avatar
         );
 
         // send a post request
@@ -210,7 +213,7 @@ public class UserIntegrationTest {
         String newPassword = "passi";
         String newLocation = "DC";
         UserUpdateRequest updateRequest = new UserUpdateRequest(
-                newName, newUsername, newEmail, newPassword, newLocation
+                newName, newUsername, newEmail, newPassword, newLocation, avatar
         );
 
         webTestClient.put()
@@ -234,7 +237,7 @@ public class UserIntegrationTest {
                 .getResponseBody();
 
         User expected = new User(
-                id, newName, newUsername, newEmail, newPassword, newLocation
+                id, newName, newUsername, newEmail, newPassword, newLocation, avatar
         );
         assertThat(updatedUser).isEqualTo(expected);
     }

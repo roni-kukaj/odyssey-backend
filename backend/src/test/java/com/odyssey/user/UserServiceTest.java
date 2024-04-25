@@ -48,7 +48,8 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                "Prishtina, Kosova"
+                "Prishtina, Kosova",
+                "avatar1"
         );
 
         when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
@@ -85,7 +86,8 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                "Prishtina, Kosova"
+                "Prishtina, Kosova",
+                "avatar1"
         );
 
         // When
@@ -117,7 +119,8 @@ class UserServiceTest {
                 "filanfisteku",
                 "filani@gmail.com",
                 "passi",
-                "Prishtina, Kosova"
+                "Prishtina, Kosova",
+                "avatar1"
         );
 
         // When
@@ -141,7 +144,8 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                "Prishtina, Kosova"
+                "Prishtina, Kosova",
+                "avatar1"
         );
 
         // When
@@ -192,7 +196,8 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                "Prishtina, Kosova"
+                "Prishtina, Kosova",
+                "avatar1"
         );
 
         when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
@@ -204,7 +209,8 @@ class UserServiceTest {
                 newUsername,
                 newEmail,
                 "password",
-                "Peja, Kosova"
+                "Peja, Kosova",
+                "avatar1"
         );
 
         when(userDao.existsUserByEmail(newEmail)).thenReturn(false);

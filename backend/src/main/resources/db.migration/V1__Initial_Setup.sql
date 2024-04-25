@@ -12,7 +12,7 @@ CREATE TABLE users (
     username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    profile_picture TEXT NOT NULL,
+    avatar TEXT NOT NULL,
     location_id BIGINT NOT NULL,
     CONSTRAINT users_location_fk FOREIGN KEY(location_id) REFERENCES locations(id)
 );

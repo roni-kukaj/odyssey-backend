@@ -39,7 +39,8 @@ public class UserService {
                 userRegistrationRequest.username(),
                 userRegistrationRequest.email(),
                 userRegistrationRequest.password(),
-                userRegistrationRequest.location()
+                userRegistrationRequest.location(),
+                userRegistrationRequest.avatar()
         );
 
         userDao.insertUser(user);
@@ -83,6 +84,10 @@ public class UserService {
         }
         if (updateRequest.location() != null && !updateRequest.location().equals(user.getLocation())) {
             user.setLocation(updateRequest.location());
+            changes = true;
+        }
+        if (updateRequest.avatar() != null && !updateRequest.avatar().equals(user.getAvatar())) {
+            user.setAvatar(updateRequest.avatar());
             changes = true;
         }
 
