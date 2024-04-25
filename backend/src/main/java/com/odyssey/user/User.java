@@ -30,24 +30,27 @@ public class User {
     @Column(nullable = false) private String email;
     @Column(nullable = false) private String password;
     @Column(nullable = false) private String location;
+    @Column(nullable = false) private String avatar;
 
     public User() {}
 
-    public User(String fullName, String username, String email, String password, String location) {
+    public User(String fullName, String username, String email, String password, String location, String avatar) {
         this.fullName = fullName;
         this.username = username;
         this.email = email;
         this.password = password;
         this.location = location;
+        this.avatar = avatar;
     }
 
-    public User(Integer id, String fullName, String username, String email, String password, String location) {
+    public User(Integer id, String fullName, String username, String email, String password, String location, String avatar) {
         this.id = id;
         this.fullName = fullName;
         this.username = username;
         this.email = email;
         this.password = password;
         this.location = location;
+        this.avatar = avatar;
     }
 
     public Integer getId() {
@@ -98,17 +101,25 @@ public class User {
         this.location = location;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(fullName, user.fullName) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(location, user.location);
+        return Objects.equals(id, user.id) && Objects.equals(fullName, user.fullName) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(location, user.location) && Objects.equals(avatar, user.avatar);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fullName, username, email, password, location);
+        return Objects.hash(id, fullName, username, email, password, location, avatar);
     }
 
     @Override
@@ -120,6 +131,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", location='" + location + '\'' +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
 }
