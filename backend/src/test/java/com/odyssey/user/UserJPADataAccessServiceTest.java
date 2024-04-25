@@ -44,7 +44,7 @@ class UserJPADataAccessServiceTest {
 
     @Test
     void insertUser() {
-        User user = new User(1,"Admin","admin","admin@gmail.com","admin","London");
+        User user = new User(1,"Admin","admin","admin@gmail.com","admin","London", "avatar1");
         userDataAccessService.insertUser(user);
         verify(userRepository).save(user);
     }
