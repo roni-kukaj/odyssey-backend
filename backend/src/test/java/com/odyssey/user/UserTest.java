@@ -14,7 +14,7 @@ class UserTest {
         user.setUsername("admin");
         user.setEmail("admin@mail.com");
         user.setPassword("password");
-        user.setLocation("New York");
+        user.setLocation(2);
 
         
         assertEquals(1, user.getId());

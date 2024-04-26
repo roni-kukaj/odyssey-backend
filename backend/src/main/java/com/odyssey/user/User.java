@@ -1,5 +1,6 @@
 package com.odyssey.user;
 
+import com.odyssey.locations.Location;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -16,26 +17,21 @@ import java.util.Objects;
 )
 public class User {
     @Id
-    @SequenceGenerator(
-            name = "user_id_seq",
-            sequenceName = "user_id_seq"
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_id_seq"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(nullable = false) private String fullName;
+    @Column(nullable = false) private String fullname;
     @Column(nullable = false, unique = true) private String username;
     @Column(nullable = false) private String email;
     @Column(nullable = false) private String password;
-    @Column(nullable = false) private String location;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="location_id", referencedColumnName = "id")
+    private Location location;
     @Column(nullable = false) private String avatar;
 
     public User() {}
 
-    public User(String fullName, String username, String email, String password, String location, String avatar) {
-        this.fullName = fullName;
+    public User(String fullName, String username, String email, String password, Integer location, String avatar) {
+        this.fullname = fullName;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -43,9 +39,9 @@ public class User {
         this.avatar = avatar;
     }
 
-    public User(Integer id, String fullName, String username, String email, String password, String location, String avatar) {
+    public User(Integer id, String fullName, String username, String email, String password, Integer location, String avatar) {
         this.id = id;
-        this.fullName = fullName;
+        this.fullname = fullName;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -62,11 +58,11 @@ public class User {
     }
 
     public String getFullName() {
-        return fullName;
+        return fullname;
     }
 
     public void setFullName(String fullName) {
-        this.fullName = fullName;
+        this.fullname = fullName;
     }
 
     public String getUsername() {
@@ -93,11 +89,11 @@ public class User {
         this.password = password;
     }
 
-    public String getLocation() {
+    public Integer getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Integer location) {
         this.location = location;
     }
 
@@ -114,19 +110,19 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(fullName, user.fullName) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(location, user.location) && Objects.equals(avatar, user.avatar);
+        return Objects.equals(id, user.id) && Objects.equals(fullname, user.fullname) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(location, user.location) && Objects.equals(avatar, user.avatar);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fullName, username, email, password, location, avatar);
+        return Objects.hash(id, fullname, username, email, password, location, avatar);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", fullName='" + fullName + '\'' +
+                ", fullName='" + fullname + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

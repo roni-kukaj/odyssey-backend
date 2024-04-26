@@ -37,7 +37,7 @@ public class UserIntegrationTest {
         String username = name;
         String email = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
         String password = "123";
-        String location = "Prishtina, Kosova";
+        Integer location = 1;
         String avatar = "avatar1";
 
         UserRegistrationRequest request = new UserRegistrationRequest(
@@ -102,7 +102,7 @@ public class UserIntegrationTest {
         String username = name;
         String email = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
         String password = "123";
-        String location = "Prishtina, Kosova";
+        Integer location = 1;
         String avatar = "avatar";
 
         UserRegistrationRequest request = new UserRegistrationRequest(
@@ -171,7 +171,7 @@ public class UserIntegrationTest {
         String username = name;
         String email = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
         String password = "123";
-        String location = "Prishtina, Kosova";
+        Integer location = 1;
         String avatar = "avatar";
 
         UserRegistrationRequest request = new UserRegistrationRequest(
@@ -211,7 +211,7 @@ public class UserIntegrationTest {
         String newUsername = "ak";
         String newEmail = "emaili@email.com";
         String newPassword = "passi";
-        String newLocation = "DC";
+        Integer newLocation = 2;
         UserUpdateRequest updateRequest = new UserUpdateRequest(
                 newName, newUsername, newEmail, newPassword, newLocation, avatar
         );

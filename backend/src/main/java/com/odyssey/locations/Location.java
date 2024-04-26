@@ -9,15 +9,9 @@ public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(nullable = false)
-    private String city;
-
-    @Column(nullable = false)
-    private String country;
-
-    @Column(nullable = false)
-    private String picture;
+    @Column(nullable = false) private String city;
+    @Column(nullable = false) private String country;
+    @Column(nullable = false) private String picture;
 
     public Location() {}
 

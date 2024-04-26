@@ -48,7 +48,7 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                "Prishtina, Kosova",
+                1,
                 "avatar1"
         );
 
@@ -86,7 +86,7 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                "Prishtina, Kosova",
+                1,
                 "avatar1"
         );
 
@@ -119,7 +119,7 @@ class UserServiceTest {
                 "filanfisteku",
                 "filani@gmail.com",
                 "passi",
-                "Prishtina, Kosova",
+                1,
                 "avatar1"
         );
 
@@ -144,7 +144,7 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                "Prishtina, Kosova",
+                1,
                 "avatar1"
         );
 
@@ -196,7 +196,7 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                "Prishtina, Kosova",
+                1,
                 "avatar1"
         );
 
@@ -209,7 +209,7 @@ class UserServiceTest {
                 newUsername,
                 newEmail,
                 "password",
-                "Peja, Kosova",
+                1,
                 "avatar1"
         );
 

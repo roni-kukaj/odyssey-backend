@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository("jpa")
+@Repository("userJPAService")
 public class UserJPADataAccessService implements UserDao
 {
 
@@ -28,7 +28,6 @@ public class UserJPADataAccessService implements UserDao
     @Override
     public void insertUser(User user) {
         userRepository.save(user);
-
     }
 
     @Override

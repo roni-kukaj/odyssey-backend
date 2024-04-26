@@ -8,7 +8,7 @@ CREATE TABLE locations(
 
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
-    firstname TEXT NOT NULL,
+    fullname TEXT NOT NULL,
     username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
