@@ -1,5 +1,9 @@
 package com.odyssey.user;
 
+import com.odyssey.role.Role;
+import com.odyssey.role.RoleDao;
+import com.odyssey.role.RoleRepository;
+import com.odyssey.role.RoleService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.odyssey.exception.*;
@@ -10,9 +14,11 @@ import java.util.List;
 public class UserService {
 
     private final UserDao userDao;
+    private final RoleDao roleDao;
 
-    public UserService(@Qualifier("userJPAService") UserDao userDao) {
+    public UserService(@Qualifier("userJPAService") UserDao userDao, @Qualifier("roleJPAService") RoleDao roleDao) {
         this.userDao = userDao;
+        this.roleDao = roleDao;
     }
 
     public List<User> getAllUsers() {
@@ -34,13 +40,16 @@ public class UserService {
             throw new DuplicateResourceException("username already taken");
         }
 
+        Role role = roleDao.selectRoleById(userRegistrationRequest.role_id())
+                .orElseThrow(() -> new ResourceNotFoundException("role with id [%s] not found".formatted(userRegistrationRequest.role_id())));
+
         User user = new User(
                 userRegistrationRequest.fullname(),
                 userRegistrationRequest.username(),
                 userRegistrationRequest.email(),
                 userRegistrationRequest.password(),
-                userRegistrationRequest.location(),
-                userRegistrationRequest.avatar()
+                userRegistrationRequest.avatar(),
+                role
         );
 
         userDao.insertUser(user);
@@ -60,8 +69,8 @@ public class UserService {
         User user = getUser(id);
         boolean changes = false;
 
-        if (updateRequest.fullname() != null && !updateRequest.fullname().equals(user.getFullName())) {
-            user.setFullName(updateRequest.fullname());
+        if (updateRequest.fullname() != null && !updateRequest.fullname().equals(user.getFullname())) {
+            user.setFullname(updateRequest.fullname());
             changes = true;
         }
         if (updateRequest.username() != null && !updateRequest.username().equals(user.getUsername())) {
@@ -82,12 +91,15 @@ public class UserService {
             user.setPassword(updateRequest.password());
             changes = true;
         }
-        if (updateRequest.location() != null && !updateRequest.location().equals(user.getLocation())) {
-            user.setLocation(updateRequest.location());
-            changes = true;
-        }
         if (updateRequest.avatar() != null && !updateRequest.avatar().equals(user.getAvatar())) {
             user.setAvatar(updateRequest.avatar());
+            changes = true;
+        }
+        if (updateRequest.role_id() != null && !updateRequest.role_id().equals(user.getRole().getId())) {
+            Role role = roleDao.selectRoleById(updateRequest.role_id())
+                    .orElseThrow(() -> new ResourceNotFoundException("role with id [%s] not found".formatted(updateRequest.role_id())));
+
+            user.setRole(role);
             changes = true;
         }
 

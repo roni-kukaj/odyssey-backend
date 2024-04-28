@@ -6,6 +6,11 @@ CREATE TABLE locations(
 	picture TEXT NOT NULL
 );
 
+CREATE TABLE roles (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
     fullname TEXT NOT NULL,
@@ -13,8 +18,8 @@ CREATE TABLE users (
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     avatar TEXT NOT NULL,
-    location_id BIGINT NOT NULL,
-    CONSTRAINT users_location_fk FOREIGN KEY(location_id) REFERENCES locations(id)
+    role_id BIGINT NOT NULL,
+    CONSTRAINT users_role_fk FOREIGN KEY(role_id) REFERENCES roles(id)
 );
 
 CREATE TABLE trips(
@@ -47,16 +52,6 @@ CREATE TABLE events(
 	duration INTEGER NOT NULL,
 	location_id BIGINT NOT NULL,
 	CONSTRAINT events_fk FOREIGN KEY(location_id) REFERENCES locations(id)
-);
-
-CREATE TABLE administrators(
-	id BIGSERIAL PRIMARY KEY,
-	fullname TEXT NOT NULL,
-	username TEXT NOT NULL,
-	email TEXT NOT NULL,
-	password TEXT NOT NULL,
-	profile_picture TEXT NOT NULL,
-	is_head BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE followers(

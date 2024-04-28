@@ -2,10 +2,13 @@ package com.odyssey.user;
 
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
+import com.odyssey.role.Role;
+import com.odyssey.role.RoleDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -22,11 +25,12 @@ class UserServiceTest {
 
     @Mock
     private UserDao userDao;
+    @Mock private RoleDao roleDao;
     private UserService underTest;
 
     @BeforeEach
     void setUp() {
-        underTest = new UserService(userDao);
+        underTest = new UserService(userDao, roleDao);
     }
 
     @Test
@@ -48,8 +52,8 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                1,
-                "avatar1"
+                "avatar1",
+                new Role(1, "user")
         );
 
         when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
@@ -86,9 +90,12 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                1,
-                "avatar1"
+                "avatar1",
+                1
         );
+
+        Role role = new Role(1, "user"); // Create a mock Role object
+        when(roleDao.selectRoleById(ArgumentMatchers.anyInt())).thenReturn(Optional.of(role));
 
         // When
         underTest.addUser(request);
@@ -100,11 +107,11 @@ class UserServiceTest {
         User capturedUser = customerArgumentCaptor.getValue();
 
         assertThat(capturedUser.getId()).isNull();
-        assertThat(capturedUser.getFullName()).isEqualTo(request.fullname());
+        assertThat(capturedUser.getFullname()).isEqualTo(request.fullname());
         assertThat(capturedUser.getUsername()).isEqualTo(request.username());
         assertThat(capturedUser.getEmail()).isEqualTo(request.email());
         assertThat(capturedUser.getPassword()).isEqualTo(request.password());
-        assertThat(capturedUser.getLocation()).isEqualTo(request.location());
+        assertThat(capturedUser.getRole().getId()).isEqualTo(request.role_id());
     }
 
     @Test
@@ -119,8 +126,8 @@ class UserServiceTest {
                 "filanfisteku",
                 "filani@gmail.com",
                 "passi",
-                1,
-                "avatar1"
+                "avatar1",
+                1
         );
 
         // When
@@ -144,8 +151,8 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                1,
-                "avatar1"
+                "avatar1",
+                1
         );
 
         // When
@@ -196,8 +203,8 @@ class UserServiceTest {
                 "filanfisteku",
                 "filanfisteku@gmail.com",
                 "passi",
-                1,
-                "avatar1"
+                "avatar1",
+                new Role(1, "user")
         );
 
         when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
@@ -209,8 +216,8 @@ class UserServiceTest {
                 newUsername,
                 newEmail,
                 "password",
-                1,
-                "avatar1"
+                "avatar1",
+                1
         );
 
         when(userDao.existsUserByEmail(newEmail)).thenReturn(false);
@@ -225,11 +232,11 @@ class UserServiceTest {
         verify(userDao).updateUser(customerArgumentCaptor.capture());
         User capturedUser = customerArgumentCaptor.getValue();
 
-        assertThat(capturedUser.getFullName()).isEqualTo(request.fullname());
+        assertThat(capturedUser.getFullname()).isEqualTo(request.fullname());
         assertThat(capturedUser.getUsername()).isEqualTo(request.username());
         assertThat(capturedUser.getEmail()).isEqualTo(request.email());
         assertThat(capturedUser.getPassword()).isEqualTo(request.password());
-        assertThat(capturedUser.getLocation()).isEqualTo(request.location());
+        assertThat(capturedUser.getRole().getId()).isEqualTo(request.role_id());
     }
 
 }
