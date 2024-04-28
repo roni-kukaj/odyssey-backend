@@ -1,5 +1,7 @@
 package com.odyssey.user;
 
+import com.odyssey.locations.Location;
+import com.odyssey.role.Role;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -16,41 +18,36 @@ import java.util.Objects;
 )
 public class User {
     @Id
-    @SequenceGenerator(
-            name = "user_id_seq",
-            sequenceName = "user_id_seq"
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_id_seq"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(nullable = false) private String fullName;
+    @Column(nullable = false) private String fullname;
     @Column(nullable = false, unique = true) private String username;
     @Column(nullable = false) private String email;
     @Column(nullable = false) private String password;
-    @Column(nullable = false) private String location;
     @Column(nullable = false) private String avatar;
+    @ManyToOne()
+    @JoinColumn(name="role_id", referencedColumnName = "id")
+    private Role role;
 
     public User() {}
 
-    public User(String fullName, String username, String email, String password, String location, String avatar) {
-        this.fullName = fullName;
+    public User(String fullname, String username, String email, String password, String avatar, Role role) {
+        this.fullname = fullname;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.location = location;
         this.avatar = avatar;
+        this.role = role;
     }
 
-    public User(Integer id, String fullName, String username, String email, String password, String location, String avatar) {
+    public User(Integer id, String fullname, String username, String email, String password, String avatar, Role role) {
         this.id = id;
-        this.fullName = fullName;
+        this.fullname = fullname;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.location = location;
         this.avatar = avatar;
+        this.role = role;
     }
 
     public Integer getId() {
@@ -61,12 +58,12 @@ public class User {
         this.id = id;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getFullname() {
+        return fullname;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public String getUsername() {
@@ -93,14 +90,6 @@ public class User {
         this.password = password;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getAvatar() {
         return avatar;
     }
@@ -109,29 +98,37 @@ public class User {
         this.avatar = avatar;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(fullName, user.fullName) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(location, user.location) && Objects.equals(avatar, user.avatar);
+        return Objects.equals(id, user.id) && Objects.equals(fullname, user.fullname) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(avatar, user.avatar) && Objects.equals(role, user.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fullName, username, email, password, location, avatar);
+        return Objects.hash(id, fullname, username, email, password, avatar, role);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", fullName='" + fullName + '\'' +
+                ", fullname='" + fullname + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", location='" + location + '\'' +
                 ", avatar='" + avatar + '\'' +
+                ", role=" + role +
                 '}';
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v2/locations")
+@RequestMapping("/api/v1/locations")
 public class LocationController {
 
     @Autowired
@@ -21,35 +21,23 @@ public class LocationController {
     }
 
     @GetMapping("/{locationId}")
-    public ResponseEntity<Optional<Location>> getLocationById(@PathVariable("locationId") Integer locationId) {
-        return ResponseEntity.ok(locationService.getLocationById(locationId));
+    public Location getLocationById(@PathVariable("locationId") Integer locationId) {
+        return locationService.getLocation(locationId);
     }
 
 
     @PostMapping
-    public ResponseEntity<Void> createLocation(@RequestBody Location location) {
-        locationService.createLocation(location);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public void registerLocation(@RequestBody LocationRegistrationRequest request) {
+        locationService.addLocation(request);
     }
 
     @DeleteMapping("/{locationId}")
-    public ResponseEntity<Void> deleteLocation(@PathVariable("locationId") Integer locationId) {
-        boolean deleted = locationService.deleteLocation(locationId);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public void deleteLocation(@PathVariable("locationId") Integer locationId) {
+        locationService.deleteLocation(locationId);
     }
 
     @PutMapping("/{locationId}")
-    public ResponseEntity<Void> updateLocation(@PathVariable("locationId") Integer locationId, @RequestBody Location location) {
-        location.setId(locationId);
-        boolean updated = locationService.updateLocation(location);
-        if (updated) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public void updateLocation(@PathVariable("locationId") Integer locationId, @RequestBody LocationUpdateRequest request) {
+        locationService.updateLocation(locationId, request);
     }
 }

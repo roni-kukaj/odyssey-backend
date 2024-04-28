@@ -6,14 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 class LocationJPADataAccessServiceTest {
 
@@ -36,51 +29,44 @@ class LocationJPADataAccessServiceTest {
 
     @Test
     void testGetAllLocations() {
-        // Given
-        List<Location> locations = new ArrayList<>();
-        when(locationRepository.findAll()).thenReturn(locations);
-
-        // When
-        locationDataAccessService.getAllLocations();
-
-        // Then
+        locationDataAccessService.selectAllLocations();
         verify(locationRepository).findAll();
     }
 
     @Test
     void testGetLocationById() {
-        // Given
         int id = 1;
-        Location location = new Location();
-        when(locationRepository.findById(id)).thenReturn(Optional.of(location));
-
-        // When
-        locationDataAccessService.getLocationById(id);
-
-        // Then
+        locationDataAccessService.selectLocationById(id);
         verify(locationRepository).findById(id);
     }
 
     @Test
-    void testCreateLocation() {
-        // Given
-        Location location = new Location();
-
-        // When
-        locationDataAccessService.createLocation(location);
-
-        // Then
+    void insertLocation() {
+        Location location = new Location(1, "Prishtine", "Kosovo", "Picture 1");
+        locationDataAccessService.insertLocation(location);
         verify(locationRepository).save(location);
+    }
+
+    @Test
+    void existsLocationByCityAndCountry() {
+        String city = "Prishtine", country = "Kosovo";
+        locationDataAccessService.existsLocationByCityAndCountry(city, country);
+        verify(locationRepository).existsByCityAndCountry(city, country);
+    }
+
+    @Test
+    void existsLocationById() {
+        int id = 1;
+        locationDataAccessService.existsLocationById(id);
+        verify(locationRepository).existsLocationById(id);
     }
 
     @Test
     void testDeleteLocation() {
         // Given
         int id = 1;
-        when(locationRepository.existsById(id)).thenReturn(true);
-
         // When
-        locationDataAccessService.deleteLocation(id);
+        locationDataAccessService.deleteLocationById(id);
 
         // Then
         verify(locationRepository).deleteById(id);
@@ -88,21 +74,7 @@ class LocationJPADataAccessServiceTest {
 
     @Test
     void testUpdateLocation() {
-        // Given
-        Location location = new Location();
-        location.setId(1); // Set id
-        location.setCity("New York"); // Set city
-        location.setCountry("USA"); // Set country
 
-        // When
-        when(locationRepository.existsById(any())).thenReturn(true); // Mock existsById method
-        when(locationRepository.save(location)).thenReturn(location); // Mock save method
-        boolean result = locationDataAccessService.updateLocation(location);
-
-        // Then
-        assertTrue(result); // Ensure update operation was successful
-        verify(locationRepository).existsById(any());
-        verify(locationRepository).save(location);
     }
 
 

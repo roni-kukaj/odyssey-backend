@@ -1,17 +1,17 @@
 package com.odyssey.locations;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.odyssey.exception.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public abstract class LocationService {
+public class LocationService {
 
-    private LocationDao locationDao;
+    private final LocationDao locationDao;
 
-    public LocationService() {
+    public LocationService(@Qualifier("locationJPAService") LocationDao locationDao) {
         this.locationDao = locationDao;
     }
 
@@ -19,13 +19,16 @@ public abstract class LocationService {
         return locationDao.selectAllLocations();
     }
 
-    public Location getLocation(Integer locationId) {
-        return locationDao.selectLocationById(locationId)
-                .orElseThrow(() -> new ResourceNotFoundException("Location with id " + locationId + " not found"));
+    public Location getLocation(Integer id) {
+        return locationDao.selectLocationById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(id)));
     }
 
 
     public void addLocation(LocationRegistrationRequest locationRegistrationRequest) {
+        if (locationDao.existsLocationByCityAndCountry(locationRegistrationRequest.city(), locationRegistrationRequest.country())) {
+            throw new DuplicateResourceException("location already exists");
+        }
         Location location = new Location(
                 locationRegistrationRequest.city(),
                 locationRegistrationRequest.country(),
@@ -35,17 +38,13 @@ public abstract class LocationService {
         locationDao.insertLocation(location);
     }
 
-    public abstract Optional<Location> getLocationById(Integer id);
-
-    public abstract Location createLocation(Location location);
-
     public boolean deleteLocation(Integer id) {
         if (locationDao.existsLocationById(id)) {
             locationDao.deleteLocationById(id);
-            return true;
         } else {
-            throw new ResourceNotFoundException("Location with id [%s] not found".formatted(id));
+            throw new ResourceNotFoundException("location with id [%s] not found".formatted(id));
         }
+        return false;
     }
 
     public boolean updateLocation(Integer id, LocationUpdateRequest updateRequest) {
@@ -60,13 +59,16 @@ public abstract class LocationService {
             location.setCountry(updateRequest.country());
             changes = true;
         }
+        if (updateRequest.picture() != null && !updateRequest.picture().equals(location.getPicture())) {
+            location.setPicture(updateRequest.picture());
+            changes = true;
+        }
         if (!changes) {
-            throw new RequestValidationException("No data changes found");
+            throw new RequestValidationException("no data changes found");
         }
 
         locationDao.updateLocation(location);
         return changes;
     }
 
-    public abstract boolean updateLocation(Location location);
 }

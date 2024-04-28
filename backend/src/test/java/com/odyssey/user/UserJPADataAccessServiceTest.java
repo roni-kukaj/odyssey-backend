@@ -1,5 +1,6 @@
 package com.odyssey.user;
 
+import com.odyssey.role.Role;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ class UserJPADataAccessServiceTest {
 
     @Test
     void insertUser() {
-        User user = new User(1,"Admin","admin","admin@gmail.com","admin","London", "avatar1");
+        User user = new User(1,"Admin","admin","admin@gmail.com","admin","avatar1", new Role(1, "user"));
         userDataAccessService.insertUser(user);
         verify(userRepository).save(user);
     }
