@@ -56,10 +56,10 @@ CREATE TABLE events(
 
 CREATE TABLE followers(
 	id BIGSERIAL PRIMARY KEY,
-	user_id BIGINT NOT NULL,
 	follower_id BIGINT NOT NULL,
-	CONSTRAINT followers_user_fk FOREIGN KEY(user_id) REFERENCES users(id),
-	CONSTRAINT followers_follower_fk FOREIGN KEY(follower_id) REFERENCES users(id)
+	following_id BIGINT NOT NULL,
+	CONSTRAINT followers_follower_fk FOREIGN KEY(follower_id) REFERENCES users(id),
+	CONSTRAINT followers_following_fk FOREIGN KEY(following_id) REFERENCES users(id)
 
 );
 
