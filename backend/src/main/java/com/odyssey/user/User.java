@@ -1,7 +1,6 @@
 package com.odyssey.user;
 
-import com.odyssey.followers.Follow;
-import com.odyssey.locations.Location;
+import com.odyssey.follow.Follow;
 import com.odyssey.role.Role;
 import jakarta.persistence.*;
 

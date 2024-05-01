@@ -1,15 +1,13 @@
-package com.odyssey.followers;
+package com.odyssey.follow;
 
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.role.RoleDao;
 import com.odyssey.user.User;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.odyssey.user.UserDao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,16 +15,13 @@ public class FollowService {
 
     private final FollowDao followersDao;
     private final UserDao userDao;
-    private final RoleDao roleDao;
 
     public FollowService(
             @Qualifier("followersJPAService") FollowDao followersDao,
-            @Qualifier("userJPAService") UserDao userDao,
-            @Qualifier("roleJPAService") RoleDao roleDao
+            @Qualifier("userJPAService") UserDao userDao
             ) {
         this.followersDao = followersDao;
         this.userDao = userDao;
-        this.roleDao = roleDao;
     }
 
     public List<Follow> getAllFollowers() {
@@ -40,7 +35,7 @@ public class FollowService {
         return followersDao.selectAllFollowersOfUserById(followingId);
     }
 
-    public Follow getFollowersById(Integer id) {
+    public Follow getFollowById(Integer id) {
         return followersDao.selectById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("follow record with id [%s] not found".formatted(id)));
     }
@@ -55,8 +50,12 @@ public class FollowService {
             throw new DuplicateResourceException("record already exists");
         }
 
-        if (!follower.getRole().getName().equals("user") && !following.getRole().getName().equals("user")) {
-            throw new RequestValidationException("a user can follow only another user");
+        if (!follower.getRole().getName().equals("user") || !following.getRole().getName().equals("user")) {
+            throw new RequestValidationException("a user can only follow another user");
+        }
+
+        if (follower.getId().equals(following.getId())) {
+            throw new RequestValidationException("a user can only follow another user");
         }
 
         Follow follow = new Follow(
@@ -72,7 +71,7 @@ public class FollowService {
             followersDao.deleteFollowById(id);
         }
         else {
-            throw new ResourceNotFoundException("record with id [%s] not fount".formatted(id));
+            throw new ResourceNotFoundException("record with id [%s] not found".formatted(id));
         }
         return false;
     }

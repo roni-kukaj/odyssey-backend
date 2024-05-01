@@ -1,4 +1,4 @@
-package com.odyssey.followers;
+package com.odyssey.follow;
 
 public record FollowDeleteRequest(Integer followerId, Integer followingId) {
 }

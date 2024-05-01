@@ -1,4 +1,4 @@
-package com.odyssey.followers;
+package com.odyssey.follow;
 
 import org.springframework.stereotype.Repository;
 
@@ -32,7 +32,7 @@ public class FollowJPADataAccessService implements FollowDao {
 
     @Override
     public Optional<Follow> selectByFollowerIdAndFollowingId(Integer followerId, Integer followingId) {
-        return Optional.ofNullable(followRepository.findByFollowerIdAndFollowingId(followerId, followingId));
+        return followRepository.findByFollowerIdAndFollowingId(followerId, followingId);
     }
 
     @Override
@@ -60,8 +60,4 @@ public class FollowJPADataAccessService implements FollowDao {
         followRepository.deleteById(id);
     }
 
-    @Override
-    public void deleteFollowByFollowerIdAndFollowingId(Integer followerId, Integer followingId) {
-        followRepository.deleteByFollowerIdAndFollowingId(followerId, followingId);
-    }
 }

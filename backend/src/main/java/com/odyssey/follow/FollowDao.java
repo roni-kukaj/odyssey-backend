@@ -1,4 +1,4 @@
-package com.odyssey.followers;
+package com.odyssey.follow;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,5 +13,4 @@ public interface FollowDao {
     boolean existsFollowByFollowerIdAndFollowingId(Integer followerId, Integer followingId);
     boolean existsFollowById(Integer id);
     void deleteFollowById(Integer id);
-    void deleteFollowByFollowerIdAndFollowingId(Integer followerId, Integer followingId);
 }

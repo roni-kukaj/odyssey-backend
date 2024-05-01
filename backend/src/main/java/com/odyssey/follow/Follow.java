@@ -1,9 +1,8 @@
-package com.odyssey.followers;
+package com.odyssey.follow;
 
 import com.odyssey.user.User;
 import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @Entity

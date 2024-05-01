@@ -1,4 +1,4 @@
-package com.odyssey.followers;
+package com.odyssey.follow;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/followers")
+@RequestMapping("/api/v1/follow")
 public class FollowController {
 
     @Autowired
@@ -22,7 +22,7 @@ public class FollowController {
         return followersService.getAllFollowingOfUserById(followerId);
     }
 
-    @GetMapping("/followers/{userId}")
+    @GetMapping("/{userId}/followers")
     public List<Follow> getFollowersOfUserById(@PathVariable("userId") Integer userId) {
         return followersService.getAllFollowersOfUserById(userId);
     }
