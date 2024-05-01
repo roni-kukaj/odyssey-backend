@@ -27,14 +27,19 @@ public class FollowController {
         return followersService.getAllFollowersOfUserById(userId);
     }
 
+    @GetMapping("/record/{recordId}")
+    public Follow getFollowById(@PathVariable("recordId") Integer recordId) {
+        return followersService.getFollowById(recordId);
+    }
+
     @PostMapping()
     public void registerFollowerRecord(@RequestBody FollowRegistrationRequest request) {
         followersService.addFollower(request);
     }
 
-    @DeleteMapping()
-    public void deleteFollowerRecord(@RequestBody FollowDeleteRequest request){
-        followersService.deleteFollowByFollowerIdAndFollowingId(request);
+    @DeleteMapping("/{followerId}/{followingId}/delete")
+    public void deleteFollowerRecord(@PathVariable Integer followerId, @PathVariable Integer followingId){
+        followersService.deleteFollowByFollowerIdAndFollowingId(new FollowDeleteRequest(followerId, followingId));
     }
 
     @DeleteMapping("/{recordId}")

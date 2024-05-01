@@ -31,11 +31,11 @@ public class User {
     @JoinColumn(name="role_id", referencedColumnName = "id")
     private Role role;
 
-    @OneToMany(mappedBy = "follower")
-    private Set<Follow> followers = new HashSet<>();
-
-    @OneToMany(mappedBy = "following")
-    private Set<Follow> followings = new HashSet<>();
+//    @OneToMany(mappedBy = "follower")
+//    private Set<Follow> followers = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "following")
+//    private Set<Follow> followings = new HashSet<>();
 
     public User() {}
 
