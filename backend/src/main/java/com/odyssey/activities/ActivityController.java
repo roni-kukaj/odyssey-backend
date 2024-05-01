@@ -17,11 +17,10 @@ import java.util.List;
 public class ActivityController {
 
     @Autowired
-    @Qualifier("activityService")
     private ActivityService activityService;
 
     @GetMapping
-    public List<Activity> getAllLActivities() {
+    public List<Activity> getAllActivities() {
         return activityService.getAllActivities();
     }
 
@@ -30,6 +29,10 @@ public class ActivityController {
         return activityService.getActivity(activityId);
     }
 
+    @GetMapping("/location/{locationId}")
+    public List<Activity> getActivitiesByLocationId(@PathVariable("locationId") Integer locationId) {
+        return activityService.getActivitiesByLocationId(locationId);
+    }
 
     @PostMapping
     public void registerActivity(@RequestBody ActivityRegistrationRequest request) {

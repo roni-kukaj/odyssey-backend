@@ -6,21 +6,30 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+@Entity
+@Table(name="activities")
 public class Activity {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @Column(nullable = false) private String name;
     @Column(nullable = false) private String description;
-    @Column(nullable = false) private Integer cost;
     @Column(nullable = false) private Integer duration;
-
+    @Column(nullable = false) private Integer cost;
     @ManyToOne()
-    @JoinColumn(name="locationId", referencedColumnName = "id")
+    @JoinColumn(name="location_id", referencedColumnName = "id")
     private Location location;
 
     public Activity(){}
+
+    public Activity(String name, String description, Integer cost, Integer duration, Location location) {
+        this.name = name;
+        this.description = description;
+        this.cost = cost;
+        this.duration = duration;
+        this.location = location;
+    }
 
     public Activity(Integer id, String name, String description, int cost, int duration, Location location) {
         this.id = id;
@@ -79,31 +88,18 @@ public class Activity {
         this.location = location;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Activity activity = (Activity) o;
-
-        if (cost != activity.cost) return false;
-        if (duration != activity.duration) return false;
-        if (!Objects.equals(id, activity.id)) return false;
-        if (!Objects.equals(name, activity.name)) return false;
-        if (!Objects.equals(description, activity.description))
-            return false;
-        return Objects.equals(location, activity.location);
+        return Objects.equals(id, activity.id) && Objects.equals(name, activity.name) && Objects.equals(description, activity.description) && Objects.equals(cost, activity.cost) && Objects.equals(duration, activity.duration) && Objects.equals(location, activity.location);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + cost;
-        result = 31 * result + duration;
-        result = 31 * result + (location != null ? location.hashCode() : 0);
-        return result;
+        return Objects.hash(id, name, description, cost, duration, location);
     }
 
     @Override

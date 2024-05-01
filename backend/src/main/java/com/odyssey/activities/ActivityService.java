@@ -1,6 +1,7 @@
 package com.odyssey.activities;
 
 import com.odyssey.exception.DuplicateResourceException;
+import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.locations.Location;
 import com.odyssey.locations.LocationDao;
@@ -24,6 +25,13 @@ public class ActivityService {
         return activityDao.selectAllActivities();
     }
 
+    public List<Activity> getActivitiesByLocationId(Integer locationId) {
+        if (!locationDao.existsLocationById(locationId)) {
+            throw new ResourceNotFoundException("location with id [%s] not found".formatted(locationId));
+        }
+        return activityDao.selectActivitiesByLocationId(locationId);
+    }
+
     public Activity getActivity(Integer id) {
         return activityDao.selectActivityById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("activity with id [%s] not found".formatted(id)));
@@ -31,10 +39,10 @@ public class ActivityService {
 
     public void addActivity(ActivityRegistrationRequest request) {
         if (activityDao.existsActivityByNameAndLocationId(request.name(), request.locationId())) {
-            throw new DuplicateResourceException("Activity already exists with the given name and location.");
+            throw new DuplicateResourceException("activity already exists");
         }
         Location location = locationDao.selectLocationById(request.locationId())
-                .orElseThrow(() -> new ResourceNotFoundException("Location with id [%s] not found".formatted(request.locationId())));
+                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.locationId())));
 
         Activity activity = new Activity(
                 null, // Assuming ID is auto-generated.
@@ -57,26 +65,43 @@ public class ActivityService {
         return false;
     }
 
-    public void updateActivity(Integer id, ActivityUpdateRequest request) {
-        Activity existingActivity = activityDao.selectActivityById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Activity with id [%s] not found".formatted(id)));
+    public boolean updateActivity(Integer id, ActivityUpdateRequest request) {
+        Activity existingActivity = getActivity(id);
 
-        if (activityDao.existsActivityByNameAndLocationId(request.name(), request.locationId()) &&
-                !existingActivity.getLocation().getId().equals(request.locationId()) ||
-                !existingActivity.getName().equals(request.name())) {
-            throw new DuplicateResourceException("Another activity with the same name and location already exists.");
+        if (activityDao.existsActivityByNameAndLocationId(request.name(), request.locationId())) {
+            throw new DuplicateResourceException("activity already exists");
+        }
+        Location location = locationDao.selectLocationById(request.locationId())
+                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.locationId())));
+
+        boolean changes = false;
+
+        if (request.name() != null && !request.name().equals(existingActivity.getName())) {
+            existingActivity.setName(request.name());
+            changes = true;
+        }
+        if (request.description() != null && !request.description().equals(existingActivity.getDescription())) {
+            existingActivity.setDescription(request.description());
+            changes = true;
+        }
+        if (request.cost() != null && !request.cost().equals(existingActivity.getCost())) {
+            existingActivity.setCost(request.cost());
+            changes = true;
+        }
+        if (request.duration() != null && !request.duration().equals(existingActivity.getDuration())) {
+            existingActivity.setDuration(request.duration());
+            changes = true;
+        }
+        if (request.locationId() != null && !request.locationId().equals(existingActivity.getLocation().getId())) {
+            existingActivity.setLocation(location);
         }
 
-        Location location = locationDao.selectLocationById(request.locationId())
-                .orElseThrow(() -> new ResourceNotFoundException("Location with id [%s] not found".formatted(request.locationId())));
-
-        existingActivity.setName(request.name());
-        existingActivity.setDescription(request.description());
-        existingActivity.setCost(request.cost());
-        existingActivity.setDuration(request.duration());
-        existingActivity.setLocation(location);
+        if (!changes) {
+            throw new RequestValidationException("no data changes");
+        }
 
         activityDao.updateActivity(existingActivity);
+        return changes;
     }
 
 }

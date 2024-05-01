@@ -1,17 +1,16 @@
 package com.odyssey.activities;
 
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationRepository;
-import com.odyssey.user.UserRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-public class ActivityJpaDataAccessService implements ActivityDao{
+@Repository("activityJPAService")
+public class ActivityJPADataAccessService implements ActivityDao{
 
     private final ActivityRepository activityRepository;
 
-    public ActivityJpaDataAccessService(ActivityRepository activityRepository) {
+    public ActivityJPADataAccessService(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
 
@@ -23,6 +22,11 @@ public class ActivityJpaDataAccessService implements ActivityDao{
     @Override
     public Optional<Activity> selectActivityById(Integer id) {
         return activityRepository.findById(id);
+    }
+
+    @Override
+    public List<Activity> selectActivitiesByLocationId(Integer locationId) {
+        return activityRepository.findByLocationId(locationId);
     }
 
     @Override
