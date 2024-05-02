@@ -1,10 +1,12 @@
 package com.odyssey.user;
 
-import com.odyssey.locations.Location;
+import com.odyssey.follow.Follow;
 import com.odyssey.role.Role;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(
@@ -28,6 +30,12 @@ public class User {
     @ManyToOne()
     @JoinColumn(name="role_id", referencedColumnName = "id")
     private Role role;
+
+//    @OneToMany(mappedBy = "follower")
+//    private Set<Follow> followers = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "following")
+//    private Set<Follow> followings = new HashSet<>();
 
     public User() {}
 
