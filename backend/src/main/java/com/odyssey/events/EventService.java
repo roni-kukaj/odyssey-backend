@@ -2,6 +2,7 @@ package com.odyssey.events;
 
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
+import com.odyssey.locations.Location;
 import com.odyssey.locations.LocationDao;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -12,11 +13,13 @@ import java.util.List;
 public class EventService {
 
     private final EventDao eventDao;
+    private final LocationDao locationDao;
 
 
-    public EventService(@Qualifier ("eventJPAService") EventDao eventDao){
+    public EventService(@Qualifier ("eventJPAService") EventDao eventDao, LocationDao locationDao){
         this.eventDao = eventDao;
 
+        this.locationDao = locationDao;
     }
 
     public List<Event> getAllEvents(){
@@ -34,12 +37,13 @@ public class EventService {
         if(eventDao.existsEventByName(eventRegistrationRequest.name())){
             throw new DuplicateResourceException("event already exists");
         }
+        Location location = locationDao.selectLocationById(eventRegistrationRequest.location_id()).orElseThrow(()-> new ResourceNotFoundException("location with id [%s] not found".formatted(eventRegistrationRequest.location_id())));
 
         Event event = new Event(
                 eventRegistrationRequest.name(), eventRegistrationRequest.description(),
                 eventRegistrationRequest.image(), eventRegistrationRequest.date(),
                 eventRegistrationRequest.cost(), eventRegistrationRequest.duration(),
-                eventRegistrationRequest.location_id()
+                location
         );
         eventDao.insertEvent(event);
     }
@@ -58,6 +62,7 @@ public class EventService {
 
     public boolean updateEvent(Integer id, EventUpdateRequest eventUpdateRequest){
         Event event = getEvent(id);
+        Location location = locationDao.selectLocationById(eventUpdateRequest.location_id()).orElseThrow(()-> new ResourceNotFoundException("location with id [%s] not found".formatted(eventUpdateRequest.location_id())));
         boolean changes = false;
         if(eventUpdateRequest.name() != null && !eventUpdateRequest.name().equals(event.getName())){
             event.setName(eventUpdateRequest.name());
@@ -90,7 +95,7 @@ public class EventService {
         }
 
         if(eventUpdateRequest.location_id()!=null && !eventUpdateRequest.location_id().equals(event.getLocation_id())){
-            event.setLocation_id(eventUpdateRequest.location_id());
+            event.setLocation_id(location);
             changes = true;
         }
 

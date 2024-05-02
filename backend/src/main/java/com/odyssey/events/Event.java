@@ -22,8 +22,8 @@ public class Event {
     @Column(nullable = false) private Double cost;
     @Column(nullable = false) private Integer duration;
 
-    @ManyToOne(fetch =  FetchType.LAZY)
-    @JoinColumn(name="location_id", nullable = false)
+    @ManyToOne()
+    @JoinColumn(name="location_id", referencedColumnName = "id")
     private Location location;
 
 

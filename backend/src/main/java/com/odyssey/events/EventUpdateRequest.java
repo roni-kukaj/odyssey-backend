@@ -8,6 +8,6 @@ import java.util.Date;
 public record EventUpdateRequest(
         String name, String description,
         String image, LocalDate date, Double cost,
-        Integer duration, Location location_id
+        Integer duration, Integer location_id
 ) {
 }

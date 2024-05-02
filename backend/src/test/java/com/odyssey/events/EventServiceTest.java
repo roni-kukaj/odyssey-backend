@@ -4,6 +4,7 @@ package com.odyssey.events;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.locations.Location;
+import com.odyssey.locations.LocationDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,11 +24,13 @@ public class EventServiceTest {
 
     @Mock
     private EventDao eventDao;
+    @Mock
+    private LocationDao locationDao;
     private EventService underTest;
 
     @BeforeEach
     void setUp(){
-        underTest = new EventService(eventDao);
+        underTest = new EventService(eventDao,locationDao);
     }
 
 
@@ -76,7 +79,7 @@ public class EventServiceTest {
         String image="Picture 1";
         when(eventDao.existsEventByName(name)).thenReturn(false);
         EventRegistrationRequest eventRegistrationRequest = new EventRegistrationRequest(
-                name,description,image,date,cost,duration,location
+                name,description,image,date,cost,duration,location.getId()
         );
         underTest.addEvent(eventRegistrationRequest);
 
@@ -108,7 +111,7 @@ public class EventServiceTest {
         String image="Picture 1";
         when(eventDao.existsEventByName(name)).thenReturn(true);
         EventRegistrationRequest eventRegistrationRequest = new EventRegistrationRequest(
-                name,description,image,date,cost,duration,location
+                name,description,image,date,cost,duration,location.getId()
         );
         assertThatThrownBy(()-> underTest.addEvent(eventRegistrationRequest)).isInstanceOf(DuplicateResourceException.class).hasMessage("event already exists");
 
@@ -154,7 +157,7 @@ public class EventServiceTest {
         Double newcost = 78.0;
         Integer newduration = 1;
         String newimage = "Image 1";
-        EventUpdateRequest eventUpdateRequest = new EventUpdateRequest(newEvent,newDescription,newimage,newDate,newcost,newduration,newlocation);
+        EventUpdateRequest eventUpdateRequest = new EventUpdateRequest(newEvent,newDescription,newimage,newDate,newcost,newduration,newlocation.getId());
         lenient().when(eventDao.existsEventByName(newEvent)).thenReturn(false);
         underTest.updateEvent(id,eventUpdateRequest);
 
