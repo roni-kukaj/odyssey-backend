@@ -98,7 +98,7 @@ public class EventIntegrationTest {
 
         assertThat(allEvents).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id").contains(expectedEvent);
 
-        int id =  allEvents.stream().filter(event -> event.getName().equals(name)&&event.getLocation_id().equals(location)).map(Event::getId).findFirst().orElseThrow();
+        int id =  allEvents.stream().filter(event -> event.getName().equals(name)&&event.getLocation().equals(location)).map(Event::getId).findFirst().orElseThrow();
         expectedEvent.setId(id);
 
         webTestClient.get().uri(EVENT_URI + "/{id}" , id).accept(MediaType.APPLICATION_JSON)
