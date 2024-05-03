@@ -78,6 +78,7 @@ public class EventServiceTest {
         Integer duration = 2;
         String image="Picture 1";
         when(eventDao.existsEventByName(name)).thenReturn(false);
+        when(locationDao.selectLocationById(1)).thenReturn(Optional.of(location));
         EventRegistrationRequest eventRegistrationRequest = new EventRegistrationRequest(
                 name,description,image,date,cost,duration,location.getId()
         );
@@ -93,7 +94,7 @@ public class EventServiceTest {
         assertThat(capturedEvent.getImage()).isEqualTo(eventRegistrationRequest.image());
         assertThat(capturedEvent.getDuration()).isEqualTo(eventRegistrationRequest.duration());
         assertThat(capturedEvent.getDate()).isEqualTo(eventRegistrationRequest.date());
-        assertThat(capturedEvent.getLocation_id()).isEqualTo(eventRegistrationRequest.location_id());
+        assertThat(capturedEvent.getLocation().getId()).isEqualTo(eventRegistrationRequest.location_id());
         assertThat(capturedEvent.getCost()).isEqualTo(eventRegistrationRequest.cost());
 
     }
@@ -157,11 +158,14 @@ public class EventServiceTest {
         Double newcost = 78.0;
         Integer newduration = 1;
         String newimage = "Image 1";
+        when(locationDao.selectLocationById(2)).thenReturn(Optional.of(newlocation));
+
         EventUpdateRequest eventUpdateRequest = new EventUpdateRequest(newEvent,newDescription,newimage,newDate,newcost,newduration,newlocation.getId());
         lenient().when(eventDao.existsEventByName(newEvent)).thenReturn(false);
-        underTest.updateEvent(id,eventUpdateRequest);
+        underTest.updateEvent(id, eventUpdateRequest);
 
         ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(Event.class);
+
         verify(eventDao).updateEvent(eventArgumentCaptor.capture());
 
         Event capturedEvent = eventArgumentCaptor.getValue();
@@ -170,7 +174,7 @@ public class EventServiceTest {
         assertThat(capturedEvent.getImage()).isEqualTo(eventUpdateRequest.image());
         assertThat(capturedEvent.getDuration()).isEqualTo(eventUpdateRequest.duration());
         assertThat(capturedEvent.getDate()).isEqualTo(eventUpdateRequest.date());
-        assertThat(capturedEvent.getLocation_id()).isEqualTo(eventUpdateRequest.location_id());
+        assertThat(capturedEvent.getLocation().getId()).isEqualTo(eventUpdateRequest.location_id());
         assertThat(capturedEvent.getCost()).isEqualTo(eventUpdateRequest.cost());
 
 

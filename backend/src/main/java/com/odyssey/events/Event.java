@@ -110,12 +110,12 @@ public class Event {
         this.duration = duration;
     }
 
-    public Location getLocation_id() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation_id(Location location_id) {
-        this.location = location_id;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
 

@@ -26,7 +26,7 @@ public class EventTest {
         Location location = new Location();
         location.setId(1);
 
-        event.setLocation_id(location);
+        event.setLocation(location);
 
 
         assertEquals(1,event.getId());
@@ -36,7 +36,7 @@ public class EventTest {
         assertEquals(date,event.getDate());
         assertEquals(75.0,event.getCost());
         assertEquals(2,event.getDuration());
-        assertEquals(location,event.getLocation_id());
+        assertEquals(location,event.getLocation());
 
 
     }

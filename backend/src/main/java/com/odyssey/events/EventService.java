@@ -94,8 +94,8 @@ public class EventService {
             changes = true;
         }
 
-        if(eventUpdateRequest.location_id()!=null && !eventUpdateRequest.location_id().equals(event.getLocation_id())){
-            event.setLocation_id(location);
+        if(eventUpdateRequest.location_id() != null && !eventUpdateRequest.location_id().equals(event.getLocation().getId())){
+            event.setLocation(location);
             changes = true;
         }
 
