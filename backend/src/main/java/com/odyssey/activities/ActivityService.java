@@ -45,7 +45,6 @@ public class ActivityService {
                 .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.locationId())));
 
         Activity activity = new Activity(
-                null, // Assuming ID is auto-generated.
                 request.name(),
                 request.description(),
                 request.cost(),
@@ -94,6 +93,7 @@ public class ActivityService {
         }
         if (request.locationId() != null && !request.locationId().equals(existingActivity.getLocation().getId())) {
             existingActivity.setLocation(location);
+            changes = true;
         }
 
         if (!changes) {
