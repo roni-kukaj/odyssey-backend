@@ -1,8 +1,12 @@
 package com.odyssey.journey;
+
 import com.github.javafaker.Faker;
 import com.odyssey.activities.Activity;
 import com.odyssey.activities.ActivityRegistrationRequest;
 import com.odyssey.activities.ActivityUpdateRequest;
+import com.odyssey.hotels.Hotel;
+import com.odyssey.hotels.HotelRegistrationRequest;
+import com.odyssey.hotels.HotelUpdateRequest;
 import com.odyssey.locations.Location;
 import com.odyssey.locations.LocationRegistrationRequest;
 import com.odyssey.locations.LocationUpdateRequest;
@@ -21,13 +25,12 @@ import java.util.Random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ActivityIntegrationTest {
+public class HotelIntegrationTest {
     @Autowired
     private WebTestClient webTestClient;
 
     private static final Random RANDOM = new Random();
-
-    private static final String ACTIVITY_URI = "/api/v1/activities";
+    private static final String HOTEL_URI = "/api/v1/hotels";
     private static final String LOCATION_URI = "/api/v1/locations";
 
     private Location setUpLocation() {
@@ -67,117 +70,116 @@ public class ActivityIntegrationTest {
     }
 
     @Test
-    void canRegisterAnActivity() {
+    void canRegisterAHotel() {
         Faker faker = new Faker();
         String name = faker.name().fullName();
-        String desc = faker.name().fullName();
-        Integer cost = RANDOM.nextInt(1, 100);
-        Integer duration = RANDOM.nextInt(1, 100);
         Location location = setUpLocation();
-
-        ActivityRegistrationRequest request = new ActivityRegistrationRequest(
-                name, desc, cost, duration, location.getId()
+        Double rating = (double) Math.round(RANDOM.nextDouble(1.0, 3.0));
+        String link = name;
+        HotelRegistrationRequest request = new HotelRegistrationRequest(
+            name, location.getId(), rating, link
         );
+
         webTestClient.post()
-                .uri(ACTIVITY_URI)
+                .uri(HOTEL_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), ActivityRegistrationRequest.class)
+                .body(Mono.just(request), HotelRegistrationRequest.class)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
-        List<Activity> allActivities = webTestClient.get()
-                .uri(ACTIVITY_URI)
+        List<Hotel> allHotels = webTestClient.get()
+                .uri(HOTEL_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(new ParameterizedTypeReference<Activity>() {})
+                .expectBodyList(new ParameterizedTypeReference<Hotel>() {})
                 .returnResult()
                 .getResponseBody();
 
-        Activity expectedActivity = new Activity(
-                name, desc, cost, duration, location
+        Hotel expectedHotel = new Hotel(
+                name, location, rating, link
         );
 
-        assertThat(allActivities)
+        assertThat(allHotels)
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                .contains(expectedActivity);
+                .contains(expectedHotel);
 
-        int id = allActivities.stream()
-                .filter(activity -> activity.getName().equals(name) && activity.getLocation().equals(location))
-                .map(Activity::getId)
+        int id = allHotels.stream()
+                .filter(hotel -> hotel.getName().equals(name) && hotel.getLocation().equals(location))
+                .map(Hotel::getId)
                 .findFirst()
                 .orElseThrow();
 
-        expectedActivity.setId(id);
+        expectedHotel.setId(id);
 
         webTestClient.get()
-                .uri(ACTIVITY_URI + "/{id}", id)
+                .uri(HOTEL_URI + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(new ParameterizedTypeReference<Activity>() {})
-                .isEqualTo(expectedActivity);
+                .expectBody(new ParameterizedTypeReference<Hotel>() {})
+                .isEqualTo(expectedHotel);
 
     }
 
     @Test
-    void canDeleteActivity() {
+    void canDeleteHotel() {
         Faker faker = new Faker();
         String name = faker.name().fullName();
-        String desc = faker.name().fullName();
-        Integer cost = RANDOM.nextInt(1, 100);
-        Integer duration = RANDOM.nextInt(1, 100);
         Location location = setUpLocation();
+        Double rating = (double) Math.round(RANDOM.nextDouble(1.0, 3.0));
+        String link = name;
 
-        ActivityRegistrationRequest request = new ActivityRegistrationRequest(
-                name, desc, cost, duration, location.getId()
+        HotelRegistrationRequest request = new HotelRegistrationRequest(
+                name, location.getId(), rating, link
         );
+
         webTestClient.post()
-                .uri(ACTIVITY_URI)
+                .uri(HOTEL_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), ActivityRegistrationRequest.class)
+                .body(Mono.just(request), HotelRegistrationRequest.class)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
-        List<Activity> allActivities = webTestClient.get()
-                .uri(ACTIVITY_URI)
+        List<Hotel> allHotels = webTestClient.get()
+                .uri(HOTEL_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(new ParameterizedTypeReference<Activity>() {})
+                .expectBodyList(new ParameterizedTypeReference<Hotel>() {})
                 .returnResult()
                 .getResponseBody();
 
-        Activity expectedActivity = new Activity(
-                name, desc, cost, duration, location
+        Hotel expectedHotel = new Hotel(
+                name, location, rating, link
         );
 
-        assertThat(allActivities)
+        assertThat(allHotels)
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                .contains(expectedActivity);
+                .contains(expectedHotel);
 
-        int id = allActivities.stream()
-                .filter(activity -> activity.getName().equals(name) && activity.getLocation().equals(location))
-                .map(Activity::getId)
+        int id = allHotels.stream()
+                .filter(hotel -> hotel.getName().equals(name) && hotel.getLocation().equals(location))
+                .map(Hotel::getId)
                 .findFirst()
                 .orElseThrow();
 
         webTestClient.delete()
-                .uri(ACTIVITY_URI + "/{id}", id)
+                .uri(HOTEL_URI + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
         webTestClient.get()
-                .uri(ACTIVITY_URI + "/{id}", id)
+                .uri(HOTEL_URI + "/{id}", id)
                 .accept()
                 .exchange()
                 .expectStatus()
@@ -185,75 +187,77 @@ public class ActivityIntegrationTest {
     }
 
     @Test
-    void canUpdateActivityAllFields() {
+    void canUpdateHotelAllFields() {
         Faker faker = new Faker();
         String name = faker.name().fullName();
-        String desc = faker.name().fullName();
-        Integer cost = RANDOM.nextInt(1, 100);
-        Integer duration = RANDOM.nextInt(1, 100);
         Location location = setUpLocation();
+        Double rating = 3.1;
+        String link = name;
 
-        ActivityRegistrationRequest request = new ActivityRegistrationRequest(
-                name, desc, cost, duration, location.getId()
+        HotelRegistrationRequest request = new HotelRegistrationRequest(
+                name, location.getId(), rating, link
         );
+
         webTestClient.post()
-                .uri(ACTIVITY_URI)
+                .uri(HOTEL_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), ActivityRegistrationRequest.class)
+                .body(Mono.just(request), HotelRegistrationRequest.class)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
-        List<Activity> allActivities = webTestClient.get()
-                .uri(ACTIVITY_URI)
+        List<Hotel> allHotels = webTestClient.get()
+                .uri(HOTEL_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(new ParameterizedTypeReference<Activity>() {})
+                .expectBodyList(new ParameterizedTypeReference<Hotel>() {})
                 .returnResult()
                 .getResponseBody();
 
-
-        int id = allActivities.stream()
-                .filter(activity -> activity.getName().equals(name) && activity.getLocation().equals(location))
-                .map(Activity::getId)
+        int id = allHotels.stream()
+                .filter(hotel -> hotel.getName().equals(name) && hotel.getLocation().equals(location))
+                .map(Hotel::getId)
                 .findFirst()
                 .orElseThrow();
 
         Faker faker2 = new Faker();
-        String name2 = faker.name().fullName();
-        String desc2 = faker.name().fullName();
-        Integer cost2 = RANDOM.nextInt(1, 100);
-        Integer duration2 = RANDOM.nextInt(1, 100);
+        String name2 = faker2.name().fullName();
         Location location2 = setUpLocation();
-        ActivityUpdateRequest updateRequest = new ActivityUpdateRequest(
-                name2, desc2, cost2, duration2, location2.getId()
+        Double rating2 = 3.3;
+        String link2 = name;
+        HotelUpdateRequest updateRequest = new HotelUpdateRequest (
+                name2, location2.getId(), rating2, link2
         );
 
         webTestClient.put()
-                .uri(ACTIVITY_URI + "/{id}", id)
+                .uri(HOTEL_URI + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(updateRequest), ActivityUpdateRequest.class)
+                .body(Mono.just(updateRequest), HotelUpdateRequest.class)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
-        Activity updatedActivity = webTestClient.get()
-                .uri(ACTIVITY_URI + "/{id}", id)
+        Hotel updatedHotel = webTestClient.get()
+                .uri(HOTEL_URI + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(Activity.class)
+                .expectBody(Hotel.class)
                 .returnResult()
                 .getResponseBody();
 
-        Activity expected = new Activity(
-                id, name2, desc2, cost2, duration2, location2
+        Hotel expected = new Hotel (
+                id, name2, location2, rating2, link2
         );
-        assertThat(updatedActivity).isEqualTo(expected);
+        assertThat(updatedHotel).isEqualTo(expected);
+
     }
+
+
+
 }
