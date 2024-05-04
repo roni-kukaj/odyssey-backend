@@ -1,6 +1,5 @@
 package com.odyssey.activities;
 
-import com.odyssey.user.User;
 
 import java.util.List;
 import java.util.Optional;
