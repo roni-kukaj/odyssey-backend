@@ -1,4 +1,3 @@
-
 CREATE TABLE locations(
 	id BIGSERIAL PRIMARY KEY,
 	city TEXT NOT NULL,
@@ -56,10 +55,10 @@ CREATE TABLE events(
 
 CREATE TABLE followers(
 	id BIGSERIAL PRIMARY KEY,
-	user_id BIGINT NOT NULL,
 	follower_id BIGINT NOT NULL,
-	CONSTRAINT followers_user_fk FOREIGN KEY(user_id) REFERENCES users(id),
-	CONSTRAINT followers_follower_fk FOREIGN KEY(follower_id) REFERENCES users(id)
+	following_id BIGINT NOT NULL,
+	CONSTRAINT followers_follower_fk FOREIGN KEY(follower_id) REFERENCES users(id),
+	CONSTRAINT followers_following_fk FOREIGN KEY(following_id) REFERENCES users(id)
 
 );
 
@@ -88,9 +87,9 @@ CREATE TABLE reviews(
 	description TEXT NOT NULL,
 	rating BIGINT NOT NULL,
 	user_id BIGINT NOT NULL,
-	locations_id INTEGER NOT NULL,
+	location_id INTEGER NOT NULL,
 	CONSTRAINT reviews_user_fk FOREIGN KEY(user_id) REFERENCES users(id),
-	CONSTRAINT reviews_location_fk FOREIGN KEY(locations_id) REFERENCES locations(id)
+	CONSTRAINT reviews_location_fk FOREIGN KEY(location_id) REFERENCES locations(id)
 
 );
 
@@ -173,7 +172,7 @@ CREATE TABLE trip_event_list(
 	trip_id BIGINT NOT NULL,
 	event_id BIGINT NOT NULL,
 	planned_date DATE NOT NULL,
-	visit_order SERIAL NOT NULL,
+	visit_order INTEGER NOT NULL,
 	CONSTRAINT trip_event_list_trips_fk FOREIGN KEY(trip_id) REFERENCES trips(id),
 	CONSTRAINT trip_event_list_events_fk FOREIGN KEY(event_id) REFERENCES events(id)
 );
@@ -183,7 +182,7 @@ CREATE TABLE trip_place_list(
 	trip_id BIGINT NOT NULL,
 	location_id BIGINT NOT NULL,
 	planned_date DATE NOT NULL,
-	visit_order SERIAL NOT NULL,
+	visit_order INTEGER NOT NULL,
 	CONSTRAINT trip_place_list_trips_fk FOREIGN KEY(trip_id) REFERENCES trips(id),
 	CONSTRAINT trip_place_list_locations_fk FOREIGN KEY(location_id) REFERENCES locations(id)
 );

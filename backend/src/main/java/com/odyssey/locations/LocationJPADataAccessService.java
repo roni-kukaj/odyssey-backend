@@ -26,7 +26,8 @@ public class LocationJPADataAccessService implements LocationDao {
     }
 
     @Override
-    public void insertLocation(Location location){locationRepository.save(location);
+    public void insertLocation(Location location){
+        locationRepository.save(location);
     }
 
     @Override
