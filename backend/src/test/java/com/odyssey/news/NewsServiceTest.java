@@ -55,13 +55,13 @@ public class NewsServiceTest {
     @Test
     void getNewsByAuthorId() {
         User author = new User();
-        int author_id = 2;
-        author.setId(author_id);
+        int authorId = 2;
+        author.setId(authorId);
 
-        when(authorDao.existsUserById(author_id)).thenReturn(false);
-        assertThatThrownBy(()-> underTest.getNewsByAuthorId(author_id))
+        when(authorDao.existsUserById(authorId)).thenReturn(false);
+        assertThatThrownBy(()-> underTest.getNewsByAuthorId(authorId))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Author with id [%s] not found".formatted(author_id));
+                .hasMessage("author with id [%s] not found".formatted(authorId));
 
         verify(newsDao,never()).insertNews(any());
     }
@@ -73,25 +73,25 @@ public class NewsServiceTest {
 
         assertThatThrownBy(()->underTest.getNews(id))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("News with id [%s] not found".formatted(id));
+                .hasMessage("news with id [%s] not found".formatted(id));
     }
 
     @Test
     void addNews() {
         User author = new User();
-        int author_id = 3;
-        author.setId(author_id);
+        int authorId = 3;
+        author.setId(authorId);
 
         String title = "News title";
         String description = "News description";
-       String picture = "News picture";
+        String picture = "News picture";
 
         NewsRegistrationRequest newsRegistrationRequest = new NewsRegistrationRequest(
-                author_id,title,description,picture
+                authorId,title,description,picture
         );
 
-        when(authorDao.selectUserById(author_id)).thenReturn(Optional.of(author));
-        when(newsDao.existsNewsByTitleAndAuthorId(title,author_id)).thenReturn(false);
+        when(authorDao.selectUserById(authorId)).thenReturn(Optional.of(author));
+        when(newsDao.existsNewsByTitleAndAuthorId(title,authorId)).thenReturn(false);
 
         underTest.addNews(newsRegistrationRequest);
 
@@ -101,7 +101,7 @@ public class NewsServiceTest {
         News capturedNews = newsArgumentCaptor.getValue();
 
         Assertions.assertThat(capturedNews.getId()).isNull();
-        Assertions.assertThat(capturedNews.getAuthor().getId()).isEqualTo(newsRegistrationRequest.author_id());
+        Assertions.assertThat(capturedNews.getAuthor().getId()).isEqualTo(newsRegistrationRequest.authorId());
         Assertions.assertThat(capturedNews.getTitle()).isEqualTo(newsRegistrationRequest.title());
         Assertions.assertThat(capturedNews.getDescription()).isEqualTo(newsRegistrationRequest.description());
         Assertions.assertThat(capturedNews.getPicture()).isEqualTo(newsRegistrationRequest.picture());
@@ -113,20 +113,20 @@ public class NewsServiceTest {
     @Test
     void willThrowWhenAuthorNotExists() {
         User author = new User();
-        int author_id = 1;
-        author.setId(author_id);
+        int authorId = 1;
+        author.setId(authorId);
         String title = "News title";
         String description = "Description";
         String picture = "Picture 2";
         NewsRegistrationRequest newsRegistrationRequest = new NewsRegistrationRequest(
-                author_id,title,description,picture
+                authorId,title,description,picture
         );
 
-        when(authorDao.selectUserById(author_id)).thenReturn(Optional.empty());
-        lenient().when(newsDao.existsNewsByTitleAndAuthorId(title,author_id)).thenReturn(false);
+        when(authorDao.selectUserById(authorId)).thenReturn(Optional.empty());
+        lenient().when(newsDao.existsNewsByTitleAndAuthorId(title,authorId)).thenReturn(false);
         assertThatThrownBy(()->underTest.addNews(newsRegistrationRequest))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Author with id [%s] not found".formatted(author_id));
+                .hasMessage("author with id [%s] not found".formatted(authorId));
 
         verify(newsDao,never()).insertNews(any());
     }
@@ -148,7 +148,7 @@ public class NewsServiceTest {
 
         Assertions.assertThatThrownBy(()-> underTest.deleteNews(id))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("News with id [%s] not found".formatted(id));
+                .hasMessage("news with id [%s] not found".formatted(id));
 
         verify(newsDao,never()).deleteNewsById(any());
     }
@@ -182,12 +182,11 @@ public class NewsServiceTest {
         News capturedNews = newsArgumentCaptor.getValue();
 
         Assertions.assertThat(capturedNews.getId()).isNull();
-        Assertions.assertThat(capturedNews.getAuthor().getId()).isEqualTo(newsUpdateRequest.author_id());
+        Assertions.assertThat(capturedNews.getAuthor().getId()).isEqualTo(newsUpdateRequest.authorId());
         Assertions.assertThat(capturedNews.getTitle()).isEqualTo(newsUpdateRequest.title());
         Assertions.assertThat(capturedNews.getDescription()).isEqualTo(newsUpdateRequest.description());
         Assertions.assertThat(capturedNews.getPicture()).isEqualTo(newsUpdateRequest.picture());
     }
-
 
     @Test
     void willThrowNewsNoDataChanes() {
@@ -198,7 +197,7 @@ public class NewsServiceTest {
         when(newsDao.selectNewsById(id)).thenReturn(Optional.of(news));
         NewsUpdateRequest newsUpdateRequest = new NewsUpdateRequest(news.getAuthor().getId(),news.getTitle(),news.getDescription(), news.getPicture());
         when(authorDao.selectUserById(author.getId())).thenReturn(Optional.of(author));
-        when(newsDao.existsNewsByTitleAndAuthorId(newsUpdateRequest.title(),newsUpdateRequest.author_id())).thenReturn(false);
+        when(newsDao.existsNewsByTitleAndAuthorId(newsUpdateRequest.title(),newsUpdateRequest.authorId())).thenReturn(false);
         assertThatThrownBy(()->underTest.updateNews(id,newsUpdateRequest))
                 .isInstanceOf(RequestValidationException.class)
                 .hasMessage("no changes were found");

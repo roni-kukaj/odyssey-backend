@@ -32,38 +32,38 @@ public class ReviewService {
 
     public Review getReview(Integer id){
         return reviewDao.selectReviewById(id).
-                orElseThrow(()-> new ResourceNotFoundException("Review with id [%s] not found".formatted(id)));
+                orElseThrow(()-> new ResourceNotFoundException("review with id [%s] not found".formatted(id)));
 
     }
 
-    public List<Review> getReviewByUserId(Integer user_id){
-        if(!userDao.existsUserById(user_id)){
-            throw new ResourceNotFoundException("User with id [%s] not found".formatted(user_id));
+    public List<Review> getReviewByUserId(Integer userId){
+        if(!userDao.existsUserById(userId)){
+            throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
 
         }
-        return reviewDao.selectReviewByUserId(user_id);
+        return reviewDao.selectReviewByUserId(userId);
     }
 
-    public List<Review>getReviewByLocationId(Integer location_id){
-        if(!locationDao.existsLocationById(location_id)){
-            throw new ResourceNotFoundException("Location with id [%s] not found".formatted(location_id));
+    public List<Review>getReviewByLocationId(Integer locationId){
+        if(!locationDao.existsLocationById(locationId)){
+            throw new ResourceNotFoundException("location with id [%s] not found".formatted(locationId));
         }
-        return reviewDao.selectReviewByLocationId(location_id);
+        return reviewDao.selectReviewByLocationId(locationId);
     }
 
     public void addReview(ReviewRegistrationRequest reviewRegisterRequest){
-       if(reviewDao.existsReviewByUserAndLocationId(reviewRegisterRequest.user_id(),reviewRegisterRequest.location_id())){
-           throw new DuplicateResourceException("Review already exists");
+       if(reviewDao.existsReviewByUserAndLocationId(reviewRegisterRequest.userId(),reviewRegisterRequest.locationId())){
+           throw new DuplicateResourceException("review already exists");
        }
-        Location location = locationDao.selectLocationById(reviewRegisterRequest.location_id())
-                .orElseThrow(()->new ResourceNotFoundException("Location with id [%s] not found".formatted(reviewRegisterRequest.location_id())));
+        Location location = locationDao.selectLocationById(reviewRegisterRequest.locationId())
+                .orElseThrow(()->new ResourceNotFoundException("location with id [%s] not found".formatted(reviewRegisterRequest.locationId())));
 
-       User user = userDao.selectUserById(reviewRegisterRequest.user_id())
-               .orElseThrow(()-> new ResourceNotFoundException("User with id [%s] not found".formatted(reviewRegisterRequest.user_id())));
+       User user = userDao.selectUserById(reviewRegisterRequest.userId())
+               .orElseThrow(()-> new ResourceNotFoundException("user with id [%s] not found".formatted(reviewRegisterRequest.userId())));
 
 
 
-       Review review = new Review(reviewRegisterRequest.description(),reviewRegisterRequest.rating(),user,location);
+       Review review = new Review(reviewRegisterRequest.description(), reviewRegisterRequest.rating(), user, location);
 
        reviewDao.insertReview(review);
     }
@@ -74,7 +74,7 @@ public class ReviewService {
             reviewDao.deleteReviewById(id);
         }
         else {
-            throw new ResourceNotFoundException("Review with id [%s] not found".formatted(id));
+            throw new ResourceNotFoundException("review with id [%s] not found".formatted(id));
         }
         return false;
     }
@@ -83,35 +83,35 @@ public class ReviewService {
     public boolean updateReview(Integer id, ReviewUpdateRequest reviewUpdateRequest){
         Review existingReview = getReview(id);
 
-        if(reviewDao.existsReviewByUserAndLocationId(reviewUpdateRequest.user_id(),reviewUpdateRequest.location_id())){
-            throw new DuplicateResourceException("Review already exists");
+        if(reviewDao.existsReviewByUserAndLocationId(reviewUpdateRequest.userId(),reviewUpdateRequest.locationId())){
+            throw new DuplicateResourceException("review already exists");
         }
 
-        User user = userDao.selectUserById(reviewUpdateRequest.user_id()).orElseThrow(
-                ()-> new ResourceNotFoundException("User with id [%s] not found".formatted(reviewUpdateRequest.user_id()))
+        User user = userDao.selectUserById(reviewUpdateRequest.userId()).orElseThrow(
+                ()-> new ResourceNotFoundException("user with id [%s] not found".formatted(reviewUpdateRequest.userId()))
         );
 
-       Location location = locationDao.selectLocationById(reviewUpdateRequest.location_id()).orElseThrow(
-               ()-> new ResourceNotFoundException("Location with id [%s] not found".formatted(reviewUpdateRequest.location_id()))
+       Location location = locationDao.selectLocationById(reviewUpdateRequest.locationId()).orElseThrow(
+               ()-> new ResourceNotFoundException("location with id [%s] not found".formatted(reviewUpdateRequest.locationId()))
        );
 
         boolean changes = false;
 
-        if(reviewUpdateRequest.description()!=null && !reviewUpdateRequest.description().equals(existingReview.getDescription())){
+        if(reviewUpdateRequest.description() != null && !reviewUpdateRequest.description().equals(existingReview.getDescription())){
             existingReview.setDescription(reviewUpdateRequest.description());
             changes = true;
         }
-        if(reviewUpdateRequest.rating()!=null && !reviewUpdateRequest.rating().equals(existingReview.getRating())){
+        if(reviewUpdateRequest.rating() != null && !reviewUpdateRequest.rating().equals(existingReview.getRating())){
             existingReview.setRating(reviewUpdateRequest.rating());
             changes = true;
         }
 
-        if(reviewUpdateRequest.user_id()!=null && !reviewUpdateRequest.user_id().equals(existingReview.getUser().getId())){
+        if(reviewUpdateRequest.userId() != null && !reviewUpdateRequest.userId().equals(existingReview.getUser().getId())){
             existingReview.setUser(user);
             changes = true;
         }
 
-        if(reviewUpdateRequest.location_id()!=null && !reviewUpdateRequest.location_id().equals(existingReview.getLocation().getId())){
+        if(reviewUpdateRequest.locationId() != null && !reviewUpdateRequest.locationId().equals(existingReview.getLocation().getId())){
             existingReview.setLocation(location);
             changes = true;
         }

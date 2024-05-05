@@ -45,12 +45,12 @@ public class ReviewIntegrationTest {
         String password = "1234";
         String avatar = "avatar";
         Role role = new Role();
-        int roleid = 1;
-        role.setId(roleid);
+        int roleId = 1;
+        role.setId(roleId);
         role.setName("user");
 
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest(
-                name,username,email,password,avatar,roleid
+                name, username, email, password, avatar, roleId
         );
 
         webTestClient.post()
@@ -77,7 +77,7 @@ public class ReviewIntegrationTest {
                 .map(User::getId)
                 .findFirst()
                 .orElseThrow();
-        return new User(id, name,username,email,password,avatar,role);
+        return new User(id, name, username, email, password, avatar, role);
     }
 
     private Location setUpLocation() {
@@ -125,7 +125,7 @@ public class ReviewIntegrationTest {
         Location location = setUpLocation();
 
         ReviewRegistrationRequest reviewRegistrationRequest = new ReviewRegistrationRequest(
-                description,rating, user.getId(), location.getId()
+                description, rating, user.getId(), location.getId()
         );
 
         webTestClient.post()
@@ -163,9 +163,6 @@ public class ReviewIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(new ParameterizedTypeReference<Review>() {})
                 .isEqualTo(expectedReview);
-
-
-
     }
 
     @Test
@@ -173,7 +170,7 @@ public class ReviewIntegrationTest {
         Faker faker = new Faker();
         String desc = faker.name().fullName();
         Integer rating = RANDOM.nextInt(1, 5);
-       User user = setUpUser();
+        User user = setUpUser();
         Location location = setUpLocation();
 
         ReviewRegistrationRequest request = new ReviewRegistrationRequest(
@@ -225,8 +222,6 @@ public class ReviewIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .isNotFound();
-
-
     }
 
 
@@ -239,7 +234,7 @@ public class ReviewIntegrationTest {
         Location location = setUpLocation();
 
         ReviewRegistrationRequest request = new ReviewRegistrationRequest(
-                desc, rating, user.getId(),  location.getId()
+                desc, rating, user.getId(), location.getId()
         );
         webTestClient.post()
                 .uri(REVIEW_URI)
@@ -260,7 +255,6 @@ public class ReviewIntegrationTest {
                 .returnResult()
                 .getResponseBody();
 
-
         int id = allReviews.stream()
                 .filter(review -> review.getDescription().equals(desc) && review.getRating().equals(rating))
                 .map(Review::getId)
@@ -268,7 +262,7 @@ public class ReviewIntegrationTest {
                 .orElseThrow();
 
         Faker faker2 = new Faker();
-        String desc2 = faker.name().fullName();
+        String desc2 = faker2.name().fullName();
         Integer rating2 = RANDOM.nextInt(1, 5);
         User user2 = setUpUser();
         Location location2 = setUpLocation();
@@ -296,7 +290,7 @@ public class ReviewIntegrationTest {
                 .getResponseBody();
 
         Review expected = new Review(
-                id,desc2, rating2, user2, location2
+                id, desc2, rating2, user2, location2
         );
         Assertions.assertThat(updatedReview).isEqualTo(expected);
     }

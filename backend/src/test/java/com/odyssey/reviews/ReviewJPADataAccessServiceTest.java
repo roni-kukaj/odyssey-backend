@@ -25,8 +25,6 @@ public class ReviewJPADataAccessServiceTest {
         reviewJPADataAccessService = new ReviewJPADataAccessService(reviewRepository);
     }
 
-
-
     @AfterEach
     void tearDown() throws Exception{
         autoCloseable.close();
@@ -94,7 +92,7 @@ public class ReviewJPADataAccessServiceTest {
         int user_id = 1;
         int location_id = 1;
         reviewJPADataAccessService.existsReviewByUserAndLocationId(user_id,location_id);
-        verify(reviewRepository).existsReviewByUserAndLocationId(user_id,location_id);
+        verify(reviewRepository).existsReviewByUserIdAndLocationId(user_id,location_id);
     }
 
 

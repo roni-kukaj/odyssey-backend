@@ -39,12 +39,12 @@ public class NewsIntegrationTest {
         String password = "1234";
         String avatar = "avatar";
         Role role = new Role();
-        int roleid = 2;
-        role.setId(roleid);
+        int roleId = 2;
+        role.setId(roleId);
         role.setName("admin");
 
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest(
-                name,username,email,password,avatar,roleid
+                name, username, email, password, avatar, roleId
         );
         webTestClient.post()
                 .uri(AUTHOR_URI)
@@ -69,7 +69,7 @@ public class NewsIntegrationTest {
                 .map(User::getId)
                 .findFirst()
                 .orElseThrow();
-        return new User(id,name,username,email,password,avatar,role);
+        return new User(id, name, username, email, password, avatar, role);
     }
 
 
@@ -82,7 +82,7 @@ public class NewsIntegrationTest {
         User author = setUpUser();
 
         NewsRegistrationRequest newsRegistrationRequest = new NewsRegistrationRequest(
-               author.getId(),title,description,picture
+               author.getId(), title, description, picture
         );
 
         webTestClient.post()
@@ -105,7 +105,7 @@ public class NewsIntegrationTest {
                 .getResponseBody();
 
         News expectedNews = new News(
-                author,title,description,picture
+                author, title, description, picture
         );
 
         assertThat(allNews)
@@ -139,7 +139,7 @@ public class NewsIntegrationTest {
         User author = setUpUser();
 
         NewsRegistrationRequest newsRegistrationRequest = new NewsRegistrationRequest(
-                author.getId(),title,description,picture
+                author.getId(), title, description, picture
         );
 
 
@@ -163,7 +163,7 @@ public class NewsIntegrationTest {
                 .getResponseBody();
 
         News expectedNews = new News(
-                author,title,description,picture
+                author, title, description, picture
         );
 
         assertThat(allNews)
@@ -175,8 +175,6 @@ public class NewsIntegrationTest {
                 .map(News::getId)
                 .findFirst()
                 .orElseThrow();
-
-
 
         webTestClient.delete()
                 .uri(NEWS_URI + "/{id}", id)
@@ -202,9 +200,8 @@ public class NewsIntegrationTest {
         User author = setUpUser();
 
         NewsRegistrationRequest newsRegistrationRequest = new NewsRegistrationRequest(
-                author.getId(),title,description,picture
+                author.getId(), title, description, picture
         );
-
 
         webTestClient.post()
                 .uri(NEWS_URI)
@@ -232,12 +229,12 @@ public class NewsIntegrationTest {
                 .orElseThrow();
 
         Faker faker2 = new Faker();
-        String title2 = faker.name().fullName();
-        String description2 = faker.name().fullName();
+        String title2 = faker2.name().fullName();
+        String description2 = faker2.name().fullName();
         String picture2 = "picture 2";
         User author2 = setUpUser();
         NewsUpdateRequest newsUpdateRequest = new NewsUpdateRequest (
-                author2.getId(),title2,description2,picture2
+                author2.getId(), title2, description2, picture2
         );
 
         webTestClient.put()
@@ -260,10 +257,8 @@ public class NewsIntegrationTest {
                 .getResponseBody();
 
         News expected = new News (
-                id,author2,title2,description2,picture2
+                id, author2, title2, description2, picture2
         );
         assertThat(updatedNews).isEqualTo(expected);
-
     }
-    }
-
+}

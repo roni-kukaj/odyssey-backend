@@ -62,19 +62,16 @@ public class RecommendationServiceTest {
         assertThat(recommendation1).isEqualTo(recommendation);
     }
 
-
-
-
     @Test
     void getRecommendationByActivityId() {
         Activity activity = new Activity();
-        Integer activityid = 2;
-        activity.setId(activityid);
-        when(activityDao.existsActivityById(activityid)).thenReturn(false);
+        Integer activityId = 2;
+        activity.setId(activityId);
+        when(activityDao.existsActivityById(activityId)).thenReturn(false);
 
-        assertThatThrownBy(()->underTest.getRecommendationByActivityId(activityid))
+        assertThatThrownBy( () -> underTest.getRecommendationByActivityId(activityId) )
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Activity with id [%s] not found".formatted(activityid));
+                .hasMessage("activity with id [%s] not found".formatted(activityId));
 
         verify(recommendationDao,never()).insertRecommendation(any());
     }
@@ -82,14 +79,14 @@ public class RecommendationServiceTest {
     @Test
     void getRecommendationByUserId() {
         User user = new User();
-        Integer userid = 2;
-        user.setId(userid);
+        Integer userId = 2;
+        user.setId(userId);
 
-        when(userDao.existsUserById(userid)).thenReturn(false);
+        when(userDao.existsUserById(userId)).thenReturn(false);
 
-        assertThatThrownBy(()->underTest.getRecommendationByUserId(userid))
+        assertThatThrownBy( ()->underTest.getRecommendationByUserId(userId) )
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("User with id [%s] not found".formatted(userid));
+                .hasMessage("user with id [%s] not found".formatted(userId));
 
         verify(recommendationDao,never()).insertRecommendation(any());
     }
@@ -100,9 +97,9 @@ public class RecommendationServiceTest {
         int id = 10;
         when(recommendationDao.selectRecommendationById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(()->underTest.getRecommendation(id))
+        assertThatThrownBy( () -> underTest.getRecommendation(id) )
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Recommendation with id [%s] not found ".formatted(id));
+                .hasMessage("recommendation with id [%s] not found ".formatted(id));
     }
 
 
@@ -112,22 +109,22 @@ public class RecommendationServiceTest {
         User user = new User();
         Activity activity = new Activity();
 
-        int userid = 3;
-        int activityid = 3;
+        int userId = 3;
+        int activityId = 3;
 
-        user.setId(userid);
-        activity.setId(activityid);
+        user.setId(userId);
+        activity.setId(activityId);
 
         String description = "This place offers cultural experiences";
 
         RecommendationRegistrationRequest recommendationRegistrationRequest = new RecommendationRegistrationRequest(
-                description,userid,activityid
+                description, userId, activityId
         );
 
-        when(userDao.selectUserById(userid)).thenReturn(Optional.of(user));
-        when(activityDao.selectActivityById(activityid)).thenReturn(Optional.of(activity));
+        when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
+        when(activityDao.selectActivityById(activityId)).thenReturn(Optional.of(activity));
 
-        when(recommendationDao.existsRecommendationByUserIdAndActivityId(userid,activityid)).thenReturn(false);
+        when(recommendationDao.existsRecommendationByUserIdAndActivityId(userId, activityId)).thenReturn(false);
 
         underTest.addRecommendation(recommendationRegistrationRequest);
 
@@ -138,8 +135,8 @@ public class RecommendationServiceTest {
 
         assertThat(capturedRecommendation.getId()).isNull();
         assertThat(capturedRecommendation.getDescription()).isEqualTo(recommendationRegistrationRequest.description());
-        assertThat(capturedRecommendation.getUser().getId()).isEqualTo(recommendationRegistrationRequest.user_id());
-        assertThat(capturedRecommendation.getActivity().getId()).isEqualTo(recommendationRegistrationRequest.activity_id());
+        assertThat(capturedRecommendation.getUser().getId()).isEqualTo(recommendationRegistrationRequest.userId());
+        assertThat(capturedRecommendation.getActivity().getId()).isEqualTo(recommendationRegistrationRequest.activityId());
 
     }
 
@@ -148,22 +145,22 @@ public class RecommendationServiceTest {
     void willThrowAddRecommendationUserNotExists() {
         User user = new User();
         Activity activity = new Activity();
-        int userid = 3;
-        int activityid = 3;
-        user.setId(userid);
-        activity.setId(activityid);
+        int userId = 3;
+        int activityId = 3;
+        user.setId(userId);
+        activity.setId(activityId);
         String description = "A must - vist destination for any traveler seeking unforgettable memories";
 
         RecommendationRegistrationRequest recommendationRegistrationRequest = new RecommendationRegistrationRequest(
-                description,userid,activityid
+                description, userId, activityId
         );
-        when(userDao.selectUserById(userid)).thenReturn(Optional.empty());
+        when(userDao.selectUserById(userId)).thenReturn(Optional.empty());
 
-        when(recommendationDao.existsRecommendationByUserIdAndActivityId(userid,activityid)).thenReturn(false);
+        when(recommendationDao.existsRecommendationByUserIdAndActivityId(userId,activityId)).thenReturn(false);
 
-        assertThatThrownBy(()->underTest.addRecommendation(recommendationRegistrationRequest))
+        assertThatThrownBy( () -> underTest.addRecommendation(recommendationRegistrationRequest) )
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("User with id [%s] not found".formatted(userid));
+                .hasMessage("user with id [%s] not found".formatted(userId));
 
         verify(recommendationDao, never()).insertRecommendation(any());
 
@@ -175,19 +172,19 @@ public class RecommendationServiceTest {
     void willThrowAddRecommendationAlreadyExists() {
         User user = new User();
         Activity activity = new Activity();
-        int userid = 2;
-        int activityid = 2;
-        user.setId(userid);
-        activity.setId(activityid);
+        int userId = 2;
+        int activityId = 2;
+        user.setId(userId);
+        activity.setId(activityId);
 
         String description = "A must - vist destination for any traveler seeking unforgettable memories";
         RecommendationRegistrationRequest recommendationRegistrationRequest = new RecommendationRegistrationRequest(
-                description, userid,activityid
+                description, userId, activityId
         );
-        lenient().when(userDao.selectUserById(userid)).thenReturn(Optional.of(user));
-        lenient().when(activityDao.selectActivityById(activityid)).thenReturn(Optional.of(activity));
+        lenient().when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
+        lenient().when(activityDao.selectActivityById(activityId)).thenReturn(Optional.of(activity));
 
-        when(recommendationDao.existsRecommendationByUserIdAndActivityId(userid,activityid)).thenReturn(true);
+        when(recommendationDao.existsRecommendationByUserIdAndActivityId(userId,activityId)).thenReturn(true);
 
         assertThatThrownBy(()->underTest.addRecommendation(recommendationRegistrationRequest))
                 .isInstanceOf(DuplicateResourceException.class)
@@ -211,7 +208,7 @@ public class RecommendationServiceTest {
         int id = 3;
         when(recommendationDao.existsRecommendationById(id)).thenReturn(false);
 
-        assertThatThrownBy(()-> underTest.deleteRecommendation(id))
+        assertThatThrownBy( () -> underTest.deleteRecommendation(id) )
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("recommendation with id [%s] not found".formatted(id));
 
@@ -230,13 +227,13 @@ public class RecommendationServiceTest {
         Recommendation recommendation = new Recommendation(description,user,activity);
         when(recommendationDao.selectRecommendationById(id)).thenReturn(Optional.of(recommendation));
 
-        String newdescription = "Must visit the palace";
+        String newDescription = "Must visit the palace";
         User user1 = new User();
         user1.setId(2);
         Activity activity1 = new Activity();
         activity1.setId(2);
 
-        RecommendationUpdateRequest recommendationUpdateRequest = new RecommendationUpdateRequest(newdescription, user1.getId(), activity1.getId());
+        RecommendationUpdateRequest recommendationUpdateRequest = new RecommendationUpdateRequest(newDescription, user1.getId(), activity1.getId());
         when(userDao.selectUserById(user1.getId())).thenReturn(Optional.of(user1));
         when(activityDao.selectActivityById(activity1.getId())).thenReturn(Optional.of(activity1));
         underTest.updateRecommendation(id,recommendationUpdateRequest);
@@ -248,8 +245,8 @@ public class RecommendationServiceTest {
 
         assertThat(capturedRecommendation.getId()).isNull();
         assertThat(capturedRecommendation.getDescription()).isEqualTo(recommendationUpdateRequest.description());
-        assertThat(capturedRecommendation.getUser().getId()).isEqualTo(recommendationUpdateRequest.user_id());
-        assertThat(capturedRecommendation.getActivity().getId()).isEqualTo(recommendationUpdateRequest.activity_id());
+        assertThat(capturedRecommendation.getUser().getId()).isEqualTo(recommendationUpdateRequest.userId());
+        assertThat(capturedRecommendation.getActivity().getId()).isEqualTo(recommendationUpdateRequest.activityId());
     }
 
     @Test
@@ -270,7 +267,7 @@ public class RecommendationServiceTest {
 
         when(userDao.selectUserById(user.getId())).thenReturn(Optional.of(user));
         when(activityDao.selectActivityById(activity.getId())).thenReturn(Optional.of(activity));
-        when(recommendationDao.existsRecommendationByUserIdAndActivityId(recommendationUpdateRequest.user_id(),recommendationUpdateRequest.activity_id())).thenReturn(false);
+        when(recommendationDao.existsRecommendationByUserIdAndActivityId(recommendationUpdateRequest.userId(),recommendationUpdateRequest.activityId())).thenReturn(false);
 
         assertThatThrownBy(() -> underTest.updateRecommendation(id, recommendationUpdateRequest))
                 .isInstanceOf(RequestValidationException.class)

@@ -26,15 +26,13 @@ public class NewsJPADataAccessService implements NewsDao{
     }
 
     @Override
-    public List<News> selectNewsByAuthorId(Integer author_id) {
-        return newsRepository.findNewsByAuthorId(author_id);
+    public List<News> selectNewsByAuthorId(Integer authorId) {
+        return newsRepository.findNewsByAuthorId(authorId);
     }
 
     @Override
     public void insertNews(News news) {
         newsRepository.save(news);
-
-
     }
 
     @Override

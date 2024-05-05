@@ -19,19 +19,19 @@ public class ReviewController {
         return reviewService.getAllReviews();
     }
 
-    @GetMapping("/{reviewid}")
-    public Review getReviewById(@PathVariable ("reviewid") Integer reviewId){
+    @GetMapping("/{reviewId}")
+    public Review getReviewById(@PathVariable ("reviewId") Integer reviewId){
         return reviewService.getReview(reviewId);
 
     }
 
-    @GetMapping("/user/{userid}")
-    public List<Review>getReviewByUserId(@PathVariable("userid") Integer userId){
+    @GetMapping("/user/{userId}")
+    public List<Review>getReviewByUserId(@PathVariable("userId") Integer userId){
         return reviewService.getReviewByUserId(userId);
     }
 
-    @GetMapping("/location/{locationid}")
-    public List<Review>getReviewByLocationId(@PathVariable("locationid") Integer locationId){
+    @GetMapping("/location/{locationId}")
+    public List<Review>getReviewByLocationId(@PathVariable("locationId") Integer locationId){
         return reviewService.getReviewByLocationId(locationId);
     }
 
@@ -40,14 +40,14 @@ public class ReviewController {
         reviewService.addReview(reviewRegistrationRequest);
     }
 
-    @DeleteMapping("/{reviewid}")
-    public void deleteReview(@PathVariable("reviewid") Integer reviewId){
+    @DeleteMapping("/{reviewId}")
+    public void deleteReview(@PathVariable("reviewId") Integer reviewId){
         reviewService.deleteReview(reviewId);
     }
 
-    @PutMapping("{reviewid}")
-    public void updateReview(@PathVariable("reviewid") Integer reviewId,
+    @PutMapping("/{reviewId}")
+    public void updateReview(@PathVariable("reviewId") Integer reviewId,
     @RequestBody ReviewUpdateRequest reviewUpdateRequest){
-        reviewService.updateReview(reviewId,reviewUpdateRequest);
+        reviewService.updateReview(reviewId, reviewUpdateRequest);
     }
 }

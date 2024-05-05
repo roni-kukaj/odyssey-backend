@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface NewsRepository extends JpaRepository<News,Integer> {
     boolean existsNewsById(Integer id);
-    boolean existsNewsByTitleAndAuthorId(String title,Integer author_id);
-    List<News> findNewsByAuthorId(Integer author_id);
+    boolean existsNewsByTitleAndAuthorId(String title,Integer authorId);
+    List<News> findNewsByAuthorId(Integer authorId);
 }

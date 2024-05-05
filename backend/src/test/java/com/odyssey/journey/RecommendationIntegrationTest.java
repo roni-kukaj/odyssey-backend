@@ -42,18 +42,18 @@ public class RecommendationIntegrationTest {
 
     private User setUpUser(){
         Faker faker = new Faker();
-
         String name = faker.name().fullName();
         String username = name;
         String email = faker.name().lastName() + "-" + UUID.randomUUID() + "@gmail.com";
         String password = "123";
         String avatar = "avatar";
         Role role = new Role();
-        int roleid = 1;
-        role.setId(roleid);
+        int roleId = 1;
+        role.setId(roleId);
+        role.setName("user");
 
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest(
-                name,username,email,password,avatar,roleid
+                name, username, email, password, avatar, roleId
         );
 
         webTestClient.post()
@@ -80,7 +80,7 @@ public class RecommendationIntegrationTest {
                 .map(User::getId)
                 .findFirst()
                 .orElseThrow();
-        return new User(id, name,username,email,password,avatar,role);
+        return new User(id, name, username, email, password, avatar, role);
     }
     private Location setUpLocation() {
         Faker faker = new Faker();
@@ -220,7 +220,6 @@ public class RecommendationIntegrationTest {
     @Test
     void canDeleteRecommendation() {
         Faker faker = new Faker();
-
         String desc = faker.name().fullName();
         User user  = setUpUser();
         Activity activity = setUpActivity();
@@ -228,6 +227,7 @@ public class RecommendationIntegrationTest {
         RecommendationRegistrationRequest request = new RecommendationRegistrationRequest(
                desc, user.getId(),activity.getId()
         );
+
         webTestClient.post()
                 .uri(RECOMMENDATION_URI)
                 .accept(MediaType.APPLICATION_JSON)
@@ -248,7 +248,7 @@ public class RecommendationIntegrationTest {
                 .getResponseBody();
 
         Recommendation expectedRecommendation = new Recommendation(
-                 desc,user,activity
+                 desc, user, activity
         );
 
         assertThat(allRecommendations)
@@ -274,7 +274,6 @@ public class RecommendationIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .isNotFound();
-
     }
 
     @Test
@@ -319,7 +318,7 @@ public class RecommendationIntegrationTest {
         User user2 = setUpUser();
         Activity activity2 = setUpActivity();
         RecommendationUpdateRequest recommendationUpdateRequest = new RecommendationUpdateRequest (
-                description2,user2.getId(),activity2.getId()
+                description2, user2.getId(), activity2.getId()
         );
 
         webTestClient.put()
@@ -342,7 +341,7 @@ public class RecommendationIntegrationTest {
                 .getResponseBody();
 
         Recommendation expected = new Recommendation (
-                id,description2,user2,activity2
+                id, description2, user2, activity2
         );
         assertThat(updatedRecommendation).isEqualTo(expected);
     }
