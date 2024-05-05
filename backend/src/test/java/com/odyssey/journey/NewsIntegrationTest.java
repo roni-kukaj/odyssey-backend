@@ -39,8 +39,9 @@ public class NewsIntegrationTest {
         String password = "1234";
         String avatar = "avatar";
         Role role = new Role();
-        int roleid = 1;
+        int roleid = 2;
         role.setId(roleid);
+        role.setName("admin");
 
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest(
                 name,username,email,password,avatar,roleid
@@ -259,7 +260,7 @@ public class NewsIntegrationTest {
                 .getResponseBody();
 
         News expected = new News (
-                author2,title2,description2,picture2
+                id,author2,title2,description2,picture2
         );
         assertThat(updatedNews).isEqualTo(expected);
 

@@ -20,7 +20,7 @@ public class News {
     private String picture;
 
     @ManyToOne
-    @JoinColumn(name="authored_id", referencedColumnName = "id")
+    @JoinColumn(name="author_id", referencedColumnName = "id")
     private User author;
 
 

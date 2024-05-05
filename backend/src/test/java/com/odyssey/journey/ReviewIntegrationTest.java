@@ -47,6 +47,7 @@ public class ReviewIntegrationTest {
         Role role = new Role();
         int roleid = 1;
         role.setId(roleid);
+        role.setName("user");
 
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest(
                 name,username,email,password,avatar,roleid

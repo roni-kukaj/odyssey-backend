@@ -8,6 +8,7 @@ import com.odyssey.locations.Location;
 import com.odyssey.locations.LocationRegistrationRequest;
 import com.odyssey.recommendations.Recommendation;
 import com.odyssey.recommendations.RecommendationRegistrationRequest;
+import com.odyssey.recommendations.RecommendationUpdateRequest;
 import com.odyssey.role.Role;
 import com.odyssey.user.User;
 import com.odyssey.user.UserRegistrationRequest;
@@ -274,5 +275,75 @@ public class RecommendationIntegrationTest {
                 .expectStatus()
                 .isNotFound();
 
+    }
+
+    @Test
+    void canUpdateRecommendation() {
+        Faker faker = new Faker();
+        String description = faker.name().fullName();
+        User user = setUpUser();
+        Activity activity = setUpActivity();
+
+        RecommendationRegistrationRequest recommendationRegistrationRequest = new RecommendationRegistrationRequest(
+               description,user.getId(),activity.getId()
+        );
+
+        webTestClient.post()
+                .uri(RECOMMENDATION_URI)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(recommendationRegistrationRequest), RecommendationRegistrationRequest.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        List<Recommendation> allRecommendations = webTestClient.get()
+                .uri(RECOMMENDATION_URI)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBodyList(new ParameterizedTypeReference<Recommendation>() {})
+                .returnResult()
+                .getResponseBody();
+
+        int id = allRecommendations.stream()
+                .filter(recommendation -> recommendation.getDescription().equals(description) && recommendation.getUser().equals(user)
+                && recommendation.getActivity().equals(activity))
+                .map(Recommendation::getId)
+                .findFirst()
+                .orElseThrow();
+
+        Faker faker2 = new Faker();
+        String description2 = faker2.name().fullName();
+        User user2 = setUpUser();
+        Activity activity2 = setUpActivity();
+        RecommendationUpdateRequest recommendationUpdateRequest = new RecommendationUpdateRequest (
+                description2,user2.getId(),activity2.getId()
+        );
+
+        webTestClient.put()
+                .uri(RECOMMENDATION_URI + "/{id}", id)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(recommendationUpdateRequest), RecommendationUpdateRequest.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        Recommendation updatedRecommendation = webTestClient.get()
+                .uri(RECOMMENDATION_URI + "/{id}", id)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(Recommendation.class)
+                .returnResult()
+                .getResponseBody();
+
+        Recommendation expected = new Recommendation (
+                id,description2,user2,activity2
+        );
+        assertThat(updatedRecommendation).isEqualTo(expected);
     }
 }
