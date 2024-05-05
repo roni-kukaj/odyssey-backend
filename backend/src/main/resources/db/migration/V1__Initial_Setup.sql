@@ -1,4 +1,3 @@
-
 CREATE TABLE locations(
 	id BIGSERIAL PRIMARY KEY,
 	city TEXT NOT NULL,
@@ -88,9 +87,9 @@ CREATE TABLE reviews(
 	description TEXT NOT NULL,
 	rating BIGINT NOT NULL,
 	user_id BIGINT NOT NULL,
-	locations_id INTEGER NOT NULL,
+	location_id INTEGER NOT NULL,
 	CONSTRAINT reviews_user_fk FOREIGN KEY(user_id) REFERENCES users(id),
-	CONSTRAINT reviews_location_fk FOREIGN KEY(locations_id) REFERENCES locations(id)
+	CONSTRAINT reviews_location_fk FOREIGN KEY(location_id) REFERENCES locations(id)
 
 );
 
