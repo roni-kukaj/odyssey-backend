@@ -1,6 +1,5 @@
 package com.odyssey.news;
 
-
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
@@ -20,7 +19,7 @@ public class NewsService {
         this.authorDao = authorDao;
     }
 
-    public List<News>getAllNews(){
+    public List<News> getAllNews(){
         return newsDao.selectAllNews();
 
     }

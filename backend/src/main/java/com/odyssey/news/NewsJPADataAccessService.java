@@ -1,6 +1,5 @@
 package com.odyssey.news;
 
-
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
