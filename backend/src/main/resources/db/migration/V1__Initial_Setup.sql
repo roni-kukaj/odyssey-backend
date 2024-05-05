@@ -1,4 +1,3 @@
-
 CREATE TABLE locations(
 	id BIGSERIAL PRIMARY KEY,
 	city TEXT NOT NULL,

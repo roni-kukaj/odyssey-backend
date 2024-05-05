@@ -16,7 +16,7 @@ public class EventService {
     private final LocationDao locationDao;
 
 
-    public EventService(@Qualifier ("eventJPAService") EventDao eventDao, LocationDao locationDao){
+    public EventService(@Qualifier ("eventJPAService") EventDao eventDao, @Qualifier("locationJPAService") LocationDao locationDao){
         this.eventDao = eventDao;
 
         this.locationDao = locationDao;
