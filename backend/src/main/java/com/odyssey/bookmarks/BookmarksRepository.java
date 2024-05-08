@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface BookmarksRepository extends JpaRepository<Bookmarks,Integer> {
     boolean existsBookmarksById(Integer id);
-    boolean existsBookmarksByLocationIdAndUserId(Integer location_id, Integer user_id);
-    Optional<Bookmarks>findBookmarksByLocationId(Integer location_id);
-    Optional<Bookmarks>findBookmarksByUserId(Integer user_id);
+    boolean existsBookmarksByLocationIdAndUserId(Integer locationId, Integer userId);
+    Optional<Bookmarks>findBookmarksByLocationId(Integer locationId);
+    Optional<Bookmarks>findBookmarksByUserId(Integer userId);
 
 }

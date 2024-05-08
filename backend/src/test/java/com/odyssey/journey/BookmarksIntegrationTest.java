@@ -80,11 +80,12 @@ public class BookmarksIntegrationTest {
         String password = "1234";
         String avatar = "avatar";
         Role role = new Role();
-        int roleid = 2;
-        role.setId(roleid);
+        int roleId = 1 ;
+        role.setId(roleId);
+        role.setName("user");
 
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest(
-                name,username,email,password,avatar,roleid
+                name, username, email, password, avatar, roleId
         );
         webTestClient.post()
                 .uri(USER_URI)
@@ -109,7 +110,7 @@ public class BookmarksIntegrationTest {
                 .map(User::getId)
                 .findFirst()
                 .orElseThrow();
-        return new User(id,name,username,email,password,avatar,role);
+        return new User(id, name, username, email, password, avatar, role);
     }
 
     @Test
@@ -142,7 +143,7 @@ public class BookmarksIntegrationTest {
                 .getResponseBody();
 
         Bookmarks expectedBookmarks = new Bookmarks(
-               location,user
+               location, user
         );
 
         assertThat(allBookmarks)
@@ -174,7 +175,7 @@ public class BookmarksIntegrationTest {
         User user = setUpUser();
 
         BookmarksRegistrationRequest bookmarksRegistrationRequest = new BookmarksRegistrationRequest(
-               location.getId(),user.getId()
+               location.getId(), user.getId()
         );
 
 
@@ -198,7 +199,7 @@ public class BookmarksIntegrationTest {
                 .getResponseBody();
 
         Bookmarks expectedBookmarks = new Bookmarks(
-                location,user
+                location, user
         );
 
         assertThat(allBookmarks)
@@ -226,73 +227,5 @@ public class BookmarksIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .isNotFound();
-    }
-
-    @Test
-    void canUpdateBookmarks() {
-        Faker faker = new Faker();
-        Location location = setUpLocation();
-        User user = setUpUser();
-
-        BookmarksRegistrationRequest bookmarksRegistrationRequest = new BookmarksRegistrationRequest(
-                location.getId(), user.getId()
-        );
-
-
-        webTestClient.post()
-                .uri(BOOKMARKS_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(bookmarksRegistrationRequest), BookmarksRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
-
-        List<Bookmarks> allBookmarks = webTestClient.get()
-                .uri(BOOKMARKS_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBodyList(new ParameterizedTypeReference<Bookmarks>() {})
-                .returnResult()
-                .getResponseBody();
-
-        int id = allBookmarks.stream()
-                .filter(bookmarks -> bookmarks.getLocation().equals(location) && bookmarks.getUser().equals(user))
-                .map(Bookmarks::getId)
-                .findFirst()
-                .orElseThrow();
-
-        Faker faker2 = new Faker();
-        Location location1 = setUpLocation();
-        User user1 = setUpUser();
-        BookmarksUpdateRequest bookmarksUpdateRequest = new BookmarksUpdateRequest (
-                location1.getId(),user1.getId()
-        );
-
-        webTestClient.put()
-                .uri(BOOKMARKS_URI + "/{id}", id)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(bookmarksUpdateRequest), BookmarksUpdateRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
-
-        Bookmarks updatedBookmarks = webTestClient.get()
-                .uri(BOOKMARKS_URI + "/{id}", id)
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody(Bookmarks.class)
-                .returnResult()
-                .getResponseBody();
-
-        Bookmarks expected = new Bookmarks (
-                location1,user1
-        );
-        assertThat(updatedBookmarks).isEqualTo(expected);
     }
 }

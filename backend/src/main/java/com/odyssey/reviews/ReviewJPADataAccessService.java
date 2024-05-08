@@ -69,6 +69,6 @@ public class ReviewJPADataAccessService implements ReviewDao{
 
     @Override
     public boolean existsReviewByUserAndLocationId(Integer user_id, Integer location_id) {
-        return reviewRepository.existsReviewByUserAndLocationId(user_id,location_id);
+        return reviewRepository.existsReviewByUserIdAndLocationId(user_id,location_id);
     }
 }

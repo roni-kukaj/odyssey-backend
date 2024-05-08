@@ -83,7 +83,6 @@ public class Bookmarks {
                 "id=" + id +
                 ", location=" + location +
                 ", user=" + user +
-
                 '}';
     }
 }

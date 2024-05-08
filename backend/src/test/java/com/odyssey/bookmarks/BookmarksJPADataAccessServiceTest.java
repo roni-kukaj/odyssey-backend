@@ -79,11 +79,11 @@ public class BookmarksJPADataAccessServiceTest {
 
     @Test
     void existsBookmarksByLocationIdAndUserId() {
-        int location_id = 1;
-        int user_id = 1;
+        int locationId = 1;
+        int userId = 1;
 
-        bookmarksJPADataAccessService.existsBookmarksByLocationIdAndUserId(location_id,user_id);
-        verify(bookmarksRepository).existsBookmarksByLocationIdAndUserId(location_id,user_id);
+        bookmarksJPADataAccessService.existsBookmarksByLocationIdAndUserId(locationId, userId);
+        verify(bookmarksRepository).existsBookmarksByLocationIdAndUserId(locationId, userId);
 
     }
 

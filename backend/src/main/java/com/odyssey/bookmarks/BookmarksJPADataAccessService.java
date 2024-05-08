@@ -24,31 +24,28 @@ public class BookmarksJPADataAccessService implements BookmarksDao{
     }
 
     @Override
-    public Optional<Bookmarks> selectBookmarksByLocationId(Integer location_id) {
-        return bookmarksRepository.findBookmarksByLocationId(location_id);
+    public Optional<Bookmarks> selectBookmarksByLocationId(Integer locationId) {
+        return bookmarksRepository.findBookmarksByLocationId(locationId);
     }
 
     @Override
-    public Optional<Bookmarks> selectBookmarksByUserId(Integer user_id) {
-        return bookmarksRepository.findBookmarksByUserId(user_id);
+    public Optional<Bookmarks> selectBookmarksByUserId(Integer userId) {
+        return bookmarksRepository.findBookmarksByUserId(userId);
     }
 
     @Override
     public void insertBookmarks(Bookmarks bookmarks) {
         bookmarksRepository.save(bookmarks);
-
     }
 
     @Override
     public void updateBookmarks(Bookmarks bookmarks) {
         bookmarksRepository.save(bookmarks);
-
     }
 
     @Override
     public void deleteBookmarksById(Integer id) {
         bookmarksRepository.deleteById(id);
-
     }
 
     @Override
@@ -57,7 +54,7 @@ public class BookmarksJPADataAccessService implements BookmarksDao{
     }
 
     @Override
-    public boolean existsBookmarksByLocationIdAndUserId(Integer location_id, Integer user_id) {
-        return bookmarksRepository.existsBookmarksByLocationIdAndUserId(location_id,user_id);
+    public boolean existsBookmarksByLocationIdAndUserId(Integer locationId, Integer userId) {
+        return bookmarksRepository.existsBookmarksByLocationIdAndUserId(locationId, userId);
     }
 }

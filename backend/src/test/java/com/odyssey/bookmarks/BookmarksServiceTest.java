@@ -58,28 +58,28 @@ public class BookmarksServiceTest {
     @Test
     void getBookmarksByLocationId() {
         Location location = new Location();
-        int location_id = 1;
-        location.setId(location_id);
+        int locationId = 1;
+        location.setId(locationId);
 
-        when(locationDao.existsLocationById(location_id)).thenReturn(false);
-        assertThatThrownBy(()-> underTest.getBookmarksByLocationId(location_id))
+        when(locationDao.existsLocationById(locationId)).thenReturn(false);
+        assertThatThrownBy(()-> underTest.getBookmarksByLocationId(locationId))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Location with id [%s] not found".formatted(location_id));
+                .hasMessage("location with id [%s] not found".formatted(locationId));
 
-        verify(bookmarksDao,never()).insertBookmarks(any());
+        verify(bookmarksDao, never()).insertBookmarks(any());
     }
 
     @Test
     void getBookmarksByUserId() {
         User user = new User();
-        int user_id = 1;
-        user.setId(user_id);
+        int userId = 1;
+        user.setId(userId);
 
-        when(userDao.existsUserById(user_id)).thenReturn(false);
-        assertThatThrownBy(()-> underTest.getBookmarksByUserId(user_id))
+        when(userDao.existsUserById(userId)).thenReturn(false);
+        assertThatThrownBy(()-> underTest.getBookmarksByUserId(userId))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("User with id [%s] not found".formatted(user_id));
-        verify(bookmarksDao,never()).insertBookmarks(any());
+                .hasMessage("user with id [%s] not found".formatted(userId));
+        verify(bookmarksDao, never()).insertBookmarks(any());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class BookmarksServiceTest {
         when(bookmarksDao.selectBookmarksById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(()->underTest.getBookmarksById(id))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Bookmarks with id [%s] not found".formatted(id));
+                .hasMessage("bookmark with id [%s] not found".formatted(id));
     }
 
     @Test
@@ -96,19 +96,19 @@ public class BookmarksServiceTest {
         Location location = new Location();
         User user = new User();
 
-        int location_id = 1;
-        int user_id = 1;
+        int locationId = 1;
+        int userId = 1;
 
-        location.setId(location_id);
-        user.setId(user_id);
+        location.setId(locationId);
+        user.setId(userId);
 
         BookmarksRegistrationRequest bookmarksRegistrationRequest = new BookmarksRegistrationRequest
-                (location_id,user_id);
+                (locationId, userId);
 
-        when(locationDao.selectLocationById(location_id)).thenReturn(Optional.of(location));
-        when(userDao.selectUserById(user_id)).thenReturn(Optional.of(user));
+        when(locationDao.selectLocationById(locationId)).thenReturn(Optional.of(location));
+        when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
 
-        when(bookmarksDao.existsBookmarksByLocationIdAndUserId(location_id,user_id)).thenReturn(false);
+        when(bookmarksDao.existsBookmarksByLocationIdAndUserId(locationId, userId)).thenReturn(false);
 
         underTest.addBookmarks(bookmarksRegistrationRequest);
 
@@ -118,8 +118,8 @@ public class BookmarksServiceTest {
         Bookmarks capturedBookmarks = bookmarksArgumentCaptor.getValue();
 
         assertThat(capturedBookmarks.getId()).isNull();
-        assertThat(capturedBookmarks.getLocation().getId()).isEqualTo(bookmarksRegistrationRequest.location_id());
-        assertThat(capturedBookmarks.getUser().getId()).isEqualTo(bookmarksRegistrationRequest.user_id());
+        assertThat(capturedBookmarks.getLocation().getId()).isEqualTo(bookmarksRegistrationRequest.locationId());
+        assertThat(capturedBookmarks.getUser().getId()).isEqualTo(bookmarksRegistrationRequest.userId());
     }
 
 
@@ -128,25 +128,25 @@ public class BookmarksServiceTest {
         Location location = new Location();
         User user = new User();
 
-        int location_id = 1;
-        int user_id = 1;
+        int locationId = 1;
+        int userId = 1;
 
-        location.setId(location_id);
-        user.setId(user_id);
+        location.setId(locationId);
+        user.setId(userId);
 
         BookmarksRegistrationRequest bookmarksRegistrationRequest = new BookmarksRegistrationRequest(
-                location_id,user_id
+                locationId, userId
         );
 
-        when(locationDao.selectLocationById(location_id)).thenReturn(Optional.empty());
+        when(locationDao.selectLocationById(locationId)).thenReturn(Optional.empty());
 
-        when(bookmarksDao.existsBookmarksByLocationIdAndUserId(location_id,user_id)).thenReturn(false);
+        when(bookmarksDao.existsBookmarksByLocationIdAndUserId(locationId,userId)).thenReturn(false);
 
         assertThatThrownBy(()->underTest.addBookmarks(bookmarksRegistrationRequest))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Location with id [%s] not found".formatted(location_id));
+                .hasMessage("location with id [%s] not found".formatted(locationId));
 
-        verify(bookmarksDao,never()).insertBookmarks(any());
+        verify(bookmarksDao, never()).insertBookmarks(any());
     }
 
     @Test
@@ -154,26 +154,26 @@ public class BookmarksServiceTest {
         Location location = new Location();
         User user = new User();
 
-        int location_id = 1;
-        int user_id = 1;
+        int locationId = 1;
+        int userId = 1;
 
-        location.setId(location_id);
-        user.setId(user_id);
+        location.setId(locationId);
+        user.setId(userId);
 
         BookmarksRegistrationRequest bookmarksRegistrationRequest = new BookmarksRegistrationRequest(
-                location_id,user_id
+                locationId, userId
         );
 
-        lenient().when(locationDao.selectLocationById(location_id)).thenReturn(Optional.of(location));
-        lenient().when(userDao.selectUserById(user_id)).thenReturn(Optional.of(user));
+        lenient().when(locationDao.selectLocationById(locationId)).thenReturn(Optional.of(location));
+        lenient().when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
 
-        when(bookmarksDao.existsBookmarksByLocationIdAndUserId(location_id,user_id)).thenReturn(true);
+        when(bookmarksDao.existsBookmarksByLocationIdAndUserId(locationId, userId)).thenReturn(true);
 
         assertThatThrownBy(()->underTest.addBookmarks(bookmarksRegistrationRequest))
                 .isInstanceOf(DuplicateResourceException.class)
-                .hasMessage("Bookmarks already exists");
+                .hasMessage("bookmark already exists");
 
-        verify(bookmarksDao,never()).insertBookmarks(any());
+        verify(bookmarksDao, never()).insertBookmarks(any());
     }
 
     @Test
@@ -191,9 +191,9 @@ public class BookmarksServiceTest {
 
         assertThatThrownBy(()->underTest.deleteBookmarks(id))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Bookmarks with id [%s] not found".formatted(id));
+                .hasMessage("bookmark with id [%s] not found".formatted(id));
 
-        verify(bookmarksDao,never()).deleteBookmarksById(any());
+        verify(bookmarksDao, never()).deleteBookmarksById(any());
     }
 
 
@@ -207,7 +207,7 @@ public class BookmarksServiceTest {
         location.setId(1);
         user.setId(1);
 
-        Bookmarks bookmarks = new Bookmarks(location,user);
+        Bookmarks bookmarks = new Bookmarks(location, user);
         when(bookmarksDao.selectBookmarksById(id)).thenReturn(Optional.of(bookmarks));
 
         Location location1 = new Location();
@@ -228,9 +228,8 @@ public class BookmarksServiceTest {
         Bookmarks capturedBookmarks = bookmarksArgumentCaptor.getValue();
 
         assertThat(capturedBookmarks.getId()).isNull();
-        assertThat(capturedBookmarks.getLocation().getId()).isEqualTo(bookmarksUpdateRequest.location_id());
-        assertThat(capturedBookmarks.getUser().getId()).isEqualTo(bookmarksUpdateRequest.user_id());
-
+        assertThat(capturedBookmarks.getLocation().getId()).isEqualTo(bookmarksUpdateRequest.locationId());
+        assertThat(capturedBookmarks.getUser().getId()).isEqualTo(bookmarksUpdateRequest.userId());
     }
 
 
@@ -244,7 +243,7 @@ public class BookmarksServiceTest {
         location.setId(2);
         user.setId(2);
 
-        Bookmarks bookmarks = new Bookmarks(location,user);
+        Bookmarks bookmarks = new Bookmarks(location, user);
 
         when(bookmarksDao.selectBookmarksById(id)).thenReturn(Optional.of(bookmarks));
 
@@ -259,6 +258,6 @@ public class BookmarksServiceTest {
                 .isInstanceOf(RequestValidationException.class)
                 .hasMessage("no changes were found");
 
-        verify(bookmarksDao,never()).updateBookmarks(any());
+        verify(bookmarksDao, never()).updateBookmarks(any());
     }
 }

@@ -30,45 +30,45 @@ public class BookmarksService {
         return bookmarksDao.selectAllBookmarks();
     }
 
-    public Optional<Bookmarks>getBookmarksByLocationId(Integer location_id){
-        if(!locationDao.existsLocationById(location_id)){
-            throw new ResourceNotFoundException("Location with id [%s] not found".formatted(location_id));
+    public Optional<Bookmarks>getBookmarksByLocationId(Integer locationId){
+        if(!locationDao.existsLocationById(locationId)){
+            throw new ResourceNotFoundException("location with id [%s] not found".formatted(locationId));
         }
-        return bookmarksDao.selectBookmarksByLocationId(location_id);
+        return bookmarksDao.selectBookmarksByLocationId(locationId);
 
     }
 
 
-    public Optional<Bookmarks>getBookmarksByUserId(Integer user_id){
-        if(!userDao.existsUserById(user_id)){
-            throw new ResourceNotFoundException("User with id [%s] not found".formatted(user_id));
+    public Optional<Bookmarks>getBookmarksByUserId(Integer userId){
+        if(!userDao.existsUserById(userId)){
+            throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
         }
-        return bookmarksDao.selectBookmarksByUserId(user_id);
+        return bookmarksDao.selectBookmarksByUserId(userId);
     }
 
     public Bookmarks getBookmarksById(Integer id){
         return bookmarksDao.selectBookmarksById(id).orElseThrow(()->
-                new ResourceNotFoundException("Bookmarks with id [%s] not found".formatted(id)));
+                new ResourceNotFoundException("bookmark with id [%s] not found".formatted(id)));
     }
 
     public void addBookmarks(BookmarksRegistrationRequest bookmarksRegistrationRequest){
         if(bookmarksDao.existsBookmarksByLocationIdAndUserId(
-                bookmarksRegistrationRequest.location_id(),bookmarksRegistrationRequest.user_id()
+                bookmarksRegistrationRequest.locationId(),bookmarksRegistrationRequest.userId()
         )){
-            throw new DuplicateResourceException("Bookmarks already exists");
+            throw new DuplicateResourceException("bookmark already exists");
         }
 
-        Location location = locationDao.selectLocationById(bookmarksRegistrationRequest.location_id()).orElseThrow(
-                ()-> new ResourceNotFoundException("Location with id [%s] not found".
-                        formatted(bookmarksRegistrationRequest.location_id()))
+        Location location = locationDao.selectLocationById(bookmarksRegistrationRequest.locationId())
+                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".
+                        formatted(bookmarksRegistrationRequest.locationId()))
         );
 
-        User user = userDao.selectUserById(bookmarksRegistrationRequest.user_id()).orElseThrow(
-                ()->new ResourceNotFoundException("User with id [%s] not found"
-                        .formatted(bookmarksRegistrationRequest.user_id()))
+        User user = userDao.selectUserById(bookmarksRegistrationRequest.userId()).orElseThrow(
+                () -> new ResourceNotFoundException("user with id [%s] not found"
+                        .formatted(bookmarksRegistrationRequest.userId()))
         );
 
-        Bookmarks bookmarks = new Bookmarks(location,user);
+        Bookmarks bookmarks = new Bookmarks(location, user);
         bookmarksDao.insertBookmarks(bookmarks);
     }
 
@@ -77,7 +77,7 @@ public class BookmarksService {
             bookmarksDao.deleteBookmarksById(id);
         }
         else {
-            throw new ResourceNotFoundException("Bookmarks with id [%s] not found".formatted(id));
+            throw new ResourceNotFoundException("bookmark with id [%s] not found".formatted(id));
         }
         return false;
     }
@@ -86,27 +86,27 @@ public class BookmarksService {
         Bookmarks existinBookmarks = getBookmarksById(id);
 
         if(bookmarksDao.existsBookmarksByLocationIdAndUserId
-                (bookmarksUpdateRequest.location_id(),bookmarksUpdateRequest.user_id())){
-            throw new DuplicateResourceException("Bookmarks already exists");
+                (bookmarksUpdateRequest.locationId(),bookmarksUpdateRequest.userId())){
+            throw new DuplicateResourceException("bookmarks already exists");
         }
 
-        Location location = locationDao.selectLocationById(bookmarksUpdateRequest.location_id()).orElseThrow(
-                ()-> new ResourceNotFoundException("Location with id [%s] not found".formatted(bookmarksUpdateRequest.location_id()))
+        Location location = locationDao.selectLocationById(bookmarksUpdateRequest.locationId()).orElseThrow(
+                ()-> new ResourceNotFoundException("location with id [%s] not found".formatted(bookmarksUpdateRequest.locationId()))
         );
 
-        User user = userDao.selectUserById(bookmarksUpdateRequest.user_id()).orElseThrow(
-                ()-> new ResourceNotFoundException("User with id [%s] not found".formatted(bookmarksUpdateRequest.user_id()))
+        User user = userDao.selectUserById(bookmarksUpdateRequest.userId()).orElseThrow(
+                ()-> new ResourceNotFoundException("user with id [%s] not found".formatted(bookmarksUpdateRequest.userId()))
         );
 
         boolean changes = false;
 
-        if(bookmarksUpdateRequest.location_id()!=null && !bookmarksUpdateRequest.location_id().equals(existinBookmarks.getLocation().getId())){
+        if(bookmarksUpdateRequest.locationId() != null && !bookmarksUpdateRequest.locationId().equals(existinBookmarks.getLocation().getId())){
             existinBookmarks.setLocation(location);
             changes = true;
         }
 
 
-        if(bookmarksUpdateRequest.user_id()!=null && !bookmarksUpdateRequest.user_id().equals(existinBookmarks.getUser().getId())){
+        if(bookmarksUpdateRequest.userId() != null && !bookmarksUpdateRequest.userId().equals(existinBookmarks.getUser().getId())){
             existinBookmarks.setUser(user);
             changes = true;
         }
@@ -119,8 +119,4 @@ public class BookmarksService {
         return changes;
 
     }
-
-    }
-
-
-
+}

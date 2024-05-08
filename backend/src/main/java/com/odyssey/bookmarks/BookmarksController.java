@@ -21,19 +21,19 @@ public class BookmarksController {
         return bookmarksService.getAllBookmarks();
     }
 
-    @GetMapping("/{bookmarksid}")
-    public Bookmarks getBookmarksById(@PathVariable("bookmarksid") Integer bookmarks_id){
-        return bookmarksService.getBookmarksById(bookmarks_id);
+    @GetMapping("/{bookmarksId}")
+    public Bookmarks getBookmarksById(@PathVariable("bookmarksId") Integer bookmarksId){
+        return bookmarksService.getBookmarksById(bookmarksId);
     }
 
-    @GetMapping("/user/{userid}")
-    public Optional<Bookmarks> getBookmarksByUserId(@PathVariable("userid") Integer user_id){
-        return bookmarksService.getBookmarksByUserId(user_id);
+    @GetMapping("/user/{userId}")
+    public Optional<Bookmarks> getBookmarksByUserId(@PathVariable("userId") Integer userId){
+        return bookmarksService.getBookmarksByUserId(userId);
     }
 
-    @GetMapping("/location/{locationid}")
-    public Optional<Bookmarks> getBookmarksByLocationId(@PathVariable("locationid") Integer location_id){
-        return bookmarksService.getBookmarksByLocationId(location_id);
+    @GetMapping("/location/{locationId}")
+    public Optional<Bookmarks> getBookmarksByLocationId(@PathVariable("locationId") Integer locationId){
+        return bookmarksService.getBookmarksByLocationId(locationId);
     }
 
     @PostMapping
@@ -41,16 +41,14 @@ public class BookmarksController {
         bookmarksService.addBookmarks(request);
     }
 
-    @DeleteMapping("/{bookmarksid}")
-    public void deleteBookmarks(@PathVariable("bookmarksid") Integer bookmarks_id){
-        bookmarksService.deleteBookmarks(bookmarks_id);
+    @DeleteMapping("/{bookmarksId}")
+    public void deleteBookmarks(@PathVariable("bookmarksId") Integer bookmarksId){
+        bookmarksService.deleteBookmarks(bookmarksId);
     }
 
-
-
-    @PutMapping("/{bookmarksid}")
-    public void updateBookmarks(@PathVariable("bookmarksid") Integer bookmarks_id, @RequestBody BookmarksUpdateRequest request){
-        bookmarksService.updateBookmarks(bookmarks_id,request);
+    @PutMapping("/{bookmarksId}")
+    public void updateBookmarks(@PathVariable("bookmarksId") Integer bookmarksId, @RequestBody BookmarksUpdateRequest request){
+        bookmarksService.updateBookmarks(bookmarksId, request);
     }
 
 
