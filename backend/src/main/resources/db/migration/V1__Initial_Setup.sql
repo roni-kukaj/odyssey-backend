@@ -119,7 +119,6 @@ CREATE TABLE bookmarks(
 	user_id BIGINT NOT NULL,
 	CONSTRAINT bookmarks_location_fk FOREIGN KEY(location_id) REFERENCES locations(id),
 	CONSTRAINT bookmarks_user_fk FOREIGN KEY(user_id) REFERENCES users(id)
-
 );
 
 CREATE TABLE flights(
@@ -154,7 +153,7 @@ CREATE TABLE local_cuisine(
 
 CREATE TABLE items(
 	id BIGSERIAL PRIMARY KEY,
-	item_name TEXT NOT NULL
+	name TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE trip_items(

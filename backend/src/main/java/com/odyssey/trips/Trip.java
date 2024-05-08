@@ -1,10 +1,13 @@
 package com.odyssey.trips;
 
+import com.odyssey.locations.Location;
+import com.odyssey.tripPlaces.TripPlace;
 import com.odyssey.user.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "trips")

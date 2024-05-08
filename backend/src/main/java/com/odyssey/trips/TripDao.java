@@ -1,7 +1,5 @@
 package com.odyssey.trips;
 
-import com.odyssey.items.Item;
-
 import java.util.List;
 import java.util.Optional;
 

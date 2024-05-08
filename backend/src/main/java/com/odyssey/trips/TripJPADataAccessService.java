@@ -1,6 +1,5 @@
 package com.odyssey.trips;
 
-import com.odyssey.items.Item;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

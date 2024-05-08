@@ -1,6 +1,5 @@
 package com.odyssey.tripEvents;
 
-import com.odyssey.tripActivities.TripActivityRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

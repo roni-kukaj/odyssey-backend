@@ -1,7 +1,5 @@
 package com.odyssey.tripEvents;
 
-import com.odyssey.tripActivities.TripActivity;
-
 import java.util.List;
 import java.util.Optional;
 

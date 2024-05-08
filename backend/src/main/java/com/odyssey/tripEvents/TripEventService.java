@@ -1,14 +1,9 @@
 package com.odyssey.tripEvents;
 
-import com.odyssey.activities.Activity;
-import com.odyssey.activities.ActivityDao;
 import com.odyssey.events.Event;
 import com.odyssey.events.EventDao;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.tripActivities.TripActivity;
-import com.odyssey.tripActivities.TripActivityDao;
-import com.odyssey.tripActivities.TripActivityRegistrationRequest;
 import com.odyssey.trips.Trip;
 import com.odyssey.trips.TripDao;
 import org.springframework.beans.factory.annotation.Qualifier;
