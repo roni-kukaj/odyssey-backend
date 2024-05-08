@@ -4,11 +4,13 @@ import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.locations.Location;
 import com.odyssey.locations.LocationDao;
+import com.odyssey.tripItems.TripItem;
 import com.odyssey.trips.Trip;
 import com.odyssey.trips.TripDao;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -75,6 +77,22 @@ public class TripPlaceService {
         }
         tripPlaceDao.deleteTripPlaceByTripId(tripId);
         return false;
+    }
+
+    public List<TripPlaceGetDto> selectTripPlaceGetDtoByTripId(Integer tripId) {
+        List<TripPlace> tripPlaces = getTripPlacesByTripId(tripId);
+        List<TripPlaceGetDto> tripPlaceGetDto = new ArrayList<>();
+        for (TripPlace tripPlace: tripPlaces) {
+            tripPlaceGetDto.add(
+                    new TripPlaceGetDto(
+                            tripPlace.getId(),
+                            tripPlace.getLocation(),
+                            tripPlace.getPlannedDate(),
+                            tripPlace.getVisitOrder()
+                    )
+            );
+        }
+        return tripPlaceGetDto;
     }
 
 }

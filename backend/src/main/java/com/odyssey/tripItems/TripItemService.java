@@ -9,6 +9,7 @@ import com.odyssey.trips.TripDao;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -73,4 +74,20 @@ public class TripItemService {
         tripItemDao.deleteTripItemsByTripId(tripId);
         return false;
     }
+
+    public List<TripItemGetDto> selectTripItemGetDtoByTripId(Integer tripId){
+        List<TripItem> tripItems = getTripItemsByTripId(tripId);
+        List<TripItemGetDto> tripItemGetDto = new ArrayList<>();
+        for (TripItem tripItem: tripItems) {
+            tripItemGetDto.add(
+                    new TripItemGetDto(
+                            tripItem.getId(),
+                            tripItem.getItem()
+                    )
+            );
+        }
+        return tripItemGetDto;
+
+    }
+
 }

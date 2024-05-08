@@ -4,11 +4,14 @@ import com.odyssey.events.Event;
 import com.odyssey.events.EventDao;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
+import com.odyssey.tripActivities.TripActivity;
+import com.odyssey.tripActivities.TripActivityGetDto;
 import com.odyssey.trips.Trip;
 import com.odyssey.trips.TripDao;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,7 +21,7 @@ public class TripEventService {
     private final TripDao tripDao;
     private final EventDao eventDao;
 
-    public TripEventService(
+    public TripEventService (
             @Qualifier("tripEventJPAService") TripEventDao tripEventDao,
             @Qualifier("tripJPAService") TripDao tripDao,
             @Qualifier("eventJPAService") EventDao eventDao
@@ -76,4 +79,21 @@ public class TripEventService {
         tripEventDao.deleteTripEventsByTripId(tripId);
         return false;
     }
+
+    public List<TripEventGetDto> selectTripEventGetDtoByTripId(Integer tripId) {
+        List<TripEvent> tripEvents = getTripEventsByTripId(tripId);
+        List<TripEventGetDto> tripEventGetDto = new ArrayList<>();
+        for (TripEvent tripEvent: tripEvents) {
+            tripEventGetDto.add(
+                    new TripEventGetDto (
+                            tripEvent.getId(),
+                            tripEvent.getEvent(),
+                            tripEvent.getPlannedDate(),
+                            tripEvent.getVisitOrder()
+                    )
+            );
+        }
+        return tripEventGetDto;
+    }
+
 }

@@ -1,27 +1,27 @@
 package com.odyssey.trips;
 
-import com.odyssey.tripActivities.TripActivity;
-import com.odyssey.tripEvents.TripEvent;
-import com.odyssey.tripItems.TripItem;
-import com.odyssey.tripPlaces.TripPlace;
+import com.odyssey.tripActivities.TripActivityGetDto;
+import com.odyssey.tripEvents.TripEventGetDto;
+import com.odyssey.tripItems.TripItemGetDto;
+import com.odyssey.tripPlaces.TripPlaceGetDto;
 import com.odyssey.user.User;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-public class TripDto {
+public class TripGetDto {
     private Integer id;
     private User user;
     private LocalDate startDate;
     private LocalDate endDate;
-    private List<TripItem> tripItems;
-    private List<TripPlace> tripPlaces;
-    private List<TripActivity> tripActivities;
-    private List<TripEvent> tripEvents;
+    private List<TripItemGetDto> tripItems;
+    private List<TripPlaceGetDto> tripPlaces;
+    private List<TripActivityGetDto> tripActivities;
+    private List<TripEventGetDto> tripEvents;
 
-    public TripDto() {}
+    public TripGetDto() {}
 
-    public TripDto(Integer id, User user, LocalDate startDate, LocalDate endDate, List<TripItem> tripItems, List<TripPlace> tripPlaces, List<TripActivity> tripActivities, List<TripEvent> tripEvents) {
+    public TripGetDto(Integer id, User user, LocalDate startDate, LocalDate endDate, List<TripItemGetDto> tripItems, List<TripPlaceGetDto> tripPlaces, List<TripActivityGetDto> tripActivities, List<TripEventGetDto> tripEvents) {
         this.id = id;
         this.user = user;
         this.startDate = startDate;
@@ -64,35 +64,35 @@ public class TripDto {
         this.endDate = endDate;
     }
 
-    public List<TripItem> getTripItems() {
+    public List<TripItemGetDto> getTripItems() {
         return tripItems;
     }
 
-    public void setTripItems(List<TripItem> tripItems) {
+    public void setTripItems(List<TripItemGetDto> tripItems) {
         this.tripItems = tripItems;
     }
 
-    public List<TripPlace> getTripPlaces() {
+    public List<TripPlaceGetDto> getTripPlaces() {
         return tripPlaces;
     }
 
-    public void setTripPlaces(List<TripPlace> tripPlaces) {
+    public void setTripPlaces(List<TripPlaceGetDto> tripPlaces) {
         this.tripPlaces = tripPlaces;
     }
 
-    public List<TripActivity> getTripActivities() {
+    public List<TripActivityGetDto> getTripActivities() {
         return tripActivities;
     }
 
-    public void setTripActivities(List<TripActivity> tripActivities) {
+    public void setTripActivities(List<TripActivityGetDto> tripActivities) {
         this.tripActivities = tripActivities;
     }
 
-    public List<TripEvent> getTripEvents() {
+    public List<TripEventGetDto> getTripEvents() {
         return tripEvents;
     }
 
-    public void setTripEvents(List<TripEvent> tripEvents) {
+    public void setTripEvents(List<TripEventGetDto> tripEvents) {
         this.tripEvents = tripEvents;
     }
 
@@ -100,7 +100,7 @@ public class TripDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TripDto tripDto = (TripDto) o;
+        TripGetDto tripDto = (TripGetDto) o;
         return Objects.equals(id, tripDto.id) && Objects.equals(user, tripDto.user) && Objects.equals(startDate, tripDto.startDate) && Objects.equals(endDate, tripDto.endDate) && Objects.equals(tripItems, tripDto.tripItems) && Objects.equals(tripPlaces, tripDto.tripPlaces) && Objects.equals(tripActivities, tripDto.tripActivities) && Objects.equals(tripEvents, tripDto.tripEvents);
     }
 
