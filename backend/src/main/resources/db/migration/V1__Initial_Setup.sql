@@ -133,6 +133,14 @@ CREATE TABLE flights(
 
 );
 
+CREATE TABLE plans (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    location_id BIGINT NOT NULL,
+    visit_date DATE NOT NULL,
+    CONSTRAINT plans_user_fk FOREIGN KEY(user_id) REFERENCES users(id),
+    CONSTRAINT plans_location_fk FOREIGN KEY (location_id) REFERENCES locations(id)
+);
 
 CREATE TABLE local_cuisine(
 	id BIGSERIAL PRIMARY KEY,

@@ -13,7 +13,7 @@ public class NewsController {
     private NewsService newsService;
 
     @GetMapping
-    public List<News>getAllNews(){
+    public List<News> getAllNews(){
         return newsService.getAllNews();
     }
 
