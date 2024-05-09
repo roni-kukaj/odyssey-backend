@@ -9,6 +9,5 @@ import java.util.Optional;
 public interface TripRepository extends JpaRepository<Trip, Integer> {
     boolean existsTripById(Integer id);
     List<Trip> findTripsByUserId(Integer userId);
-    boolean existsTripByUserIdAndStartDateAndEndDate(Integer userId, LocalDate startDate, LocalDate endDate);
-    Optional<Trip> findTripByUserIdAndStartDateAndEndDate(Integer userId, LocalDate startDate, LocalDate endDate);
+    boolean existsTripByUserIdAndStartDate(Integer userId, LocalDate startDate);
 }

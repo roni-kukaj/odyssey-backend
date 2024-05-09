@@ -1,12 +1,14 @@
 package com.odyssey.tripPlaces;
 
 import com.odyssey.events.Event;
+import com.odyssey.items.Item;
 import com.odyssey.locations.Location;
 import com.odyssey.trips.Trip;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "trip_place_list")
@@ -23,24 +25,18 @@ public class TripPlace {
     @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location location;
 
-    @Column(nullable = false, name = "planned_date") private LocalDate plannedDate;
-    @Column(nullable = false, name = "visit_order") private Integer visitOrder;
 
     public TripPlace() {}
 
-    public TripPlace(Trip trip, Location location, LocalDate plannedDate, Integer visitOrder) {
+    public TripPlace(Trip trip, Location location) {
         this.trip = trip;
         this.location = location;
-        this.plannedDate = plannedDate;
-        this.visitOrder = visitOrder;
     }
 
-    public TripPlace(Integer id, Trip trip, Location location, LocalDate plannedDate, Integer visitOrder) {
+    public TripPlace(Integer id, Trip trip, Location location) {
         this.id = id;
         this.trip = trip;
         this.location = location;
-        this.plannedDate = plannedDate;
-        this.visitOrder = visitOrder;
     }
 
     public Integer getId() {
@@ -67,33 +63,17 @@ public class TripPlace {
         this.location = location;
     }
 
-    public LocalDate getPlannedDate() {
-        return plannedDate;
-    }
-
-    public void setPlannedDate(LocalDate plannedDate) {
-        this.plannedDate = plannedDate;
-    }
-
-    public Integer getVisitOrder() {
-        return visitOrder;
-    }
-
-    public void setVisitOrder(Integer visitOrder) {
-        this.visitOrder = visitOrder;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TripPlace tripPlace = (TripPlace) o;
-        return Objects.equals(id, tripPlace.id) && Objects.equals(trip, tripPlace.trip) && Objects.equals(location, tripPlace.location) && Objects.equals(plannedDate, tripPlace.plannedDate) && Objects.equals(visitOrder, tripPlace.visitOrder);
+        return Objects.equals(id, tripPlace.id) && Objects.equals(trip, tripPlace.trip) && Objects.equals(location, tripPlace.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, trip, location, plannedDate, visitOrder);
+        return Objects.hash(id, trip, location);
     }
 
     @Override
@@ -102,8 +82,6 @@ public class TripPlace {
                 "id=" + id +
                 ", trip=" + trip +
                 ", location=" + location +
-                ", plannedDate=" + plannedDate +
-                ", visitOrder=" + visitOrder +
                 '}';
     }
 }

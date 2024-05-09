@@ -31,11 +31,6 @@ public class TripJPADataAccessService implements TripDao {
     }
 
     @Override
-    public Optional<Trip> selectTripByUserIdAndStartDateAndEndDate(Integer userId, LocalDate startDate, LocalDate endDate) {
-        return tripRepository.findTripByUserIdAndStartDateAndEndDate(userId, startDate, endDate);
-    }
-
-    @Override
     public void insertTrip(Trip trip) {
         tripRepository.save(trip);
     }
@@ -46,6 +41,11 @@ public class TripJPADataAccessService implements TripDao {
     }
 
     @Override
+    public boolean existsTripByUserIdAndStartDate(Integer userId, LocalDate startDate) {
+        return tripRepository.existsTripByUserIdAndStartDate(userId, startDate);
+    }
+
+    @Override
     public void deleteTripById(Integer id) {
         tripRepository.deleteById(id);
     }
@@ -53,10 +53,5 @@ public class TripJPADataAccessService implements TripDao {
     @Override
     public void updateTrip(Trip trip) {
         tripRepository.save(trip);
-    }
-
-    @Override
-    public boolean existsTripByUserIdAndStartDateAndEndDate(Integer userId, LocalDate startDate, LocalDate endDate) {
-        return tripRepository.existsTripByUserIdAndStartDateAndEndDate(userId, startDate, endDate);
     }
 }

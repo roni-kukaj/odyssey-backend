@@ -13,17 +13,17 @@ public class TripController {
     private TripService tripService;
 
     @GetMapping
-    public List<TripGetDto> getAllTrips() {
-        return tripService.getAllTripDto();
+    public List<Trip> getAllTrips() {
+        return tripService.getAllTrips();
     }
 
     @GetMapping("/{tripId}")
-    public TripGetDto getTripById(@PathVariable("tripId") Integer tripId) {
-        return tripService.getTripById(tripId);
+    public Trip getTrip(@PathVariable("tripId") Integer tripId) {
+        return tripService.getTrip(tripId);
     }
 
     @GetMapping("/user/{userId}")
-    public List<TripGetDto> getTripsByUserId(@PathVariable("userId") Integer userId) {
+    public List<Trip> getTripsByUserId(@PathVariable("userId") Integer userId) {
         return tripService.getTripsByUserId(userId);
     }
 
@@ -33,15 +33,12 @@ public class TripController {
     }
 
     @DeleteMapping("/{tripId}")
-    public void deleteTripById(@PathVariable("tripId") Integer tripId) {
-        tripService.deleteTrip(tripId);
+    public void deleteTrip(@PathVariable("tripId") Integer tripId) {
+        tripService.deleteTripById(tripId);
     }
 
-    @DeleteMapping("/user/{userId}")
-    public void deleteTripsByUserId(@PathVariable("userId") Integer userId) {
-        tripService.deleteAllUserTrips(userId);
+    @PutMapping("/{tripId}")
+    public void updateTrip(@PathVariable("tripId") Integer tripId, @RequestBody TripUpdateRequest request) {
+        tripService.updateTrip(tripId, request);
     }
-
-
-//    @PutMapping("/{tripId}") TODO
 }

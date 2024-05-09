@@ -168,8 +168,6 @@ CREATE TABLE trip_activity_list(
 	id BIGSERIAL PRIMARY KEY,
 	trip_id BIGINT NOT NULL,
 	activity_id BIGINT NOT NULL,
-	planned_date DATE NOT NULL,
-	visit_order INTEGER NOT NULL,
 	CONSTRAINT trip_activity_list_trips_fk FOREIGN KEY(trip_id) REFERENCES trips(id),
 	CONSTRAINT trip_activity_list_activities_fk FOREIGN KEY(activity_id) REFERENCES activities(id)
 );
@@ -178,8 +176,6 @@ CREATE TABLE trip_event_list(
 	id BIGSERIAL PRIMARY KEY,
 	trip_id BIGINT NOT NULL,
 	event_id BIGINT NOT NULL,
-	planned_date DATE NOT NULL,
-	visit_order INTEGER NOT NULL,
 	CONSTRAINT trip_event_list_trips_fk FOREIGN KEY(trip_id) REFERENCES trips(id),
 	CONSTRAINT trip_event_list_events_fk FOREIGN KEY(event_id) REFERENCES events(id)
 );
@@ -188,8 +184,6 @@ CREATE TABLE trip_place_list(
 	id BIGSERIAL PRIMARY KEY,
 	trip_id BIGINT NOT NULL,
 	location_id BIGINT NOT NULL,
-	planned_date DATE NOT NULL,
-	visit_order INTEGER NOT NULL,
 	CONSTRAINT trip_place_list_trips_fk FOREIGN KEY(trip_id) REFERENCES trips(id),
 	CONSTRAINT trip_place_list_locations_fk FOREIGN KEY(location_id) REFERENCES locations(id)
 );

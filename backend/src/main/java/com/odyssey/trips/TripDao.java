@@ -8,10 +8,9 @@ public interface TripDao {
     List<Trip> selectAllTrips();
     Optional<Trip> selectTripById(Integer id);
     List<Trip> selectTripsByUserId(Integer userId);
-    Optional<Trip> selectTripByUserIdAndStartDateAndEndDate(Integer userId, LocalDate startDate, LocalDate endDate);
     void insertTrip(Trip trip);
     boolean existsTripById(Integer id);
-    boolean existsTripByUserIdAndStartDateAndEndDate(Integer userId, LocalDate startDate, LocalDate endDate);
+    boolean existsTripByUserIdAndStartDate(Integer userId, LocalDate startDate);
     void deleteTripById(Integer id);
     void updateTrip(Trip trip);
 }

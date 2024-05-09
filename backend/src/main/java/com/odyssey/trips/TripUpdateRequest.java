@@ -2,11 +2,9 @@ package com.odyssey.trips;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public record TripRegistrationRequest(
+public record TripUpdateRequest(
         Integer userId,
         LocalDate startDate,
         LocalDate endDate,
@@ -15,7 +13,7 @@ public record TripRegistrationRequest(
         List<Integer> activityIds,
         List<Integer> eventIds
 ) {
-    public TripRegistrationRequest {
+    public TripUpdateRequest {
         if (itemIds == null) {
             itemIds = new ArrayList<>();
         }
