@@ -61,6 +61,7 @@ public class TripService {
             throw new DuplicateResourceException("trip already exists");
         }
         User user = userService.getUser(request.userId());
+
         Set<Item> items = new HashSet<>();
         Set<Location> places = new HashSet<>();
         Set<Activity> activities = new HashSet<>();
