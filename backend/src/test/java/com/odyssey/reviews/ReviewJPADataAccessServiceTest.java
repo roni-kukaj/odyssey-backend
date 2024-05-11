@@ -25,8 +25,6 @@ public class ReviewJPADataAccessServiceTest {
         reviewJPADataAccessService = new ReviewJPADataAccessService(reviewRepository);
     }
 
-
-
     @AfterEach
     void tearDown() throws Exception{
         autoCloseable.close();

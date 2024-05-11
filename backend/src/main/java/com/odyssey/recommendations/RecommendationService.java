@@ -32,56 +32,47 @@ public class RecommendationService
 
     public List<Recommendation> getAllRecommendations(){
         return recommendationDao.selectAllRecommendations();
-
-
-}
-
-
-
-    public Optional<Recommendation> getRecommendationByActivityId(Integer activity_id){
-        if(!activityDao.existsActivityById(activity_id)){
-            throw new ResourceNotFoundException("Activity with id [%s] not found".formatted(activity_id));
-        }
-        return recommendationDao.selectRecommendationByActivityId(activity_id);
     }
-    public Optional<Recommendation> getRecommendationByUserId(Integer user_id){
-        if(!userDao.existsUserById(user_id)){
-            throw new ResourceNotFoundException("User with id [%s] not found".formatted(user_id));
+
+    public Recommendation getRecommendationByActivityId(Integer activityId){
+        if(!activityDao.existsActivityById(activityId)){
+            throw new ResourceNotFoundException("activity with id [%s] not found".formatted(activityId));
         }
-        return recommendationDao.selectRecommendationByUserId(user_id);
+        return recommendationDao.selectRecommendationByActivityId(activityId)
+                .orElseThrow(() -> new ResourceNotFoundException("recommendation not found"));
+    }
+    public Recommendation getRecommendationByUserId(Integer userId){
+        if(!userDao.existsUserById(userId)){
+            throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
+        }
+        return recommendationDao.selectRecommendationByActivityId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("recommendation not found"));
     }
 
     public Recommendation getRecommendation(Integer id){
-       return recommendationDao.selectRecommendationById(id).orElseThrow(()-> new ResourceNotFoundException("Recommendation with id [%s] not found ".formatted(id)));
-
-
+       return recommendationDao.selectRecommendationById(id)
+               .orElseThrow(()-> new ResourceNotFoundException("recommendation with id [%s] not found ".formatted(id)));
     }
 
     public void addRecommendation(RecommendationRegistrationRequest recommendationRegistrationRequest){
         if(recommendationDao.existsRecommendationByUserIdAndActivityId
-                (recommendationRegistrationRequest.user_id(),recommendationRegistrationRequest.activity_id())) {
+                (recommendationRegistrationRequest.userId(),recommendationRegistrationRequest.activityId())) {
             throw new DuplicateResourceException("recommendation already exists");
         }
 
-        User user = userDao.selectUserById(recommendationRegistrationRequest.user_id())
-                .orElseThrow(()-> new ResourceNotFoundException("User with id [%s] not found"
-                        .formatted(recommendationRegistrationRequest.user_id())));
+        User user = userDao.selectUserById(recommendationRegistrationRequest.userId())
+                .orElseThrow(()-> new ResourceNotFoundException("user with id [%s] not found"
+                        .formatted(recommendationRegistrationRequest.userId())));
 
-        Activity activity = activityDao.selectActivityById(recommendationRegistrationRequest.activity_id())
-                .orElseThrow(()-> new ResourceNotFoundException("Activity with id [%s] not found"
-                        .formatted(recommendationRegistrationRequest.activity_id())));
+        Activity activity = activityDao.selectActivityById(recommendationRegistrationRequest.activityId())
+                .orElseThrow(()-> new ResourceNotFoundException("activity with id [%s] not found"
+                        .formatted(recommendationRegistrationRequest.activityId())));
 
         Recommendation recommendation = new Recommendation(
                 recommendationRegistrationRequest.description(),
                 user, activity
         );
-
         recommendationDao.insertRecommendation(recommendation);
-
-
-
-
-
     }
 
     public boolean deleteRecommendation(Integer id){
@@ -92,39 +83,36 @@ public class RecommendationService
             throw new ResourceNotFoundException("recommendation with id [%s] not found".formatted(id));
         }
         return false;
-
     }
-
-
 
     public boolean updateRecommendation(Integer id, RecommendationUpdateRequest recommendationUpdateRequest){
         Recommendation existingRecommendation = getRecommendation(id);
 
-        if(recommendationDao.existsRecommendationByUserIdAndActivityId(recommendationUpdateRequest.user_id(),recommendationUpdateRequest.activity_id())){
+        if(recommendationDao.existsRecommendationByUserIdAndActivityId(recommendationUpdateRequest.userId(), recommendationUpdateRequest.activityId())){
             throw new DuplicateResourceException("recommendation already exists");
         }
 
-        User user = userDao.selectUserById(recommendationUpdateRequest.user_id()).orElseThrow(
-                ()-> new ResourceNotFoundException("User with id [%s] not found".formatted(recommendationUpdateRequest.user_id()))
+        User user = userDao.selectUserById(recommendationUpdateRequest.userId()).orElseThrow(
+                () -> new ResourceNotFoundException("user with id [%s] not found".formatted(recommendationUpdateRequest.userId()))
         );
 
-        Activity activity = activityDao.selectActivityById(recommendationUpdateRequest.activity_id()).orElseThrow(
-                ()->new ResourceNotFoundException("Activity with id [%s] not found".formatted(recommendationUpdateRequest.activity_id()))
+        Activity activity = activityDao.selectActivityById(recommendationUpdateRequest.activityId()).orElseThrow(
+                () -> new ResourceNotFoundException("activity with id [%s] not found".formatted(recommendationUpdateRequest.activityId()))
         );
 
         boolean changes = false;
 
-        if(recommendationUpdateRequest.description()!=null && !recommendationUpdateRequest.description().equals(existingRecommendation.getDescription())){
+        if(recommendationUpdateRequest.description() != null && !recommendationUpdateRequest.description().equals(existingRecommendation.getDescription())){
             existingRecommendation.setDescription(recommendationUpdateRequest.description());
             changes = true;
         }
 
-        if(recommendationUpdateRequest.user_id()!=null && !recommendationUpdateRequest.user_id().equals(existingRecommendation.getUser().getId())){
+        if(recommendationUpdateRequest.userId() != null && !recommendationUpdateRequest.userId().equals(existingRecommendation.getUser().getId())){
             existingRecommendation.setUser(user);
             changes = true;
         }
 
-        if(recommendationUpdateRequest.activity_id()!=null && !recommendationUpdateRequest.activity_id().equals(existingRecommendation.getActivity().getId())){
+        if(recommendationUpdateRequest.activityId() != null && !recommendationUpdateRequest.activityId().equals(existingRecommendation.getActivity().getId())){
             existingRecommendation.setActivity(activity);
             changes = true;
         }

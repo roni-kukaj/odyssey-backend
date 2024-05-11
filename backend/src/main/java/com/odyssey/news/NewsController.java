@@ -17,13 +17,13 @@ public class NewsController {
         return newsService.getAllNews();
     }
 
-    @GetMapping("/{newsid}")
-    public News GetNewsById(@PathVariable("newsid") Integer newsId){
+    @GetMapping("/{newsId}")
+    public News GetNewsById(@PathVariable("newsId") Integer newsId){
         return newsService.getNews(newsId);
     }
 
-    @GetMapping("/user/{authorid}")
-    public List<News>getNewsByAuthorId(@PathVariable("authorid") Integer authorId){
+    @GetMapping("/user/{authorId}")
+    public List<News>getNewsByAuthorId(@PathVariable("authorId") Integer authorId){
         return newsService.getNewsByAuthorId(authorId);
     }
 
@@ -32,14 +32,14 @@ public class NewsController {
         newsService.addNews(newsRegistrationRequest);
     }
 
-    @DeleteMapping("/{newsid}")
-    public void deleteReview(@PathVariable("newsid") Integer newsId){
+    @DeleteMapping("/{newsId}")
+    public void deleteReview(@PathVariable("newsId") Integer newsId){
         newsService.deleteNews(newsId);
     }
 
 
-    @PutMapping("/{newsid}")
-    public void updateReview(@PathVariable("newsid") Integer newsId, @RequestBody NewsUpdateRequest newsUpdateRequest){
+    @PutMapping("/{newsId}")
+    public void updateReview(@PathVariable("newsId") Integer newsId, @RequestBody NewsUpdateRequest newsUpdateRequest){
         newsService.updateNews(newsId,newsUpdateRequest);
     }
 }

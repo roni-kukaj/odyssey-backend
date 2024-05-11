@@ -25,31 +25,28 @@ public class ReviewJPADataAccessService implements ReviewDao{
     }
 
     @Override
-    public List<Review> selectReviewByUserId(Integer user_id) {
-        return reviewRepository.findReviewByUserId(user_id);
+    public List<Review> selectReviewByUserId(Integer userId) {
+        return reviewRepository.findReviewByUserId(userId);
     }
 
     @Override
-    public List<Review> selectReviewByLocationId(Integer location_id) {
-        return reviewRepository.findReviewByLocationId(location_id);
+    public List<Review> selectReviewByLocationId(Integer locationId) {
+        return reviewRepository.findReviewByLocationId(locationId);
     }
 
     @Override
     public void insertReview(Review review) {
          reviewRepository.save(review);
-
     }
 
     @Override
     public void updateReview(Review review) {
         reviewRepository.save(review);
-
     }
 
     @Override
     public void deleteReviewById(Integer id) {
         reviewRepository.deleteById(id);
-
     }
 
     @Override
@@ -58,17 +55,18 @@ public class ReviewJPADataAccessService implements ReviewDao{
     }
 
     @Override
-    public boolean existsReviewByUserId(Integer user_id) {
-        return reviewRepository.existsReviewByUserId(user_id);
+    public boolean existsReviewByUserId(Integer userId) {
+        return reviewRepository.existsReviewByUserId(userId);
     }
 
     @Override
-    public boolean existsReviewByLocationId(Integer location_id) {
-        return reviewRepository.existsReviewByLocationId(location_id);
+    public boolean existsReviewByLocationId(Integer locationId) {
+        return reviewRepository.existsReviewByLocationId(locationId);
     }
 
-    @Override
-    public boolean existsReviewByUserAndLocationId(Integer user_id, Integer location_id) {
-        return reviewRepository.existsReviewByUserIdAndLocationId(user_id,location_id);
+
+    public boolean existsReviewByUserAndLocationId(Integer userId, Integer locationId) {
+        return reviewRepository.existsReviewByUserIdAndLocationId(userId,locationId);
+
     }
 }

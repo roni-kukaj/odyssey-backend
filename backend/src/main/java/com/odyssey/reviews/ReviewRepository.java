@@ -7,11 +7,10 @@ import java.util.Optional;
 
 public interface ReviewRepository  extends JpaRepository<Review,Integer> {
     boolean existsReviewById(Integer id);
-    boolean existsReviewByUserId(Integer user_id);
-    boolean existsReviewByLocationId(Integer location_id);
-    boolean existsReviewByUserIdAndLocationId(Integer user_id, Integer location_id);
-    List<Review> findReviewByUserId(Integer user_id);
-    List<Review> findReviewByLocationId(Integer location_id);
-
+    boolean existsReviewByUserId(Integer userId);
+    boolean existsReviewByLocationId(Integer locationId);
+    boolean existsReviewByUserIdAndLocationId(Integer userId, Integer locationId);
+    List<Review> findReviewByUserId(Integer userId);
+    List<Review> findReviewByLocationId(Integer locationId);
 
 }

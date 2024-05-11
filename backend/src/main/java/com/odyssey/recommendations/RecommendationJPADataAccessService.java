@@ -36,21 +36,14 @@ public class RecommendationJPADataAccessService implements RecommendationDao {
         return recommendationRepository.findRecommendationByActivityId(activity_id);
     }
 
-//    @Override
-//    public Optional<Recommendation> selectRecommendationByUserAndActivityId(Integer user_id, Integer activity_id) {
-//        return recommendationRepository.findRecommendationByUserAndActivityId(user_id,activity_id);
-//    }
-
     @Override
     public void insertRecommendation(Recommendation recommendation) {
         recommendationRepository.save(recommendation);
-
     }
 
     @Override
     public void upateRecommendation(Recommendation recommendation) {
         recommendationRepository.save(recommendation);
-
     }
 
     @Override
@@ -59,16 +52,12 @@ public class RecommendationJPADataAccessService implements RecommendationDao {
     }
 
     @Override
-    public boolean existsRecommendationByUserIdAndActivityId(Integer user_id, Integer activity_id) {
-        return recommendationRepository.existsRecommendationByUserIdAndActivityId(user_id,activity_id);
+    public boolean existsRecommendationByUserIdAndActivityId(Integer userId, Integer activityId) {
+        return recommendationRepository.existsRecommendationByUserIdAndActivityId(userId, activityId);
     }
-
-
-
 
     @Override
     public void deleteRecommendationById(Integer id) {
         recommendationRepository.deleteById(id);
-
     }
 }

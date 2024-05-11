@@ -23,7 +23,7 @@ public class PlanService {
 
     public PlanService(
             @Qualifier("planJPAService") PlanDao planDao,
-            @Qualifier("userJPAService")UserDao userDao,
+            @Qualifier("userJPAService") UserDao userDao,
             @Qualifier("locationJPAService") LocationDao locationDao) {
         this.planDao = planDao;
         this.userDao = userDao;

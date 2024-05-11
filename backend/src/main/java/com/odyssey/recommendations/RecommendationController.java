@@ -18,19 +18,19 @@ public class RecommendationController {
         return recommendationService.getAllRecommendations();
     }
 
-    @GetMapping("/{recommendationid}")
-    public Recommendation getRecommendationById(@PathVariable("recommendationid") Integer recommendationid){
-        return recommendationService.getRecommendation(recommendationid);
+    @GetMapping("/{recommendationId}")
+    public Recommendation getRecommendationById(@PathVariable("recommendationId") Integer recommendationId){
+        return recommendationService.getRecommendation(recommendationId);
     }
 
-    @GetMapping("/user/{userid}")
-    public Optional<Recommendation> getRecommendationByUserId(@PathVariable("userid") Integer userid){
-        return recommendationService.getRecommendationByUserId(userid);
+    @GetMapping("/user/{userId}")
+    public Recommendation getRecommendationByUserId(@PathVariable("userId") Integer userId){
+        return recommendationService.getRecommendationByUserId(userId);
     }
 
-    @GetMapping("/activity/{activityid}")
-    public Optional<Recommendation> getRecommendationByActivityId(@PathVariable("activityid") Integer activityid){
-        return recommendationService.getRecommendationByActivityId(activityid);
+    @GetMapping("/activity/{activityId}")
+    public Recommendation getRecommendationByActivityId(@PathVariable("activityId") Integer activityId){
+        return recommendationService.getRecommendationByActivityId(activityId);
     }
 
     @PostMapping
@@ -38,9 +38,9 @@ public class RecommendationController {
         recommendationService.addRecommendation(request);
     }
 
-    @DeleteMapping("/{recommendationid}")
-    public void deleteRecommendation(@PathVariable("recommendationid") Integer recommendationid){
-        recommendationService.deleteRecommendation(recommendationid);
+    @DeleteMapping("/{recommendationId}")
+    public void deleteRecommendation(@PathVariable("recommendationId") Integer recommendationId){
+        recommendationService.deleteRecommendation(recommendationId);
     }
 
 

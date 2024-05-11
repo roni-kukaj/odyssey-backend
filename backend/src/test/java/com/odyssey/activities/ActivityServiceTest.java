@@ -80,7 +80,7 @@ class ActivityServiceTest {
     }
 
     @Test
-    void getActivitiesByLocationId() {
+    void willThrowWhenGetActivitiesByLocationIdNotFound() {
         // Given
         Location l = new Location();
         int locationId = 1;

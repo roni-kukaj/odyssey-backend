@@ -41,8 +41,7 @@ public class ReviewServiceTest {
 
     @BeforeEach
      void setUp() {
-        underTest = new ReviewService(reviewDao,userDao,locationDao);
-
+        underTest = new ReviewService(reviewDao, userDao, locationDao);
     }
 
     @Test
@@ -54,23 +53,22 @@ public class ReviewServiceTest {
     @Test
     void getReview() {
         int id = 4;
-        Review review = new Review(id,"The best place to visit", 5,new User(),new Location());
+        Review review = new Review(id,"The best place to visit", 5, new User(), new Location());
         when(reviewDao.selectReviewById(id)).thenReturn(Optional.of(review));
         Review review1 = underTest.getReview(id);
         assertThat(review1).isEqualTo(review);
-
     }
 
     @Test
     void getReviewByUserId() {
         User user = new User();
-        int user_id = 2;
-        user.setId(user_id);
+        int userId = 2;
+        user.setId(userId);
 
-        when(userDao.existsUserById(user_id)).thenReturn(false);
-        assertThatThrownBy(()-> underTest.getReviewByUserId(user_id))
+        when(userDao.existsUserById(userId)).thenReturn(false);
+        assertThatThrownBy( () -> underTest.getReviewByUserId(userId) )
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("User with id [%s] not found".formatted(user_id));
+                .hasMessage("user with id [%s] not found".formatted(userId));
 
         verify(reviewDao,never()).insertReview(any());
     }
@@ -78,13 +76,13 @@ public class ReviewServiceTest {
     @Test
     void getReviewByLocationId() {
         Location location = new Location();
-        int location_id = 2;
-        location.setId(location_id);
+        int locationId = 2;
+        location.setId(locationId);
 
-        when(locationDao.existsLocationById(location_id)).thenReturn(false);
-        assertThatThrownBy(()->underTest.getReviewByLocationId(location_id))
+        when(locationDao.existsLocationById(locationId)).thenReturn(false);
+        assertThatThrownBy(() -> underTest.getReviewByLocationId(locationId))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Location with id [%s] not found".formatted(location_id));
+                .hasMessage("location with id [%s] not found".formatted(locationId));
 
         verify(reviewDao,never()).insertReview(any());
     }
@@ -97,7 +95,7 @@ public class ReviewServiceTest {
 
         assertThatThrownBy(()->underTest.getReview(id))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Review with id [%s] not found".formatted(id));
+                .hasMessage("review with id [%s] not found".formatted(id));
 
 
     }
@@ -107,23 +105,23 @@ public class ReviewServiceTest {
         User user = new User();
         Location location = new Location();
 
-        int user_id = 3;
-        int location_id = 3;
+        int userId = 3;
+        int locationId = 3;
 
-        user.setId(user_id);
-        location.setId(location_id);
+        user.setId(userId);
+        location.setId(locationId);
 
         String description = "The best place to visit";
         Integer rating = 5;
 
         ReviewRegistrationRequest reviewRegistrationRequest = new ReviewRegistrationRequest(
-                description,rating,user_id,location_id
+                description, rating, userId, locationId
         );
 
-        when(userDao.selectUserById(user_id)).thenReturn(Optional.of(user));
-        when(locationDao.selectLocationById(location_id)).thenReturn(Optional.of(location));
+        when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
+        when(locationDao.selectLocationById(locationId)).thenReturn(Optional.of(location));
 
-        when(reviewDao.existsReviewByUserAndLocationId(user_id,location_id)).thenReturn(false);
+        when(reviewDao.existsReviewByUserAndLocationId(userId, locationId)).thenReturn(false);
 
         underTest.addReview(reviewRegistrationRequest);
 
@@ -135,31 +133,31 @@ public class ReviewServiceTest {
         Assertions.assertThat(capturedReview.getId()).isNull();
         Assertions.assertThat(capturedReview.getDescription()).isEqualTo(reviewRegistrationRequest.description());
         Assertions.assertThat(capturedReview.getRating()).isEqualTo(reviewRegistrationRequest.rating());
-        Assertions.assertThat(capturedReview.getUser().getId()).isEqualTo(reviewRegistrationRequest.user_id());
-        Assertions.assertThat(capturedReview.getLocation().getId()).isEqualTo(reviewRegistrationRequest.location_id());
+        Assertions.assertThat(capturedReview.getUser().getId()).isEqualTo(reviewRegistrationRequest.userId());
+        Assertions.assertThat(capturedReview.getLocation().getId()).isEqualTo(reviewRegistrationRequest.locationId());
     }
 
 
     @Test
     void willThrowReviewLocationNotExists() {
         User user = new User();
-        int user_id = 1;
-        user.setId(user_id);
+        int userId = 1;
+        user.setId(userId);
         Location location =new Location();
-        int location_id = 1;
-        location.setId(location_id);
+        int locationId = 1;
+        location.setId(locationId);
 
         String description = "Nice place, but the weather is bad";
         Integer rating = 3;
         ReviewRegistrationRequest reviewRegistrationRequest = new ReviewRegistrationRequest(
-                description,rating,user_id,location_id
+                description, rating, userId, locationId
         );
 
-        when(locationDao.selectLocationById(location_id)).thenReturn(Optional.empty());
-       lenient().when(reviewDao.existsReviewByLocationId(location_id)).thenReturn(false);
-        assertThatThrownBy(()->underTest.addReview(reviewRegistrationRequest))
+        when(locationDao.selectLocationById(locationId)).thenReturn(Optional.empty());
+       lenient().when(reviewDao.existsReviewByLocationId(locationId)).thenReturn(false);
+        assertThatThrownBy(() -> underTest.addReview(reviewRegistrationRequest))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Location with id [%s] not found".formatted(location_id));
+                .hasMessage("location with id [%s] not found".formatted(locationId));
 
         verify(reviewDao,never()).insertReview(any());
 
@@ -169,25 +167,25 @@ public class ReviewServiceTest {
     void willThrowAddReviewAlreadyExists() {
         User user = new User();
         Location location = new Location();
-        int user_id = 2;
-        int location_id = 2;
-        user.setId(user_id);
-        location.setId(location_id);
+        int userId = 2;
+        int locationId = 2;
+        user.setId(userId);
+        location.setId(locationId);
 
         String description = "The best place to visit";
         Integer rating = 5;
 
         ReviewRegistrationRequest reviewRegistrationRequest = new ReviewRegistrationRequest(
-                description,rating, user_id, location_id
+                description,rating, userId, locationId
         );
-        lenient().when(userDao.selectUserById(user_id)).thenReturn(Optional.of(user));
-        lenient().when(locationDao.selectLocationById(location_id)).thenReturn(Optional.of(location));
+        lenient().when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
+        lenient().when(locationDao.selectLocationById(locationId)).thenReturn(Optional.of(location));
 
-        when(reviewDao.existsReviewByUserAndLocationId(user_id,location_id)).thenReturn(true);
+        when(reviewDao.existsReviewByUserAndLocationId(userId, locationId)).thenReturn(true);
 
         Assertions.assertThatThrownBy(()->underTest.addReview(reviewRegistrationRequest))
                 .isInstanceOf(DuplicateResourceException.class)
-                .hasMessage("Review already exists");
+                .hasMessage("review already exists");
 
         verify(reviewDao, never()).insertReview(any());
     }
@@ -208,7 +206,7 @@ public class ReviewServiceTest {
 
         Assertions.assertThatThrownBy(()-> underTest.deleteReview(id))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Review with id [%s] not found".formatted(id));
+                .hasMessage("review with id [%s] not found".formatted(id));
 
         verify(reviewDao,never()).deleteReviewById(any());
     }
@@ -224,17 +222,17 @@ public class ReviewServiceTest {
         String description = "The best";
         Integer rating = 5;
 
-        Review review = new Review(description,rating, user,location);
+        Review review = new Review(description, rating, user, location);
         when(reviewDao.selectReviewById(id)).thenReturn(Optional.of(review));
 
-        String newdescription = "Good to visit";
-        Integer newrating = 4;
+        String newDescription = "Good to visit";
+        Integer newRating = 4;
         User user1 = new User();
         user1.setId(2);
         Location location1 = new Location();
         location1.setId(2);
 
-        ReviewUpdateRequest reviewUpdateRequest = new ReviewUpdateRequest(newdescription, newrating,user1.getId(), location1.getId());
+        ReviewUpdateRequest reviewUpdateRequest = new ReviewUpdateRequest(newDescription, newRating, user1.getId(), location1.getId());
         when(userDao.selectUserById(user1.getId())).thenReturn(Optional.of(user1));
         when(locationDao.selectLocationById(location1.getId())).thenReturn(Optional.of(location1));
         underTest.updateReview(id,reviewUpdateRequest);
@@ -247,8 +245,8 @@ public class ReviewServiceTest {
         Assertions.assertThat(capturedReview.getId()).isNull();
         Assertions.assertThat(capturedReview.getDescription()).isEqualTo(reviewUpdateRequest.description());
         Assertions.assertThat(capturedReview.getRating()).isEqualTo(reviewUpdateRequest.rating());
-        Assertions.assertThat(capturedReview.getUser().getId()).isEqualTo(reviewUpdateRequest.user_id());
-        Assertions.assertThat(capturedReview.getLocation().getId()).isEqualTo(reviewUpdateRequest.location_id());
+        Assertions.assertThat(capturedReview.getUser().getId()).isEqualTo(reviewUpdateRequest.userId());
+        Assertions.assertThat(capturedReview.getLocation().getId()).isEqualTo(reviewUpdateRequest.locationId());
     }
 
 
@@ -271,7 +269,7 @@ public class ReviewServiceTest {
 
         when(userDao.selectUserById(user.getId())).thenReturn(Optional.of(user));
         when(locationDao.selectLocationById(location.getId())).thenReturn(Optional.of(location));
-        when(reviewDao.existsReviewByUserAndLocationId(reviewUpdateRequest.user_id(),reviewUpdateRequest.location_id())).thenReturn(false);
+        when(reviewDao.existsReviewByUserAndLocationId(reviewUpdateRequest.userId(), reviewUpdateRequest.locationId())).thenReturn(false);
 
         Assertions.assertThatThrownBy(() -> underTest.updateReview(id, reviewUpdateRequest))
                 .isInstanceOf(RequestValidationException.class)
