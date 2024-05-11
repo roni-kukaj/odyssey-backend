@@ -85,19 +85,13 @@ public class Flight {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Flight flight = (Flight) o;
         return Objects.equals(id, flight.id) && Objects.equals(name, flight.name) && Objects.equals(time, flight.time) && Objects.equals(origin, flight.origin) && Objects.equals(destination, flight.destination);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(id);
-        result = 31 * result + Objects.hashCode(name);
-        result = 31 * result + Objects.hashCode(time);
-        result = 31 * result + Objects.hashCode(origin);
-        result = 31 * result + Objects.hashCode(destination);
-        return result;
+        return Objects.hash(id, name, time, origin, destination);
     }
 
     @Override

@@ -7,14 +7,16 @@ import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.locations.Location;
 import com.odyssey.locations.LocationDao;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class FlightService {
     private final FlightDao flightDao;
     private final LocationDao locationDao;
 
-    public FlightService(@Qualifier("flightJPAService") FlightDao flightDao, @Qualifier("LocationJPAService") LocationDao locationDao){
+    public FlightService(@Qualifier("flightJPAService") FlightDao flightDao, @Qualifier("locationJPAService") LocationDao locationDao){
         this.flightDao = flightDao;
         this.locationDao = locationDao;
     }
@@ -28,35 +30,39 @@ public class FlightService {
                 .orElseThrow(() -> new ResourceNotFoundException("flight with id [%s] not found".formatted(id)));
     }
 
-    public List<Flight> getFlightsByOriginId(Integer origin) {
-        if (!locationDao.existsLocationById(origin)) {
-            throw new ResourceNotFoundException("origin with id [%s] not found".formatted(origin));
+    public List<Flight> getFlightsByOriginId(Integer originId) {
+        if (!locationDao.existsLocationById(originId)) {
+            throw new ResourceNotFoundException("location with id [%s] not found".formatted(originId));
         }
-        return flightDao.selectFlightsByOrigin(origin);
+        return flightDao.selectFlightsByOriginId(originId);
     }
 
-    public List<Flight> getFlightsByDestinationId(Integer destination) {
-        if (!locationDao.existsLocationById(destination)) {
-            throw new ResourceNotFoundException("destination with id [%s] not found".formatted(destination));
+    public List<Flight> getFlightsByDestinationId(Integer destinationId) {
+        if (!locationDao.existsLocationById(destinationId)) {
+            throw new ResourceNotFoundException("location with id [%s] not found".formatted(destinationId));
         }
-        return flightDao.selectFlightsByDestination(destination);
+        return flightDao.selectFlightsByDestinationId(destinationId);
     }
 
     public void addFlight(FlightRegistrationRequest request) {
-        if (flightDao.existsFlightByName(request.name())){
+        Location origin = locationDao.selectLocationById(request.originId())
+                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.originId())));
+
+        Location destination = locationDao.selectLocationById(request.destinationId())
+                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.destinationId())));
+
+        if (origin.equals(destination)) {
+            throw new RequestValidationException("origin and destination must be different");
+        }
+
+        String flightName = FlightNamingService.getFlightName(origin, destination, request.departure());
+
+        if (flightDao.existsFlightByName(flightName)){
             throw new DuplicateResourceException("flight already exists");
         }
-        Location origin = locationDao.selectLocationById(request.origin())
-                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.origin())));
-
-        Location destination = locationDao.selectLocationById(request.destination())
-                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.destination())));
 
         Flight flight = new Flight(
-                request.name(),
-                request.time(),
-                origin,
-                destination
+                flightName, request.departure(), origin, destination
         );
 
         flightDao.insertFlight(flight);
@@ -75,28 +81,34 @@ public class FlightService {
     public boolean updateFlight(Integer id, FlightUpdateRequest request) {
         Flight existingFlight = getFlight(id);
 
-        if (flightDao.existsFlightByName(request.name())) {
-            throw new DuplicateResourceException("flight already exists");
-        }
+        Location origin = locationDao.selectLocationById(request.originId())
+                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.originId())));
 
-        Location origin = locationDao.selectLocationById(request.origin())
-                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.origin())));
+        Location destination = locationDao.selectLocationById(request.destinationId())
+                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.destinationId())));
 
-        Location destination = locationDao.selectLocationById(request.destination())
-                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.destination())));
+        String flightName = FlightNamingService.getFlightName(origin, destination, request.departure());
 
         boolean changes = false;
 
-        if (request.name() != null && !request.name().equals(existingFlight.getName())) {
-            existingFlight.setName(request.name());
+        if (flightDao.existsFlightByName(flightName)) {
+            throw new DuplicateResourceException("flight already exists");
+        }
+
+        if (!flightName.equals(existingFlight.getName())) {
+            existingFlight.setName(flightName);
             changes = true;
         }
-        if (request.origin() != null && !request.origin().equals(existingFlight.getOrigin().getId())) {
+        if (request.originId() != null && !request.originId().equals(existingFlight.getOrigin().getId())) {
             existingFlight.setOrigin(origin);
             changes = true;
         }
-        if (request.destination() != null && !request.destination().equals(existingFlight.getDestination().getId())) {
+        if (request.destinationId() != null && !request.destinationId().equals(existingFlight.getDestination().getId())) {
             existingFlight.setDestination(destination);
+            changes = true;
+        }
+        if (request.departure() != null && !request.departure().equals(existingFlight.getTime())) {
+            existingFlight.setTime(request.departure());
             changes = true;
         }
 

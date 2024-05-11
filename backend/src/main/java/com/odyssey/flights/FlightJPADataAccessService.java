@@ -25,13 +25,13 @@ public class FlightJPADataAccessService implements FlightDao{
     }
 
     @Override
-    public List<Flight> selectFlightsByOrigin(Integer origin) {
-        return flightRepository.findByOriginId(origin);
+    public List<Flight> selectFlightsByOriginId(Integer originId) {
+        return flightRepository.findByOriginId(originId);
     }
 
     @Override
-    public List<Flight> selectFlightsByDestination(Integer destination) {
-        return flightRepository.findByDestinationId(destination);
+    public List<Flight> selectFlightsByDestinationId(Integer destinationId) {
+        return flightRepository.findByDestinationId(destinationId);
     }
 
     @Override
@@ -53,8 +53,6 @@ public class FlightJPADataAccessService implements FlightDao{
     public boolean existsFlightByName(String name) {
        return flightRepository.existsFlightByName(name);
     }
-
-
 
     @Override
     public void deleteFlightById(Integer id) {

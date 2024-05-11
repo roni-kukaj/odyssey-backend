@@ -1,7 +1,5 @@
 package com.odyssey.flights;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +13,7 @@ public class FlightController {
     private FlightService flightService;
 
     @GetMapping
-    public List<Flight>getAllFlights(){
+    public List<Flight> getAllFlights(){
         return flightService.getAllFlights();
     }
 
@@ -24,14 +22,14 @@ public class FlightController {
         return flightService.getFlight(flightId);
     }
 
-    @GetMapping("/location/{origin}")
-    public List<Flight> getFlightsByOriginId(@PathVariable("origin") Integer origin) {
-        return flightService.getFlightsByOriginId(origin);
+    @GetMapping("/origin/{originId}")
+    public List<Flight> getFlightsByOriginId(@PathVariable("originId") Integer originId) {
+        return flightService.getFlightsByOriginId(originId);
     }
 
-    @GetMapping("/location/{destination}")
-    public List<Flight> getFlightsByDestinationId(@PathVariable("destination") Integer destination) {
-        return flightService.getFlightsByDestinationId(destination);
+    @GetMapping("/destination/{destinationId}")
+    public List<Flight> getFlightsByDestinationId(@PathVariable("destinationId") Integer destinationId) {
+        return flightService.getFlightsByDestinationId(destinationId);
     }
 
     @PostMapping
@@ -44,9 +42,8 @@ public class FlightController {
         flightService.deleteFlight(flightId);
     }
 
-    @PutMapping("/{FlightId}")
-    public void flightFlight(@PathVariable("flightId") Integer flightId, @RequestBody FlightUpdateRequest request) {
+    @PutMapping("/{flightId}")
+    public void updateFlight(@PathVariable("flightId") Integer flightId, @RequestBody FlightUpdateRequest request) {
         flightService.updateFlight(flightId, request);
     }
-
 }
