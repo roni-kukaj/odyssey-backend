@@ -1,15 +1,19 @@
 package com.odyssey.trips;
 
 import com.odyssey.activities.Activity;
+import com.odyssey.activities.ActivityDao;
 import com.odyssey.activities.ActivityService;
 import com.odyssey.events.Event;
+import com.odyssey.events.EventDao;
 import com.odyssey.events.EventService;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.items.Item;
+import com.odyssey.items.ItemDao;
 import com.odyssey.items.ItemService;
 import com.odyssey.locations.Location;
+import com.odyssey.locations.LocationDao;
 import com.odyssey.locations.LocationService;
 import com.odyssey.user.User;
 import com.odyssey.user.UserDao;
@@ -23,21 +27,27 @@ import java.util.*;
 @Service
 public class TripService {
 
-    @Autowired private UserService userService;
-    @Autowired private ItemService itemService;
-    @Autowired private LocationService locationService;
-    @Autowired private ActivityService activityService;
-    @Autowired private EventService eventService;
-
     private final TripDao tripDao;
     private final UserDao userDao;
+    private final ItemDao itemDao;
+    private final LocationDao locationDao;
+    private final ActivityDao activityDao;
+    private final EventDao eventDao;
 
     public TripService(
             @Qualifier("tripJPAService") TripDao tripDao,
-            @Qualifier("userJPAService") UserDao userDao
+            @Qualifier("userJPAService") UserDao userDao,
+            @Qualifier("itemJPAService") ItemDao itemDao,
+            @Qualifier("locationJPAService") LocationDao locationDao,
+            @Qualifier("activityJPAService") ActivityDao activityDao,
+            @Qualifier("eventJPAService") EventDao eventDao
             ) {
         this.tripDao = tripDao;
         this.userDao = userDao;
+        this.itemDao = itemDao;
+        this.locationDao = locationDao;
+        this.activityDao = activityDao;
+        this.eventDao = eventDao;
     }
 
     public List<Trip> getAllTrips() {
@@ -60,23 +70,29 @@ public class TripService {
         if (tripDao.existsTripByUserIdAndStartDate(request.userId(), request.startDate())) {
             throw new DuplicateResourceException("trip already exists");
         }
-        User user = userService.getUser(request.userId());
+        User user = userDao.selectUserById(request.userId())
+                .orElseThrow(() -> new ResourceNotFoundException("user with id [%s] not found".formatted(request.userId())));
+
         Set<Item> items = new HashSet<>();
         Set<Location> places = new HashSet<>();
         Set<Activity> activities = new HashSet<>();
         Set<Event> events = new HashSet<>();
 
         for (Integer i: request.itemIds()) {
-            items.add(itemService.getItem(i));
+            items.add(itemDao.selectItemById(i)
+                    .orElseThrow(() -> new ResourceNotFoundException("item with id [%s] not found".formatted(i))));
         }
         for (Integer i: request.placeIds()) {
-            places.add(locationService.getLocation(i));
+            places.add(locationDao.selectLocationById(i)
+                    .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(i))));
         }
         for (Integer i: request.activityIds()) {
-            activities.add(activityService.getActivity(i));
+            activities.add(activityDao.selectActivityById(i)
+                    .orElseThrow(() -> new ResourceNotFoundException("activity with id [%s] not found".formatted(i))));
         }
         for (Integer i: request.eventIds()) {
-            events.add(eventService.getEvent(i));
+            events.add(eventDao.selectEventById(i)
+                    .orElseThrow(() -> new ResourceNotFoundException("event with id [%s] not found".formatted(i))));
         }
 
         Trip trip = new Trip(
@@ -97,23 +113,28 @@ public class TripService {
 
     public boolean updateTrip(Integer tripId, TripUpdateRequest request) {
         Trip existingTrip = getTrip(tripId);
-        User user = userService.getUser(request.userId());
+        User user = userDao.selectUserById(request.userId())
+                        .orElseThrow(() -> new ResourceNotFoundException("user with id [%s] not found".formatted(request.userId())));
         Set<Item> items = new HashSet<>();
         Set<Location> places = new HashSet<>();
         Set<Activity> activities = new HashSet<>();
         Set<Event> events = new HashSet<>();
 
         for (Integer i: request.itemIds()) {
-            items.add(itemService.getItem(i));
+            items.add(itemDao.selectItemById(i)
+                    .orElseThrow(() -> new ResourceNotFoundException("item with id [%s] not found".formatted(i))));
         }
         for (Integer i: request.placeIds()) {
-            places.add(locationService.getLocation(i));
+            places.add(locationDao.selectLocationById(i)
+                    .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(i))));
         }
         for (Integer i: request.activityIds()) {
-            activities.add(activityService.getActivity(i));
+            activities.add(activityDao.selectActivityById(i)
+                    .orElseThrow(() -> new ResourceNotFoundException("activity with id [%s] not found".formatted(i))));
         }
         for (Integer i: request.eventIds()) {
-            events.add(eventService.getEvent(i));
+            events.add(eventDao.selectEventById(i)
+                    .orElseThrow(() -> new ResourceNotFoundException("event with id [%s] not found".formatted(i))));
         }
 
         boolean changes = false;
