@@ -187,3 +187,8 @@ CREATE TABLE trip_place_list(
 	CONSTRAINT trip_place_list_trips_fk FOREIGN KEY(trip_id) REFERENCES trips(id),
 	CONSTRAINT trip_place_list_locations_fk FOREIGN KEY(location_id) REFERENCES locations(id)
 );
+
+CREATE TABLE subscribers (
+    id BIGSERIAL PRIMARY KEY,
+    email TEXT NOT NULL
+);
