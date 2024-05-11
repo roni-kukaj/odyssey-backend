@@ -4,6 +4,7 @@ package com.odyssey.journey;
 import com.github.javafaker.Faker;
 
 import com.odyssey.flights.Flight;
+import com.odyssey.flights.FlightNamingService;
 import com.odyssey.flights.FlightRegistrationRequest;
 import com.odyssey.flights.FlightUpdateRequest;
 import com.odyssey.locations.Location;
@@ -75,14 +76,15 @@ public class FlightIntegrationTest {
     @Test
     void canRegisterAFlight() {
         Faker faker = new Faker();
-        String name = faker.name().fullName();
         Date futureDate = faker.date().future(365, TimeUnit.DAYS); // A date within the next year
         Timestamp time = new Timestamp(futureDate.getTime());
         Location origin = setUpLocation();
         Location destination = setUpLocation();
 
+        String name = FlightNamingService.getFlightName(origin, destination, time);
+
         FlightRegistrationRequest request = new FlightRegistrationRequest(
-                name, time, origin.getId(), destination.getId()
+                time, origin.getId(), destination.getId()
         );
         webTestClient.post()
                 .uri(FLIGHT_URI)
@@ -133,14 +135,14 @@ public class FlightIntegrationTest {
     @Test
     void canDeleteFlight() {
         Faker faker = new Faker();
-        String name = faker.name().fullName();
         Date futureDate = faker.date().future(365, TimeUnit.DAYS);
         Timestamp time = new Timestamp(futureDate.getTime());
         Location origin = setUpLocation();
         Location destination = setUpLocation();
+        String name = FlightNamingService.getFlightName(origin, destination, time);
 
         FlightRegistrationRequest request = new FlightRegistrationRequest(
-                name, time, origin.getId(), destination.getId()
+                time, origin.getId(), destination.getId()
         );
         webTestClient.post()
                 .uri(FLIGHT_URI)
@@ -193,14 +195,14 @@ public class FlightIntegrationTest {
     @Test
     void canUpdateFlightAllFields() {
         Faker faker = new Faker();
-        String name = faker.name().fullName();
         Date futureDate = faker.date().future(365, TimeUnit.DAYS);
         Timestamp time = new Timestamp(futureDate.getTime());
         Location origin = setUpLocation();
         Location destination = setUpLocation();
+        String name = FlightNamingService.getFlightName(origin, destination, time);
 
         FlightRegistrationRequest request = new FlightRegistrationRequest(
-                name, time, origin.getId(), destination.getId()
+                time, origin.getId(), destination.getId()
         );
         webTestClient.post()
                 .uri(FLIGHT_URI)
@@ -229,13 +231,12 @@ public class FlightIntegrationTest {
                 .orElseThrow();
 
         Faker faker2 = new Faker();
-        String name2 = faker.name().fullName();
         Date futureDate2 = faker.date().future(365, TimeUnit.DAYS);
         Timestamp time2 = new Timestamp(futureDate.getTime());
         Location origin2 = setUpLocation();
         Location destination2 = setUpLocation();;
         FlightUpdateRequest updateRequest = new FlightUpdateRequest(
-                name2, time2, origin2.getId(), destination2.getId()
+                time2, origin2.getId(), destination2.getId()
         );
 
         webTestClient.put()
@@ -257,9 +258,11 @@ public class FlightIntegrationTest {
                 .returnResult()
                 .getResponseBody();
 
+        String name2 = FlightNamingService.getFlightName(origin2, destination2, time2);
+
         Flight expected = new Flight(
                 id, name2, time2, origin2, destination2
-                );
+        );
         assertThat(updatedFlight).isEqualTo(expected);
     }
 }
