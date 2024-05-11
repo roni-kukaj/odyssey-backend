@@ -29,5 +29,4 @@ public class FlightTest {
         assertThat(flight.getTime()).isEqualTo(timestamp);
 
     }
-
 }

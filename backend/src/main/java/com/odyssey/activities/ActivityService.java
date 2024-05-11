@@ -5,6 +5,8 @@ import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.locations.Location;
 import com.odyssey.locations.LocationDao;
+import com.odyssey.locations.LocationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 

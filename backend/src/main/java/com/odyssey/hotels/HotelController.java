@@ -13,7 +13,7 @@ public class HotelController {
     private HotelService hotelService;
 
     @GetMapping
-    public List<Hotel> getALlHotels() {
+    public List<Hotel> getAllHotels() {
         return hotelService.getAllHotels();
     }
 

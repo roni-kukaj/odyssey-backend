@@ -23,7 +23,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FlightServiceTest {
-
     @Mock
     private FlightDao flightDao;
     @Mock

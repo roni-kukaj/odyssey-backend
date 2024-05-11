@@ -105,5 +105,4 @@ public class FlightJPADataAccessServiceTest {
         flightJPADataAccessService.deleteFlightById(id);
         verify(flightRepository).deleteById(id);
     }
-
 }

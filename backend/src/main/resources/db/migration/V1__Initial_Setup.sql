@@ -1,4 +1,3 @@
-
 CREATE TABLE locations(
 	id BIGSERIAL PRIMARY KEY,
 	city TEXT NOT NULL,
@@ -88,9 +87,9 @@ CREATE TABLE reviews(
 	description TEXT NOT NULL,
 	rating BIGINT NOT NULL,
 	user_id BIGINT NOT NULL,
-	locations_id INTEGER NOT NULL,
+	location_id INTEGER NOT NULL,
 	CONSTRAINT reviews_user_fk FOREIGN KEY(user_id) REFERENCES users(id),
-	CONSTRAINT reviews_location_fk FOREIGN KEY(locations_id) REFERENCES locations(id)
+	CONSTRAINT reviews_location_fk FOREIGN KEY(location_id) REFERENCES locations(id)
 
 );
 
@@ -120,7 +119,6 @@ CREATE TABLE bookmarks(
 	user_id BIGINT NOT NULL,
 	CONSTRAINT bookmarks_location_fk FOREIGN KEY(location_id) REFERENCES locations(id),
 	CONSTRAINT bookmarks_user_fk FOREIGN KEY(user_id) REFERENCES users(id)
-
 );
 
 CREATE TABLE flights(
@@ -134,6 +132,14 @@ CREATE TABLE flights(
 
 );
 
+CREATE TABLE plans (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    location_id BIGINT NOT NULL,
+    visit_date DATE NOT NULL,
+    CONSTRAINT plans_user_fk FOREIGN KEY(user_id) REFERENCES users(id),
+    CONSTRAINT plans_location_fk FOREIGN KEY (location_id) REFERENCES locations(id)
+);
 
 CREATE TABLE local_cuisine(
 	id BIGSERIAL PRIMARY KEY,
@@ -147,7 +153,7 @@ CREATE TABLE local_cuisine(
 
 CREATE TABLE items(
 	id BIGSERIAL PRIMARY KEY,
-	item_name TEXT NOT NULL
+	name TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE trip_items(
@@ -162,8 +168,6 @@ CREATE TABLE trip_activity_list(
 	id BIGSERIAL PRIMARY KEY,
 	trip_id BIGINT NOT NULL,
 	activity_id BIGINT NOT NULL,
-	planned_date DATE NOT NULL,
-	visit_order INTEGER NOT NULL,
 	CONSTRAINT trip_activity_list_trips_fk FOREIGN KEY(trip_id) REFERENCES trips(id),
 	CONSTRAINT trip_activity_list_activities_fk FOREIGN KEY(activity_id) REFERENCES activities(id)
 );
@@ -172,8 +176,6 @@ CREATE TABLE trip_event_list(
 	id BIGSERIAL PRIMARY KEY,
 	trip_id BIGINT NOT NULL,
 	event_id BIGINT NOT NULL,
-	planned_date DATE NOT NULL,
-	visit_order INTEGER NOT NULL,
 	CONSTRAINT trip_event_list_trips_fk FOREIGN KEY(trip_id) REFERENCES trips(id),
 	CONSTRAINT trip_event_list_events_fk FOREIGN KEY(event_id) REFERENCES events(id)
 );
@@ -182,8 +184,6 @@ CREATE TABLE trip_place_list(
 	id BIGSERIAL PRIMARY KEY,
 	trip_id BIGINT NOT NULL,
 	location_id BIGINT NOT NULL,
-	planned_date DATE NOT NULL,
-	visit_order INTEGER NOT NULL,
 	CONSTRAINT trip_place_list_trips_fk FOREIGN KEY(trip_id) REFERENCES trips(id),
 	CONSTRAINT trip_place_list_locations_fk FOREIGN KEY(location_id) REFERENCES locations(id)
 );

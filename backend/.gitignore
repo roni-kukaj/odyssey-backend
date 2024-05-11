@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+src\main\java\com\odyssey\news
+src\test\java\com\odyssey\news
+src\test\java\com\odyssey\journey\NewsIntegrationTest.java
+src\main\java\com\odysses\reviews
+src\test\java\com\odyssey\reviews
+src\test\java\com\odyssey\journey\ReviewsIntegrationTest.java
