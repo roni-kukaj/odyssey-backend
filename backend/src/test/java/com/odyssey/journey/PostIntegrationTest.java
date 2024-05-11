@@ -1,4 +1,5 @@
 package com.odyssey.journey;
+
 import com.github.javafaker.Faker;
 import com.odyssey.activities.Activity;
 import com.odyssey.activities.ActivityRegistrationRequest;
@@ -9,6 +10,11 @@ import com.odyssey.locations.LocationUpdateRequest;
 import com.odyssey.plans.Plan;
 import com.odyssey.plans.PlanRegistrationRequest;
 import com.odyssey.plans.PlanUpdateRequest;
+import com.odyssey.posts.Post;
+import com.odyssey.posts.PostRegistrationRequest;
+import com.odyssey.posts.PostUpdateRequest;
+import com.odyssey.trips.Trip;
+import com.odyssey.trips.TripRegistrationRequest;
 import com.odyssey.user.User;
 import com.odyssey.role.Role;
 import com.odyssey.user.UserRegistrationRequest;
@@ -16,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.core.Local;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -23,60 +30,28 @@ import reactor.core.publisher.Mono;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LOCAL_DATE;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PlanIntegrationTest {
+public class PostIntegrationTest {
 
     @Autowired
     private WebTestClient webTestClient;
 
     private static final Random RANDOM = new Random();
 
-    private static final String PLAN_URI = "/api/v1/plans";
-    private static final String LOCATION_URI = "/api/v1/locations";
+    private static final String POST_URI = "/api/v1/posts";
+    private static final String TRIP_URI = "/api/v1/trips";
     private static final String USER_URI = "/api/v1/users";
 
-    private Location setUpLocation() {
-        Faker faker = new Faker();
-        String city = faker.name().fullName();
-        String country = city;
-        String picture = "pic";
-        LocationRegistrationRequest request = new LocationRegistrationRequest(
-                city,
-                country,
-                picture
-        );
-        webTestClient.post()
-                .uri(LOCATION_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), LocationRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
-        List<Location> allLocations = webTestClient.get()
-                .uri(LOCATION_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBodyList(new ParameterizedTypeReference<Location>() {})
-                .returnResult()
-                .getResponseBody();
-
-        int id = allLocations.stream()
-                .filter(location -> location.getCity().equals(city) && location.getCountry().equals(country))
-                .map(Location::getId)
-                .findFirst()
-                .orElseThrow();
-        return new Location(id, city, country, picture);
-    }
     private User setUpUser() {
         Faker faker = new Faker();
         String name = faker.name().fullName();
@@ -114,113 +89,148 @@ public class PlanIntegrationTest {
         return new User(id, name, username, email, password, avatar, role);
     }
 
-    @Test
-    void canRegisterAPlan() throws ParseException {
-        User user = setUpUser();
-        Location location = setUpLocation();
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01");
-
-        PlanRegistrationRequest request = new PlanRegistrationRequest(
-                user.getId(), location.getId(), date
+    private Trip setUpTrip(User user) {
+        LocalDate localDate = LocalDate.now();
+        TripRegistrationRequest request = new TripRegistrationRequest(
+                user.getId(),
+                localDate,
+                localDate,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList()
         );
-
         webTestClient.post()
-                .uri(PLAN_URI)
+                .uri(TRIP_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), PlanRegistrationRequest.class)
+                .body(Mono.just(request), TripRegistrationRequest.class)
                 .exchange()
                 .expectStatus()
                 .isOk();
-
-        List<Plan> allPlans = webTestClient.get()
-                .uri(PLAN_URI)
+        List<Trip> allTrips = webTestClient.get()
+                .uri(TRIP_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(new ParameterizedTypeReference<Plan>() {})
+                .expectBodyList(new ParameterizedTypeReference<Trip>() {})
                 .returnResult()
                 .getResponseBody();
 
-        Plan expectedPlan = new Plan(
-                user, location, date
-        );
-
-        assertThat(allPlans)
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                .contains(expectedPlan);
-
-        int id = allPlans.stream()
-                .filter(plan -> plan.getUser().equals(user) && plan.getLocation().equals(location))
-                .map(Plan::getId)
+        int id = allTrips.stream()
+                .filter(trip -> trip.getStartDate().equals(localDate) && trip.getEndDate().equals(localDate) && trip.getUser().getId().equals(user.getId()))
+                .map(Trip::getId)
                 .findFirst()
                 .orElseThrow();
-
-        expectedPlan.setId(id);
-
-        webTestClient.get()
-                .uri(PLAN_URI + "/{id}", id)
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody(new ParameterizedTypeReference<Plan>() {})
-                .isEqualTo(expectedPlan);
+        return new Trip(id, user, localDate, localDate, Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
     }
 
     @Test
-    void canDeletePlanById() throws ParseException {
+    void canRegisterAPost() {
         User user = setUpUser();
-        Location location = setUpLocation();
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01");
+        Trip trip = setUpTrip(user);
 
-        PlanRegistrationRequest request = new PlanRegistrationRequest(
-                user.getId(), location.getId(), date
+        PostRegistrationRequest request = new PostRegistrationRequest(
+                "Post", "Image", user.getId(), trip.getId()
         );
 
         webTestClient.post()
-                .uri(PLAN_URI)
+                .uri(POST_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), PlanRegistrationRequest.class)
+                .body(Mono.just(request), PostRegistrationRequest.class)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
-        List<Plan> allPlans = webTestClient.get()
-                .uri(PLAN_URI)
+        List<Post> allPosts = webTestClient.get()
+                .uri(POST_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(new ParameterizedTypeReference<Plan>() {})
+                .expectBodyList(new ParameterizedTypeReference<Post>() {})
                 .returnResult()
                 .getResponseBody();
 
-        Plan expectedPlan = new Plan(
-                user, location, date
+        Post expectedPost = new Post(
+                "Post", "Image", trip.getStartDate(), user, trip
         );
 
-        assertThat(allPlans)
+        assertThat(allPosts)
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                .contains(expectedPlan);
+                .contains(expectedPost);
 
-        int id = allPlans.stream()
-                .filter(plan -> plan.getUser().equals(user) && plan.getLocation().equals(location))
-                .map(Plan::getId)
+        int id = allPosts.stream()
+                .filter(post -> post.getUser().equals(user) && post.getTrip().equals(trip))
+                .map(Post::getId)
+                .findFirst()
+                .orElseThrow();
+
+        expectedPost.setId(id);
+
+        webTestClient.get()
+                .uri(POST_URI + "/{id}", id)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(new ParameterizedTypeReference<Post>() {})
+                .isEqualTo(expectedPost);
+    }
+
+    @Test
+    void canDeletePostById() {
+        User user = setUpUser();
+        Trip trip = setUpTrip(user);
+
+        PostRegistrationRequest request = new PostRegistrationRequest(
+                "Post", "Image", user.getId(), trip.getId()
+        );
+
+        webTestClient.post()
+                .uri(POST_URI)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(request), PostRegistrationRequest.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        List<Post> allPosts = webTestClient.get()
+                .uri(POST_URI)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBodyList(new ParameterizedTypeReference<Post>() {})
+                .returnResult()
+                .getResponseBody();
+
+        Post expectedPost = new Post(
+                "Post", "Image", trip.getStartDate(), user, trip
+        );
+
+        assertThat(allPosts)
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                .contains(expectedPost);
+
+        int id = allPosts.stream()
+                .filter(post -> post.getUser().equals(user) && post.getTrip().equals(trip))
+                .map(Post::getId)
                 .findFirst()
                 .orElseThrow();
 
         webTestClient.delete()
-                .uri(PLAN_URI + "/{id}", id)
+                .uri(POST_URI + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
         webTestClient.get()
-                .uri(PLAN_URI + "/{id}", id)
+                .uri(POST_URI + "/{id}", id)
                 .accept()
                 .exchange()
                 .expectStatus()
@@ -228,127 +238,127 @@ public class PlanIntegrationTest {
     }
 
     @Test
-    void canDeletePlanByUserId() throws ParseException {
+    void canDeletePostsByUserId() {
         User user = setUpUser();
-        Location location = setUpLocation();
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01");
+        Trip trip = setUpTrip(user);
 
-        PlanRegistrationRequest request = new PlanRegistrationRequest(
-                user.getId(), location.getId(), date
+        PostRegistrationRequest request = new PostRegistrationRequest(
+                "Post", "Image", user.getId(), trip.getId()
         );
 
         webTestClient.post()
-                .uri(PLAN_URI)
+                .uri(POST_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), PlanRegistrationRequest.class)
+                .body(Mono.just(request), PostRegistrationRequest.class)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
-        List<Plan> allPlans = webTestClient.get()
-                .uri(PLAN_URI)
+        List<Post> allPosts = webTestClient.get()
+                .uri(POST_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(new ParameterizedTypeReference<Plan>() {})
+                .expectBodyList(new ParameterizedTypeReference<Post>() {})
                 .returnResult()
                 .getResponseBody();
 
-        Plan expectedPlan = new Plan(
-                user, location, date
+        Post expectedPost = new Post(
+                "Post", "Image", trip.getStartDate(), user, trip
         );
 
-        assertThat(allPlans)
+        assertThat(allPosts)
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                .contains(expectedPlan);
+                .contains(expectedPost);
 
-        int id = allPlans.stream()
-                .filter(plan -> plan.getUser().equals(user) && plan.getLocation().equals(location))
-                .map(Plan::getId)
+        int id = allPosts.stream()
+                .filter(post -> post.getUser().equals(user) && post.getTrip().equals(trip))
+                .map(Post::getId)
                 .findFirst()
                 .orElseThrow();
 
         webTestClient.delete()
-                .uri(PLAN_URI + "/user/{id}", user.getId())
+                .uri(POST_URI + "/user/{id}", user.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
         webTestClient.get()
-                .uri(PLAN_URI + "/{id}", id)
+                .uri(POST_URI + "/{id}", id)
                 .accept()
                 .exchange()
                 .expectStatus()
                 .isNotFound();
+
     }
 
     @Test
-    void canUpdatePlanAllFields() throws ParseException {
+    void canUpdatePostAllField() {
         User user = setUpUser();
-        Location location = setUpLocation();
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01");
+        Trip trip = setUpTrip(user);
 
-        PlanRegistrationRequest request = new PlanRegistrationRequest(
-                user.getId(), location.getId(), date
+        PostRegistrationRequest request = new PostRegistrationRequest(
+                "Post", "Image", user.getId(), trip.getId()
         );
 
         webTestClient.post()
-                .uri(PLAN_URI)
+                .uri(POST_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), PlanRegistrationRequest.class)
+                .body(Mono.just(request), PostRegistrationRequest.class)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
-        List<Plan> allPlans = webTestClient.get()
-                .uri(PLAN_URI)
+        List<Post> allPosts = webTestClient.get()
+                .uri(POST_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(new ParameterizedTypeReference<Plan>() {})
+                .expectBodyList(new ParameterizedTypeReference<Post>() {})
                 .returnResult()
                 .getResponseBody();
 
-        int id = allPlans.stream()
-                .filter(plan -> plan.getUser().equals(user) && plan.getLocation().equals(location))
-                .map(Plan::getId)
+        int id = allPosts.stream()
+                .filter(post -> post.getUser().equals(user) && post.getTrip().equals(trip))
+                .map(Post::getId)
                 .findFirst()
                 .orElseThrow();
 
-        Location location2 = setUpLocation();
-        Date date2 = new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01");
-        PlanUpdateRequest updateRequest = new PlanUpdateRequest(
-                user.getId(), location2.getId(), date2
+        String newText = "new text";
+        String newImage = "new image";
+        PostUpdateRequest updateRequest = new PostUpdateRequest(
+                newText, newImage
         );
 
         webTestClient.put()
-                .uri(PLAN_URI + "/{id}", id)
+                .uri(POST_URI + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(updateRequest), PlanUpdateRequest.class)
+                .body(Mono.just(updateRequest), PostUpdateRequest.class)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
-        Plan updatedPlan = webTestClient.get()
-                .uri(PLAN_URI + "/{id}", id)
+        Post updatedPost = webTestClient.get()
+                .uri(POST_URI + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(Plan.class)
+                .expectBody(Post.class)
                 .returnResult()
                 .getResponseBody();
 
-        Plan expected = new Plan(
-                id, user, location2, date2
+        Post expected = new Post(
+                id, newText, newImage, trip.getStartDate(), user, trip
         );
-        assertThat(updatedPlan).isEqualTo(expected);
+        assertThat(updatedPost).isEqualTo(expected);
+
     }
 
 }
