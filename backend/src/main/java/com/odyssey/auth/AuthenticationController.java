@@ -18,14 +18,28 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody UserRegistrationRequest request
     ) {
-        return ResponseEntity.ok(service.register(request));
+        return ResponseEntity.ok(service.registerUser(request));
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> register(
+    @PostMapping("/authenticate-user")
+    public ResponseEntity<AuthenticationResponse> authenticateUser(
             @RequestBody AuthenticationRequest request
     ) {
-        return ResponseEntity.ok(service.authenticate(request));
+        return ResponseEntity.ok(service.authenticateUser(request));
+    }
+
+    @PostMapping("/authenticate-admin")
+    public ResponseEntity<AuthenticationResponse> authenticateAdmin(
+            @RequestBody AuthenticationRequest request
+    ) {
+        return ResponseEntity.ok(service.authenticateAdmin(request));
+    }
+
+    @PostMapping("/authenticate-headadmin")
+    public ResponseEntity<AuthenticationResponse> authenticateHeadAdmin(
+            @RequestBody AuthenticationRequest request
+    ) {
+        return ResponseEntity.ok(service.authenticateHeadAdmin(request));
     }
 
 }

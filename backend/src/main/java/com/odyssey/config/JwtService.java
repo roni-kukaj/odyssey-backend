@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import com.odyssey.user.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class JwtService {
 
     // This key is only meant for development
     // It will not be used in production
-    private static final String SECRET_KEY = "a0cb2a7dc2c4b60910f4737d71c5102a0249c42bdc204d29790b6ead5e0510d5";
+    private static final String SECRET_KEY = "3638442f26c58b545f286a98043dbc90d580f0eef23c08f62e5ef8d495ec5d42dfdd0c12b705ea2c55bef1da4f019bdcffee5d949812c93a655be9993511a4ed";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -47,12 +48,30 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    public String generateUserToken(Map<String, Object> extraClaims, User user) {
+        return Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(user.getUsername())
+                .claim("roles", user.getRole().getName())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+//                .setSubject(String.format("%s", user.getUsername()))
+//                .setIssuer("Odyssey")
+//                .claim("roles", user.getRole().getName())
+//                .setIssuedAt(new Date())
+//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+//                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+//                .compact();
+    }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
+                .claim("roles", userDetails.getAuthorities())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
