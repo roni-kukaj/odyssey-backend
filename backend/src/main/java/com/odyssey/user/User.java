@@ -1,41 +1,33 @@
 package com.odyssey.user;
 
-import com.odyssey.follow.Follow;
 import com.odyssey.role.Role;
 import jakarta.persistence.*;
+import lombok.Builder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
-@Table(
-        name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "user_email_unique",
-                        columnNames = "email"
-                )
-        }
-)
-public class User {
+@Table(name = "users")
+@Builder
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(nullable = false) private String fullname;
     @Column(nullable = false, unique = true) private String username;
-    @Column(nullable = false) private String email;
+    @Column(nullable = false, unique = true) private String email;
     @Column(nullable = false) private String password;
     @Column(nullable = false) private String avatar;
+
     @ManyToOne()
     @JoinColumn(name="role_id", referencedColumnName = "id")
     private Role role;
-
-//    @OneToMany(mappedBy = "follower")
-//    private Set<Follow> followers = new HashSet<>();
-//
-//    @OneToMany(mappedBy = "following")
-//    private Set<Follow> followings = new HashSet<>();
 
     public User() {}
 
@@ -56,6 +48,31 @@ public class User {
         this.password = password;
         this.avatar = avatar;
         this.role = role;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.getName()));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public Integer getId() {
