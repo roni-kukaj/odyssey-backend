@@ -17,7 +17,7 @@ public class Event {
     private Integer id;
     @Column(nullable = false) private String name;
     @Column(nullable = false) private String description;
-    @Column(nullable = false)private String image;
+    @Column(nullable = false) private String image;
     @Column(nullable = false) private LocalDate date;
     @Column(nullable = false) private Double cost;
     @Column(nullable = false) private Integer duration;

@@ -26,24 +26,20 @@ public class News {
 
     public News(){}
 
-    public News(Integer id, User author,String title, String description, String picture) {
+    public News(String title, String description, String picture, User author) {
+        this.title = title;
+        this.description = description;
+        this.picture = picture;
+        this.author = author;
+    }
+
+    public News(Integer id, String title, String description, String picture, User author) {
         this.id = id;
-        this.author = author;
         this.title = title;
         this.description = description;
         this.picture = picture;
-
-    }
-
-
-    public News(User author,String title, String description, String picture) {
-        this.title = title;
         this.author = author;
-        this.description = description;
-        this.picture = picture;
-
     }
-
 
     public Integer getId() {
         return id;

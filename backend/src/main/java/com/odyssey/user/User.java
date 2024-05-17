@@ -31,12 +31,6 @@ public class User {
     @JoinColumn(name="role_id", referencedColumnName = "id")
     private Role role;
 
-//    @OneToMany(mappedBy = "follower")
-//    private Set<Follow> followers = new HashSet<>();
-//
-//    @OneToMany(mappedBy = "following")
-//    private Set<Follow> followings = new HashSet<>();
-
     public User() {}
 
     public User(String fullname, String username, String email, String password, String avatar, Role role) {

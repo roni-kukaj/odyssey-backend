@@ -1,12 +1,11 @@
 package com.odyssey.locations;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/locations")
@@ -25,10 +24,14 @@ public class LocationController {
         return locationService.getLocation(locationId);
     }
 
-
-    @PostMapping
-    public void registerLocation(@RequestBody LocationRegistrationRequest request) {
-        locationService.addLocation(request);
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public void registerLocation(
+                                 @RequestParam("city") String city,
+                                 @RequestParam("country") String country,
+                                 @RequestPart("file") MultipartFile file
+    ) {
+        LocationRegistrationDto locationRegistrationDto = new LocationRegistrationDto(city, country, file);
+        locationService.addLocation(locationRegistrationDto);
     }
 
     @DeleteMapping("/{locationId}")
@@ -37,7 +40,18 @@ public class LocationController {
     }
 
     @PutMapping("/{locationId}")
-    public void updateLocation(@PathVariable("locationId") Integer locationId, @RequestBody LocationUpdateRequest request) {
-        locationService.updateLocation(locationId, request);
+    public void updateLocationInformation(
+            @PathVariable("locationId") Integer locationId,
+            @RequestBody LocationUpdateInformationDto dto
+    ) {
+        locationService.updateLocationInformation(locationId, dto);
+    }
+
+    @PutMapping(value = "/{locationId}/picture", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public void updateLocationPicture(
+            @PathVariable("locationId") Integer locationId,
+            @RequestPart("file") MultipartFile file
+    ) {
+        locationService.updateLocationPicture(locationId, file);
     }
 }

@@ -38,3 +38,5 @@ src\test\java\com\odyssey\journey\NewsIntegrationTest.java
 src\main\java\com\odysses\reviews
 src\test\java\com\odyssey\reviews
 src\test\java\com\odyssey\journey\ReviewsIntegrationTest.java
+
+secrets.yml
