@@ -4,6 +4,7 @@ import com.odyssey.locations.Location;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,7 +13,7 @@ public class FlightTest {
     void testFlightGettersAndSetters() {
         Location origin = new Location();
         Location destination = new Location();
-        Timestamp timestamp = new Timestamp(1000);
+        LocalDateTime timestamp = LocalDateTime.now();
         String flightName = "A-B@1000";
 
         Flight flight = new Flight();

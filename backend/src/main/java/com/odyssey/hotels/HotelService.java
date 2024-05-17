@@ -16,7 +16,10 @@ public class HotelService {
     private final HotelDao hotelDao;
     private final LocationDao locationDao;
 
-    public HotelService(@Qualifier("hotelJPAService") HotelDao hotelDao, @Qualifier("locationJPAService") LocationDao locationDao) {
+    public HotelService(
+            @Qualifier("hotelJPAService") HotelDao hotelDao,
+            @Qualifier("locationJPAService") LocationDao locationDao
+    ) {
         this.hotelDao = hotelDao;
         this.locationDao = locationDao;
     }
@@ -54,17 +57,16 @@ public class HotelService {
         hotelDao.insertHotel(hotel);
     }
 
-    public boolean deleteHotel(Integer id) {
+    public void deleteHotel(Integer id) {
         if (hotelDao.existsHotelById(id)) {
             hotelDao.deleteHotelById(id);
         }
         else {
             throw new ResourceNotFoundException("hotel with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
-    public boolean updateHotel(Integer id, HotelUpdateRequest request) {
+    public void updateHotel(Integer id, HotelUpdateRequest request) {
         Hotel existingHotel = getHotel(id);
 
         if (hotelDao.existsHotelByNameAndLocationId(request.name(), request.locationId())) {
@@ -98,7 +100,6 @@ public class HotelService {
         }
 
         hotelDao.updateHotel(existingHotel);
-        return changes;
     }
 
 }

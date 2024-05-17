@@ -3,10 +3,7 @@ package com.odyssey.journey;
 
 import com.github.javafaker.Faker;
 import com.odyssey.localCuisine.LocalCuisine;
-import com.odyssey.localCuisine.LocalCuisineRegistrationRequest;
-import com.odyssey.localCuisine.LocalCuisineUpdateRequest;
 import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationRegistrationRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

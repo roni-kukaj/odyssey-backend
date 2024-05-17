@@ -1,13 +1,16 @@
 package com.odyssey.user;
 
+import com.odyssey.cloudinaryService.CloudinaryService;
+import com.odyssey.fileService.FileService;
 import com.odyssey.role.Role;
 import com.odyssey.role.RoleDao;
-import com.odyssey.role.RoleRepository;
-import com.odyssey.role.RoleService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.odyssey.exception.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -15,10 +18,16 @@ public class UserService {
 
     private final UserDao userDao;
     private final RoleDao roleDao;
+    private final CloudinaryService cloudinaryService;
 
-    public UserService(@Qualifier("userJPAService") UserDao userDao, @Qualifier("roleJPAService") RoleDao roleDao) {
+    public UserService(
+            @Qualifier("userJPAService") UserDao userDao,
+            @Qualifier("roleJPAService") RoleDao roleDao,
+            CloudinaryService cloudinaryService
+    ) {
         this.userDao = userDao;
         this.roleDao = roleDao;
+        this.cloudinaryService = cloudinaryService;
     }
 
     public List<User> getAllUsers() {
@@ -55,17 +64,54 @@ public class UserService {
         userDao.insertUser(user);
     }
 
-    public boolean deleteUser(Integer id) {
+    public void deleteUser(Integer id) {
         if (userDao.existsUserById(id)) {
             userDao.deleteUserById(id);
         }
         else {
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
-    public boolean updateUser(Integer id, UserUpdateRequest updateRequest) {
+    public void updateUser(Integer id, UserUpdateInformationDto dto) {
+        User user = getUser(id);
+        boolean changes = false;
+
+        if (dto.fullname() != null && !dto.fullname().equals(user.getFullname())) {
+            user.setFullname(dto.fullname());
+            changes = true;
+        }
+        if (dto.username() != null && !dto.username().equals(user.getUsername())) {
+            if (userDao.existsUserByUsername(dto.username())) {
+                throw new DuplicateResourceException("username already taken");
+            }
+            user.setUsername(dto.username());
+            changes = true;
+        }
+        if (dto.password() != null && !dto.password().equals(user.getPassword())) {
+            user.setPassword(dto.password());
+            changes = true;
+        }
+
+        if (!changes) {
+            throw new RequestValidationException("no data changes found");
+        }
+        userDao.updateUser(user);
+    }
+
+    public void updateUserAvatar(Integer id, MultipartFile image) {
+        User user = getUser(id);
+        try {
+            File file = FileService.convertFile(image);
+            String newUrl = cloudinaryService.uploadImage(file, "avatars");
+            user.setAvatar(newUrl);
+            userDao.updateUser(user);
+        } catch (IOException e) {
+            throw new UnprocessableEntityException("image could not be processed");
+        }
+    }
+
+    public void updateUser(Integer id, UserUpdateRequest updateRequest) {
         User user = getUser(id);
         boolean changes = false;
 
@@ -107,7 +153,6 @@ public class UserService {
             throw new RequestValidationException("no data changes found");
         }
         userDao.updateUser(user);
-        return changes;
     }
 
 }

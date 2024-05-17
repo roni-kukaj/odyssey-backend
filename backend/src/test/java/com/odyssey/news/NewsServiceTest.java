@@ -1,5 +1,6 @@
 package com.odyssey.news;
 
+import com.odyssey.cloudinaryService.CloudinaryService;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.user.User;
@@ -28,12 +29,14 @@ public class NewsServiceTest {
     private NewsDao newsDao;
     @Mock
     private UserDao authorDao;
+    @Mock
+    private CloudinaryService cloudinaryService;
 
     private NewsService underTest;
 
     @BeforeEach
     void setUp(){
-        underTest = new NewsService(newsDao,authorDao);
+        underTest = new NewsService(newsDao, authorDao, cloudinaryService);
     }
 
     @Test

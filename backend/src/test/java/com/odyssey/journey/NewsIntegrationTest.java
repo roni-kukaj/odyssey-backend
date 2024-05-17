@@ -3,8 +3,6 @@ package com.odyssey.journey;
 
 import com.github.javafaker.Faker;
 import com.odyssey.news.News;
-import com.odyssey.news.NewsRegistrationRequest;
-import com.odyssey.news.NewsUpdateRequest;
 import com.odyssey.role.Role;
 import com.odyssey.user.User;
 import com.odyssey.user.UserRegistrationRequest;
@@ -105,7 +103,7 @@ public class NewsIntegrationTest {
                 .getResponseBody();
 
         News expectedNews = new News(
-                author, title, description, picture
+                title, description, picture, author
         );
 
         assertThat(allNews)
@@ -163,7 +161,7 @@ public class NewsIntegrationTest {
                 .getResponseBody();
 
         News expectedNews = new News(
-                author, title, description, picture
+                title, description, picture, author
         );
 
         assertThat(allNews)
@@ -257,7 +255,7 @@ public class NewsIntegrationTest {
                 .getResponseBody();
 
         News expected = new News (
-                id, author2, title2, description2, picture2
+                id, title2, description2, picture2, author2
         );
         assertThat(updatedNews).isEqualTo(expected);
     }

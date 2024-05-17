@@ -13,10 +13,12 @@ public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(nullable = false) private String name;
     @Column(nullable = false) private String description;
     @Column(nullable = false) private Integer duration;
     @Column(nullable = false) private Integer cost;
+
     @ManyToOne()
     @JoinColumn(name="location_id", referencedColumnName = "id")
     private Location location;

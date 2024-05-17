@@ -2,8 +2,6 @@ package com.odyssey.journey;
 
 import com.github.javafaker.Faker;
 import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationRegistrationRequest;
-import com.odyssey.locations.LocationUpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

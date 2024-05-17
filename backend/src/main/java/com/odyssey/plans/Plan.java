@@ -4,6 +4,7 @@ import com.odyssey.locations.Location;
 import com.odyssey.user.User;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
@@ -19,17 +20,17 @@ public class Plan {
     @ManyToOne
     @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location location;
-    @Column(nullable = false, name = "visit_date") private Date visitDate;
+    @Column(nullable = false, name = "visit_date") private LocalDate visitDate;
 
     public Plan() {}
 
-    public Plan(User user, Location location, Date visitDate) {
+    public Plan(User user, Location location, LocalDate visitDate) {
         this.user = user;
         this.location = location;
         this.visitDate = visitDate;
     }
 
-    public Plan(Integer id, User user, Location location, Date visitDate) {
+    public Plan(Integer id, User user, Location location, LocalDate visitDate) {
         this.id = id;
         this.user = user;
         this.location = location;
@@ -60,11 +61,11 @@ public class Plan {
         this.location = location;
     }
 
-    public Date getVisitDate() {
+    public LocalDate getVisitDate() {
         return visitDate;
     }
 
-    public void setVisitDate(Date visitDate) {
+    public void setVisitDate(LocalDate visitDate) {
         this.visitDate = visitDate;
     }
 

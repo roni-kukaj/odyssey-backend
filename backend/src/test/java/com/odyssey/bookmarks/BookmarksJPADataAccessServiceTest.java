@@ -64,13 +64,6 @@ public class BookmarksJPADataAccessServiceTest {
     }
 
     @Test
-    void updateBookmarks() {
-        Bookmarks bookmarks = new Bookmarks(new Location(),new User());
-        bookmarksJPADataAccessService.updateBookmarks(bookmarks);
-        verify(bookmarksRepository).save(bookmarks);
-    }
-
-    @Test
     void existsBookmarksById() {
         int id = 1;
         bookmarksJPADataAccessService.existsBookmarksById(id);

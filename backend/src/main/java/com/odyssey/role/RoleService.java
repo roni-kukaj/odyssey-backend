@@ -36,16 +36,15 @@ public class RoleService {
         roleDao.insertRole(role);
     }
 
-    public boolean deleteRole(Integer id) {
+    public void deleteRole(Integer id) {
         if (roleDao.existsRoleById(id)) {
             roleDao.deleteRoleById(id);
         } else {
             throw new ResourceNotFoundException("role with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
-    public boolean updateRole(Integer id, RoleUpdateRequest request) {
+    public void updateRole(Integer id, RoleUpdateRequest request) {
         Role role = getRole(id);
         boolean changes = false;
 
@@ -59,6 +58,5 @@ public class RoleService {
         }
 
         roleDao.updateRole(role);
-        return changes;
     }
 }

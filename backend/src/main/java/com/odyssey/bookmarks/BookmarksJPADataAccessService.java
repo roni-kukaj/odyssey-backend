@@ -39,11 +39,6 @@ public class BookmarksJPADataAccessService implements BookmarksDao{
     }
 
     @Override
-    public void updateBookmarks(Bookmarks bookmarks) {
-        bookmarksRepository.save(bookmarks);
-    }
-
-    @Override
     public void deleteBookmarksById(Integer id) {
         bookmarksRepository.deleteById(id);
     }

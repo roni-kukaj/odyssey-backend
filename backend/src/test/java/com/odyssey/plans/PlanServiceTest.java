@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,7 +63,7 @@ class PlanServiceTest {
                 id,
                 new User(),
                 new Location(),
-                new Date()
+                LocalDate.now()
         );
 
         when(planDao.selectPlanById(id)).thenReturn(Optional.of(plan));
@@ -127,7 +129,7 @@ class PlanServiceTest {
         location.setId(locationId);
 
         PlanRegistrationRequest request = new PlanRegistrationRequest(
-                userId, locationId, new Date()
+                userId, locationId, LocalDate.now()
         );
         when(planDao.existsPlanByUserIdAndLocationId(userId, locationId)).thenReturn(false);
         when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
@@ -159,7 +161,7 @@ class PlanServiceTest {
         location.setId(locationId);
 
         PlanRegistrationRequest request = new PlanRegistrationRequest(
-                userId, locationId, new Date()
+                userId, locationId, LocalDate.now()
         );
         lenient().when(planDao.existsPlanByUserIdAndLocationId(userId, locationId)).thenReturn(false);
         when(userDao.selectUserById(userId)).thenReturn(Optional.empty());
@@ -185,7 +187,7 @@ class PlanServiceTest {
         location.setId(locationId);
 
         PlanRegistrationRequest request = new PlanRegistrationRequest(
-                userId, locationId, new Date()
+                userId, locationId, LocalDate.now()
         );
         lenient().when(planDao.existsPlanByUserIdAndLocationId(userId, locationId)).thenReturn(false);
         lenient().when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
@@ -211,7 +213,7 @@ class PlanServiceTest {
         location.setId(locationId);
 
         PlanRegistrationRequest request = new PlanRegistrationRequest(
-                userId, locationId, new Date()
+                userId, locationId, LocalDate.now()
         );
         when(planDao.existsPlanByUserIdAndLocationId(userId, locationId)).thenReturn(true);
         lenient().when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
@@ -292,7 +294,7 @@ class PlanServiceTest {
         int locationId = 1;
         Location location = new Location();
         location.setId(locationId);
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01");
+        LocalDate date = LocalDate.now();
         Plan plan = new Plan(id, user, location, date);
 
         when(planDao.selectPlanById(id)).thenReturn(Optional.of(plan));
@@ -300,7 +302,7 @@ class PlanServiceTest {
         int newLocationId = 1;
         Location newLocation = new Location();
         newLocation.setId(newLocationId);
-        Date newDate = new SimpleDateFormat("yyyy-MM-dd").parse("2001-01-01");
+        LocalDate newDate = date.plus(90, ChronoUnit.DAYS);
         PlanUpdateRequest request = new PlanUpdateRequest(
                 userId, newLocationId, newDate
         );

@@ -1,5 +1,6 @@
 package com.odyssey.posts;
 
+import com.odyssey.cloudinaryService.CloudinaryService;
 import com.odyssey.locations.Location;
 import com.odyssey.plans.Plan;
 import com.odyssey.plans.PlanRegistrationRequest;
@@ -39,12 +40,14 @@ public class PostServiceTest {
     private UserDao userDao;
     @Mock
     private TripDao tripDao;
+    @Mock
+    private CloudinaryService cloudinaryService;
 
     private PostService underTest;
 
     @BeforeEach
     void setUp() {
-        underTest = new PostService(postDao, userDao, tripDao);
+        underTest = new PostService(postDao, userDao, tripDao, cloudinaryService);
     }
 
     @Test

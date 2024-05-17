@@ -1,12 +1,6 @@
 package com.odyssey.activities;
 
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationRegistrationRequest;
-import com.odyssey.locations.LocationService;
-import com.odyssey.locations.LocationUpdateRequest;
-import com.odyssey.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

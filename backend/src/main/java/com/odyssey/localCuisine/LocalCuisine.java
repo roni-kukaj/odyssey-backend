@@ -16,6 +16,7 @@ public class LocalCuisine {
     @Column(nullable = false) private String name;
     @Column(nullable = false) private String description;
     @Column(nullable = false) private String image;
+
     @ManyToOne()
     @JoinColumn(name="location_id", referencedColumnName = "id")
     private Location location;

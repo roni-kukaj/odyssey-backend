@@ -2,6 +2,7 @@ package com.odyssey.localCuisine;
 
 
 
+import com.odyssey.cloudinaryService.CloudinaryService;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
@@ -28,12 +29,14 @@ public class LocalCuisineServiceTest {
     private LocalCuisineDao localCuisineDao;
     @Mock
     private LocationDao locationDao;
+    @Mock
+    private CloudinaryService cloudinaryService;
 
     private LocalCuisineService underTest;
 
     @BeforeEach
     void setUp() {
-        underTest = new LocalCuisineService(localCuisineDao, locationDao);
+        underTest = new LocalCuisineService(localCuisineDao, locationDao, cloudinaryService);
     }
 
 

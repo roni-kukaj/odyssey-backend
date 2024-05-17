@@ -1,8 +1,9 @@
 package com.odyssey.flights;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public record FlightRegistrationRequest(
-         Timestamp departure, Integer originId, Integer destinationId
+        LocalDateTime departure, Integer originId, Integer destinationId
 ) {
 }

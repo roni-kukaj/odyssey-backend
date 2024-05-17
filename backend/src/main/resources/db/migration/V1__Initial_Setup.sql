@@ -16,7 +16,7 @@ CREATE TABLE users (
     username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    avatar TEXT NOT NULL,
+    avatar TEXT NOT NULL DEFAULT 'https://res.cloudinary.com/dphboq54c/image/upload/v1715904645/Odyssey-DB/avatars/default-avatar_mfg3bf.png',
     role_id BIGINT NOT NULL,
     CONSTRAINT users_role_fk FOREIGN KEY(role_id) REFERENCES roles(id)
 );

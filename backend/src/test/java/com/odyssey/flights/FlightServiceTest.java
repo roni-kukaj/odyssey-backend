@@ -15,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +47,7 @@ class FlightServiceTest {
         int id = 1;
         Location origin = new Location();
         Location destination = new Location();
-        Timestamp timestamp = new Timestamp(1000);
+        LocalDateTime timestamp = LocalDateTime.now();
         String flightName = "A-B@1000";
 
         Flight flight = new Flight(id, flightName, timestamp, origin, destination);
@@ -115,7 +117,7 @@ class FlightServiceTest {
         int id = 1;
         Location origin = new Location(1, "Peja", "Kosova", "pic");
         Location destination = new Location(2, "Munich", "Germany", "pic");
-        Timestamp timestamp = new Timestamp(1000);
+        LocalDateTime timestamp = LocalDateTime.now();
         String flightName = FlightNamingService.getFlightName(origin, destination, timestamp);
 
         Flight flight = new Flight(id, flightName, timestamp, origin, destination);
@@ -145,7 +147,7 @@ class FlightServiceTest {
         int id = 1;
         Location origin = new Location(1, "Peja", "Kosova", "pic");
         Location destination = new Location(2, "Munich", "Germany", "pic");
-        Timestamp timestamp = new Timestamp(1000);
+        LocalDateTime timestamp = LocalDateTime.now();
         String flightName = FlightNamingService.getFlightName(origin, destination, timestamp);
 
         Flight flight = new Flight(id, flightName, timestamp, origin, destination);
@@ -168,7 +170,7 @@ class FlightServiceTest {
         int id = 1;
         Location origin = new Location(1, "Peja", "Kosova", "pic");
         Location destination = new Location(2, "Munich", "Germany", "pic");
-        Timestamp timestamp = new Timestamp(1000);
+        LocalDateTime timestamp = LocalDateTime.now();
         String flightName = FlightNamingService.getFlightName(origin, destination, timestamp);
 
         Flight flight = new Flight(id, flightName, timestamp, origin, destination);
@@ -190,7 +192,7 @@ class FlightServiceTest {
     void willThrowWhenAddFlightOriginAndDestinationEqual() {
         int id = 1;
         Location origin = new Location(1, "Peja", "Kosova", "pic");
-        Timestamp timestamp = new Timestamp(1000);
+        LocalDateTime timestamp = LocalDateTime.now();
         String flightName = FlightNamingService.getFlightName(origin, origin, timestamp);
 
         Flight flight = new Flight(id, flightName, timestamp, origin, origin);
@@ -230,7 +232,7 @@ class FlightServiceTest {
         int id = 1;
         Location origin = new Location(1, "Peja", "Kosova", "pic");
         Location destination = new Location(2, "Munich", "Germany", "pic");
-        Timestamp timestamp = new Timestamp(1000);
+        LocalDateTime timestamp = LocalDateTime.now();
         String flightName = FlightNamingService.getFlightName(origin, destination, timestamp);
 
         Flight flight = new Flight(id, flightName, timestamp, origin, destination);
@@ -239,7 +241,7 @@ class FlightServiceTest {
 
         Location newOrigin = destination;
         Location newDestination = origin;
-        Timestamp newTimestamp = new Timestamp(2000);
+        LocalDateTime newTimestamp = LocalDateTime.now().plus(90, ChronoUnit.DAYS);
         String newFlightName = FlightNamingService.getFlightName(newOrigin, newDestination, newTimestamp);
 
         when(flightDao.existsFlightByName(newFlightName)).thenReturn(false);

@@ -4,10 +4,11 @@ import com.odyssey.locations.Location;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class FlightNamingService {
 
-    public static String getFlightName(Location origin, Location destination, Timestamp departure) {
+    public static String getFlightName(Location origin, Location destination, LocalDateTime departure) {
         String originName = origin.getCity().toUpperCase();
         String destinationName = destination.getCity().toUpperCase();
         String time = departure.toString().replaceAll("-", "")

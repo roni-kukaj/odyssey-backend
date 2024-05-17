@@ -27,13 +27,11 @@ public class EventJPADataAccessService implements EventDao {
     @Override
     public void insertEvent(Event event) {
         eventRepository.save(event);
-
     }
 
     @Override
     public void updateEvent(Event event) {
         eventRepository.save(event);
-
     }
 
     @Override

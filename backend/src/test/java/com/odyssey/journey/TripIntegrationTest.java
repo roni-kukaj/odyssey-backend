@@ -1,19 +1,12 @@
 package com.odyssey.journey;
 
 import com.github.javafaker.Faker;
-import com.odyssey.activities.Activity;
-import com.odyssey.activities.ActivityRegistrationRequest;
-import com.odyssey.activities.ActivityUpdateRequest;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationRegistrationRequest;
-import com.odyssey.locations.LocationUpdateRequest;
 import com.odyssey.role.Role;
 import com.odyssey.trips.Trip;
 import com.odyssey.trips.TripRegistrationRequest;
 import com.odyssey.trips.TripUpdateRequest;
 import com.odyssey.user.User;
 import com.odyssey.user.UserRegistrationRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

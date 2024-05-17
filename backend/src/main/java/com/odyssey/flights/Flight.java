@@ -4,6 +4,7 @@ import com.odyssey.locations.Location;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -14,7 +15,7 @@ public class Flight {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(nullable = false) private String name;
-    @Column(nullable = false) private Timestamp time;
+    @Column(nullable = false) private LocalDateTime time;
 
     @ManyToOne()
     @JoinColumn(name="origin_id", referencedColumnName = "id")
@@ -26,14 +27,14 @@ public class Flight {
 
     public Flight(){}
 
-    public Flight(String name, Timestamp time,  Location origin, Location destination) {
+    public Flight(String name, LocalDateTime time,  Location origin, Location destination) {
         this.name = name;
         this.time = time;
         this.origin = origin;
         this.destination = destination;
     }
 
-    public Flight(Integer id, String name, Timestamp time,  Location origin, Location destination) {
+    public Flight(Integer id, String name, LocalDateTime time,  Location origin, Location destination) {
         this.id = id;
         this.name = name;
         this.time = time;
@@ -57,11 +58,11 @@ public class Flight {
         this.name = name;
     }
 
-    public Timestamp getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(Timestamp time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 

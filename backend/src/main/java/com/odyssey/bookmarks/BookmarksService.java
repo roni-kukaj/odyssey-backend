@@ -35,9 +35,7 @@ public class BookmarksService {
             throw new ResourceNotFoundException("location with id [%s] not found".formatted(locationId));
         }
         return bookmarksDao.selectBookmarksByLocationId(locationId);
-
     }
-
 
     public Optional<Bookmarks>getBookmarksByUserId(Integer userId){
         if(!userDao.existsUserById(userId)){
@@ -72,51 +70,12 @@ public class BookmarksService {
         bookmarksDao.insertBookmarks(bookmarks);
     }
 
-    public boolean deleteBookmarks(Integer id){
+    public void deleteBookmarks(Integer id){
         if(bookmarksDao.existsBookmarksById(id)){
             bookmarksDao.deleteBookmarksById(id);
         }
         else {
             throw new ResourceNotFoundException("bookmark with id [%s] not found".formatted(id));
         }
-        return false;
-    }
-
-    public boolean updateBookmarks(Integer id, BookmarksUpdateRequest bookmarksUpdateRequest){
-        Bookmarks existinBookmarks = getBookmarksById(id);
-
-        if(bookmarksDao.existsBookmarksByLocationIdAndUserId
-                (bookmarksUpdateRequest.locationId(),bookmarksUpdateRequest.userId())){
-            throw new DuplicateResourceException("bookmarks already exists");
-        }
-
-        Location location = locationDao.selectLocationById(bookmarksUpdateRequest.locationId()).orElseThrow(
-                ()-> new ResourceNotFoundException("location with id [%s] not found".formatted(bookmarksUpdateRequest.locationId()))
-        );
-
-        User user = userDao.selectUserById(bookmarksUpdateRequest.userId()).orElseThrow(
-                ()-> new ResourceNotFoundException("user with id [%s] not found".formatted(bookmarksUpdateRequest.userId()))
-        );
-
-        boolean changes = false;
-
-        if(bookmarksUpdateRequest.locationId() != null && !bookmarksUpdateRequest.locationId().equals(existinBookmarks.getLocation().getId())){
-            existinBookmarks.setLocation(location);
-            changes = true;
-        }
-
-
-        if(bookmarksUpdateRequest.userId() != null && !bookmarksUpdateRequest.userId().equals(existinBookmarks.getUser().getId())){
-            existinBookmarks.setUser(user);
-            changes = true;
-        }
-
-        if(!changes){
-            throw new RequestValidationException("no changes were found");
-        }
-
-        bookmarksDao.updateBookmarks(existinBookmarks);
-        return changes;
-
     }
 }

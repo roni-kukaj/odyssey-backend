@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record TripUpdateRequest(
-        Integer userId,
         LocalDate startDate,
         LocalDate endDate,
         List<Integer> itemIds,

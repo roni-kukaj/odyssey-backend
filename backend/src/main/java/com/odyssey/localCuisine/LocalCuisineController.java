@@ -1,13 +1,17 @@
 package com.odyssey.localCuisine;
 
 
+import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/localCuisine")
+@RequestMapping("/api/v1/local-cuisine")
 public class LocalCuisineController {
 
     @Autowired
@@ -28,10 +32,16 @@ public class LocalCuisineController {
         return localCuisineService.getLocalCuisinesByLocationId(locationId);
     }
 
-
-    @PostMapping
-    public void registerLocalCuisine(@RequestBody LocalCuisineRegistrationRequest request) {
-        localCuisineService.addLocalCuisine(request);
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public void registerLocalCuisine(
+            @RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestPart("image") MultipartFile image,
+            @RequestParam("locationId") Integer locationId
+    ) {
+        localCuisineService.addLocalCuisine(new LocalCuisineRegistrationDto(
+                name, description, image, locationId
+        ));
     }
 
     @DeleteMapping("/{localCuisineId}")
@@ -40,8 +50,18 @@ public class LocalCuisineController {
     }
 
     @PutMapping("/{localCuisineId}")
-    public void updateLocalCuisine(@PathVariable("localCuisineId") Integer localCuisineId, @RequestBody LocalCuisineUpdateRequest request) {
-        localCuisineService.updateLocalCuisine(localCuisineId, request);
+    public void updateLocalCuisine(
+            @PathVariable("localCuisineId") Integer localCuisineId,
+            @RequestBody LocalCuisineUpdateInformationDto dto) {
+        localCuisineService.updateLocalCuisineInformation(localCuisineId, dto);
+    }
+
+    @PutMapping(value = "/{localCuisineId}/picture", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public void updateLocalCuisinePicture(
+            @PathVariable("localCuisineId") Integer localCuisineId,
+            @RequestParam("file") MultipartFile file
+    ) {
+        localCuisineService.updateLocalCuisinePicture(localCuisineId, file);
     }
 
 

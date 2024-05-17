@@ -1,11 +1,7 @@
 package com.odyssey.journey;
 
 import com.github.javafaker.Faker;
-import com.odyssey.activities.Activity;
-import com.odyssey.activities.ActivityRegistrationRequest;
-import com.odyssey.activities.ActivityUpdateRequest;
 import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationRegistrationRequest;
 import com.odyssey.reviews.Review;
 import com.odyssey.reviews.ReviewRegistrationRequest;
 import com.odyssey.reviews.ReviewUpdateRequest;

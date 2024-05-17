@@ -1,6 +1,7 @@
 package com.odyssey.events;
 
 
+import com.odyssey.cloudinaryService.CloudinaryService;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.locations.Location;
@@ -26,11 +27,14 @@ public class EventServiceTest {
     private EventDao eventDao;
     @Mock
     private LocationDao locationDao;
+    @Mock
+    private CloudinaryService cloudinaryService;
+
     private EventService underTest;
 
     @BeforeEach
     void setUp(){
-        underTest = new EventService(eventDao,locationDao);
+        underTest = new EventService(eventDao,locationDao, cloudinaryService);
     }
 
 
