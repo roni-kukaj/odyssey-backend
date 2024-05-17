@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +17,7 @@ public class PlanTest {
     void testPlanGettersAndSetters() throws ParseException {
         User user = new User();
         Location location = new Location();
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01");
+        LocalDate date = LocalDate.now();
         Plan plan = new Plan();
         plan.setId(1);
         plan.setUser(user);

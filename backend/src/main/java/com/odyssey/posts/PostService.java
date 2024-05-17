@@ -5,6 +5,7 @@ import com.odyssey.events.Event;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
+import com.odyssey.exception.UnprocessableEntityException;
 import com.odyssey.fileService.FileService;
 import com.odyssey.plans.Plan;
 import com.odyssey.trips.Trip;
@@ -72,43 +73,25 @@ public class PostService {
                     dto.text(), url, postedTime, user, trip
             );
             postDao.insertPost(post);
-        } catch (IOException e) {
-            // TODO -> tell the user something
+        }
+        catch (IOException e) {
+            throw new UnprocessableEntityException("image could not be processed");
         }
     }
 
-    public void addPost(PostRegistrationRequest request) {
-        User user = userDao.selectUserById(request.userId())
-                .orElseThrow(() -> new ResourceNotFoundException("user with id [%s] not found".formatted(request.userId())));
-
-        Trip trip = tripDao.selectTripById(request.tripId())
-                .orElseThrow(() -> new ResourceNotFoundException("trip with id [%s] not found".formatted(request.tripId())));
-
-        LocalDate postedTime = LocalDate.now();
-        Post post = new Post(request.text(), request.image(), postedTime, user, trip);
-
-        if (postDao.existsPostByUserIdAndTripId(request.userId(), request.tripId())) {
-            throw new DuplicateResourceException("a trip can only have one post");
-        }
-
-        postDao.insertPost(post);
-    }
-
-    public boolean deletePost(Integer id) {
+    public void deletePost(Integer id) {
         if (postDao.existsPostById(id)) {
             postDao.deletePostById(id);
         }
         else {
             throw new ResourceNotFoundException("post with id [%s] not found".formatted(id));}
-        return false;
     }
 
-    public boolean deletePostsByUserId(Integer userId) {
+    public void deletePostsByUserId(Integer userId) {
         if (!userDao.existsUserById(userId)) {
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
         }
         postDao.deletePostsByUserId(userId);
-        return false;
     }
 
     public void updatePostInformation(Integer id, PostUpdateInformationDto dto) {
@@ -141,31 +124,7 @@ public class PostService {
                 throw new IOException();
             }
         } catch (IOException e) {
-            // TODO -> tell the user something
+            throw new UnprocessableEntityException("image could not be processed");
         }
     }
-
-    public boolean updatePost(Integer id, PostUpdateRequest request) {
-        Post existingPost = getPost(id);
-
-        boolean changes = false;
-
-        if (request.text() != null && !request.text().equals(existingPost.getText())) {
-            existingPost.setText(request.text());
-            changes = true;
-        }
-        if (request.image() != null && !request.image().equals(existingPost.getImage())) {
-            existingPost.setImage(request.image());
-            changes = true;
-        }
-
-        if (!changes) {
-            throw new RequestValidationException("no data changes");
-        }
-
-        postDao.updatePost(existingPost);
-        return changes;
-
-    }
-
 }

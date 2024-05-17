@@ -27,25 +27,22 @@ public class ReviewService {
 
     public List<Review>getAllReviews(){
         return reviewDao.selectAllReviews();
-
     }
 
     public Review getReview(Integer id){
         return reviewDao.selectReviewById(id).
                 orElseThrow(()-> new ResourceNotFoundException("review with id [%s] not found".formatted(id)));
-
     }
 
     public List<Review> getReviewByUserId(Integer userId){
-        if(!userDao.existsUserById(userId)){
+        if (!userDao.existsUserById(userId)) {
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
-
         }
         return reviewDao.selectReviewByUserId(userId);
     }
 
-    public List<Review>getReviewByLocationId(Integer locationId){
-        if(!locationDao.existsLocationById(locationId)){
+    public List<Review>getReviewByLocationId(Integer locationId) {
+        if (!locationDao.existsLocationById(locationId)) {
             throw new ResourceNotFoundException("location with id [%s] not found".formatted(locationId));
         }
         return reviewDao.selectReviewByLocationId(locationId);
@@ -55,45 +52,28 @@ public class ReviewService {
        if(reviewDao.existsReviewByUserAndLocationId(reviewRegisterRequest.userId(),reviewRegisterRequest.locationId())){
            throw new DuplicateResourceException("review already exists");
        }
-        Location location = locationDao.selectLocationById(reviewRegisterRequest.locationId())
+       Location location = locationDao.selectLocationById(reviewRegisterRequest.locationId())
                 .orElseThrow(()->new ResourceNotFoundException("location with id [%s] not found".formatted(reviewRegisterRequest.locationId())));
 
        User user = userDao.selectUserById(reviewRegisterRequest.userId())
                .orElseThrow(()-> new ResourceNotFoundException("user with id [%s] not found".formatted(reviewRegisterRequest.userId())));
-
-
 
        Review review = new Review(reviewRegisterRequest.description(), reviewRegisterRequest.rating(), user, location);
 
        reviewDao.insertReview(review);
     }
 
-
-    public boolean deleteReview(Integer id){
+    public void deleteReview(Integer id){
         if(reviewDao.existsReviewById(id)){
             reviewDao.deleteReviewById(id);
         }
         else {
             throw new ResourceNotFoundException("review with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
-
-    public boolean updateReview(Integer id, ReviewUpdateRequest reviewUpdateRequest){
+    public void updateReview(Integer id, ReviewUpdateRequest reviewUpdateRequest){
         Review existingReview = getReview(id);
-
-        if(reviewDao.existsReviewByUserAndLocationId(reviewUpdateRequest.userId(),reviewUpdateRequest.locationId())){
-            throw new DuplicateResourceException("review already exists");
-        }
-
-        User user = userDao.selectUserById(reviewUpdateRequest.userId()).orElseThrow(
-                ()-> new ResourceNotFoundException("user with id [%s] not found".formatted(reviewUpdateRequest.userId()))
-        );
-
-       Location location = locationDao.selectLocationById(reviewUpdateRequest.locationId()).orElseThrow(
-               ()-> new ResourceNotFoundException("location with id [%s] not found".formatted(reviewUpdateRequest.locationId()))
-       );
 
         boolean changes = false;
 
@@ -101,18 +81,9 @@ public class ReviewService {
             existingReview.setDescription(reviewUpdateRequest.description());
             changes = true;
         }
+
         if(reviewUpdateRequest.rating() != null && !reviewUpdateRequest.rating().equals(existingReview.getRating())){
             existingReview.setRating(reviewUpdateRequest.rating());
-            changes = true;
-        }
-
-        if(reviewUpdateRequest.userId() != null && !reviewUpdateRequest.userId().equals(existingReview.getUser().getId())){
-            existingReview.setUser(user);
-            changes = true;
-        }
-
-        if(reviewUpdateRequest.locationId() != null && !reviewUpdateRequest.locationId().equals(existingReview.getLocation().getId())){
-            existingReview.setLocation(location);
             changes = true;
         }
 
@@ -121,11 +92,5 @@ public class ReviewService {
         }
 
         reviewDao.updateReview(existingReview);
-        return changes;
-
     }
-
-
-
-
 }

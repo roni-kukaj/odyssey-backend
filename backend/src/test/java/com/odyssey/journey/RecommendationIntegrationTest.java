@@ -5,7 +5,6 @@ import com.github.javafaker.Faker;
 import com.odyssey.activities.Activity;
 import com.odyssey.activities.ActivityRegistrationRequest;
 import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationRegistrationRequest;
 import com.odyssey.recommendations.Recommendation;
 import com.odyssey.recommendations.RecommendationRegistrationRequest;
 import com.odyssey.recommendations.RecommendationUpdateRequest;

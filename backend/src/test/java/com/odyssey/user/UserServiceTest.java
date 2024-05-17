@@ -1,5 +1,6 @@
 package com.odyssey.user;
 
+import com.odyssey.cloudinaryService.CloudinaryService;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.role.Role;
@@ -26,11 +27,13 @@ class UserServiceTest {
     @Mock
     private UserDao userDao;
     @Mock private RoleDao roleDao;
+    @Mock
+    private CloudinaryService cloudinaryService;
     private UserService underTest;
 
     @BeforeEach
     void setUp() {
-        underTest = new UserService(userDao, roleDao);
+        underTest = new UserService(userDao, roleDao, cloudinaryService);
     }
 
     @Test

@@ -8,7 +8,6 @@ import com.odyssey.flights.FlightNamingService;
 import com.odyssey.flights.FlightRegistrationRequest;
 import com.odyssey.flights.FlightUpdateRequest;
 import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationRegistrationRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,11 +16,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -76,8 +74,7 @@ public class FlightIntegrationTest {
     @Test
     void canRegisterAFlight() {
         Faker faker = new Faker();
-        Date futureDate = faker.date().future(365, TimeUnit.DAYS); // A date within the next year
-        Timestamp time = new Timestamp(futureDate.getTime());
+        LocalDateTime time = LocalDateTime.now();
         Location origin = setUpLocation();
         Location destination = setUpLocation();
 
@@ -135,8 +132,7 @@ public class FlightIntegrationTest {
     @Test
     void canDeleteFlight() {
         Faker faker = new Faker();
-        Date futureDate = faker.date().future(365, TimeUnit.DAYS);
-        Timestamp time = new Timestamp(futureDate.getTime());
+        LocalDateTime time = LocalDateTime.now();
         Location origin = setUpLocation();
         Location destination = setUpLocation();
         String name = FlightNamingService.getFlightName(origin, destination, time);
@@ -195,8 +191,7 @@ public class FlightIntegrationTest {
     @Test
     void canUpdateFlightAllFields() {
         Faker faker = new Faker();
-        Date futureDate = faker.date().future(365, TimeUnit.DAYS);
-        Timestamp time = new Timestamp(futureDate.getTime());
+        LocalDateTime time = LocalDateTime.now();
         Location origin = setUpLocation();
         Location destination = setUpLocation();
         String name = FlightNamingService.getFlightName(origin, destination, time);
@@ -231,8 +226,7 @@ public class FlightIntegrationTest {
                 .orElseThrow();
 
         Faker faker2 = new Faker();
-        Date futureDate2 = faker.date().future(365, TimeUnit.DAYS);
-        Timestamp time2 = new Timestamp(futureDate.getTime());
+        LocalDateTime time2 = time.plus(90, ChronoUnit.DAYS);
         Location origin2 = setUpLocation();
         Location destination2 = setUpLocation();;
         FlightUpdateRequest updateRequest = new FlightUpdateRequest(

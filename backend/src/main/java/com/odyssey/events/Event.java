@@ -15,6 +15,7 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(nullable = false) private String name;
     @Column(nullable = false) private String description;
     @Column(nullable = false) private String image;
@@ -29,7 +30,7 @@ public class Event {
 
     public Event(){}
 
-    public Event(Integer id, String name, String description, String image, LocalDate date, Double cost, Integer duration,Location location_id){
+    public Event(Integer id, String name, String description, String image, LocalDate date, Double cost, Integer duration, Location location){
         this.id = id;
         this.name = name;
         this.description = description;
@@ -37,11 +38,11 @@ public class Event {
         this.date = date;
         this.cost = cost;
         this.duration = duration;
-        this.location = location_id;
+        this.location = location;
 
     }
 
-    public Event( String name, String description, String image, LocalDate date, Double cost, Integer duration,Location location_id){
+    public Event( String name, String description, String image, LocalDate date, Double cost, Integer duration, Location location){
 
         this.name = name;
         this.description = description;
@@ -49,7 +50,7 @@ public class Event {
         this.date = date;
         this.cost = cost;
         this.duration = duration;
-        this.location = location_id;
+        this.location = location;
 
     }
 

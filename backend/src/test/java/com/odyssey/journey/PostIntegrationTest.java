@@ -1,44 +1,27 @@
 package com.odyssey.journey;
 
 import com.github.javafaker.Faker;
-import com.odyssey.activities.Activity;
-import com.odyssey.activities.ActivityRegistrationRequest;
-import com.odyssey.activities.ActivityUpdateRequest;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationRegistrationRequest;
-import com.odyssey.locations.LocationUpdateRequest;
-import com.odyssey.plans.Plan;
-import com.odyssey.plans.PlanRegistrationRequest;
-import com.odyssey.plans.PlanUpdateRequest;
 import com.odyssey.posts.Post;
-import com.odyssey.posts.PostRegistrationRequest;
-import com.odyssey.posts.PostUpdateRequest;
 import com.odyssey.trips.Trip;
 import com.odyssey.trips.TripRegistrationRequest;
 import com.odyssey.user.User;
 import com.odyssey.role.Role;
 import com.odyssey.user.UserRegistrationRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cglib.core.Local;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.LOCAL_DATE;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PostIntegrationTest {

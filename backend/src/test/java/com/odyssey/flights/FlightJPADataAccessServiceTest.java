@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.verify;
 
@@ -63,7 +64,7 @@ public class FlightJPADataAccessServiceTest {
     void insertFlight() {
         Location origin = new Location();
         Location destination = new Location();
-        Timestamp timestamp = new Timestamp(1000);
+        LocalDateTime timestamp = LocalDateTime.now();
         String flightName = "A-B@1000";
 
         Flight flight = new Flight(flightName, timestamp, origin, destination);
@@ -76,7 +77,7 @@ public class FlightJPADataAccessServiceTest {
     void updateFlight() {
         Location origin = new Location();
         Location destination = new Location();
-        Timestamp timestamp = new Timestamp(1000);
+        LocalDateTime timestamp = LocalDateTime.now();
         String flightName = "A-B@1000";
 
         Flight flight = new Flight(flightName, timestamp, origin, destination);

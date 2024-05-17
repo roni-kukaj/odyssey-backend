@@ -102,7 +102,7 @@ public class TripService {
         tripDao.insertTrip(trip);
     }
 
-    void deleteTripById(Integer id) {
+    public void deleteTripById(Integer id) {
         if (tripDao.existsTripById(id)) {
             tripDao.deleteTripById(id);
         }
@@ -111,10 +111,8 @@ public class TripService {
         }
     }
 
-    public boolean updateTrip(Integer tripId, TripUpdateRequest request) {
+    public void updateTrip(Integer tripId, TripUpdateRequest request) {
         Trip existingTrip = getTrip(tripId);
-        User user = userDao.selectUserById(request.userId())
-                        .orElseThrow(() -> new ResourceNotFoundException("user with id [%s] not found".formatted(request.userId())));
         Set<Item> items = new HashSet<>();
         Set<Location> places = new HashSet<>();
         Set<Activity> activities = new HashSet<>();
@@ -166,12 +164,8 @@ public class TripService {
         if (!changes) {
             throw new RequestValidationException("no data changes");
         }
-        if (!existingTrip.getUser().equals(user)) {
-            throw new RequestValidationException("cannot change user");
-        }
 
         tripDao.updateTrip(existingTrip);
-        return changes;
     }
 
 }

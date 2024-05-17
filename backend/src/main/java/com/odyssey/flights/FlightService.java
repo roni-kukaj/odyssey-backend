@@ -16,7 +16,9 @@ public class FlightService {
     private final FlightDao flightDao;
     private final LocationDao locationDao;
 
-    public FlightService(@Qualifier("flightJPAService") FlightDao flightDao, @Qualifier("locationJPAService") LocationDao locationDao){
+    public FlightService(
+            @Qualifier("flightJPAService") FlightDao flightDao,
+            @Qualifier("locationJPAService") LocationDao locationDao){
         this.flightDao = flightDao;
         this.locationDao = locationDao;
     }
@@ -68,17 +70,16 @@ public class FlightService {
         flightDao.insertFlight(flight);
     }
 
-    public boolean deleteFlight(Integer id) {
+    public void deleteFlight(Integer id) {
         if (flightDao.existsFlightById(id)) {
             flightDao.deleteFlightById(id);
         }
         else {
             throw new ResourceNotFoundException("flight with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
-    public boolean updateFlight(Integer id, FlightUpdateRequest request) {
+    public void updateFlight(Integer id, FlightUpdateRequest request) {
         Flight existingFlight = getFlight(id);
 
         Location origin = locationDao.selectLocationById(request.originId())
@@ -117,6 +118,5 @@ public class FlightService {
         }
 
         flightDao.updateFlight(existingFlight);
-        return changes;
     }
 }

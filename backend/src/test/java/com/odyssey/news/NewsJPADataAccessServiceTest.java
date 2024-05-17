@@ -53,7 +53,7 @@ public class NewsJPADataAccessServiceTest {
     @Test
     void insertNews() {
 
-        News news = new News(new User(),"Title","Description","Picture");
+        News news = new News("Title","Description","Picture", new User());
         newsJPADataAccessService.insertNews(news);
         verify(newsRepository).save(news);
     }
@@ -76,7 +76,7 @@ public class NewsJPADataAccessServiceTest {
 
     @Test
     void updateNews() {
-        News news = new News(new User(),"title","description","picture");
+        News news = new News("title","description","picture", new User());
         newsJPADataAccessService.updateNews(news);
         verify(newsRepository).save(news);
     }

@@ -35,13 +35,13 @@ public class SubscriberService {
         subscriberDao.insertSubscriber(subscriber);
     }
 
-    public boolean deleteSubscriber(Integer id){
+    public void deleteSubscriber(Integer id){
         if (subscriberDao.existsSubscriberById(id)){
             subscriberDao.deleteSubscriberById(id);
-        }else {
+        }
+        else {
             throw new ResourceNotFoundException("subscriber with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
 }

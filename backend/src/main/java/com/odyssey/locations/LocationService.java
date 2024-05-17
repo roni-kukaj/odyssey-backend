@@ -19,7 +19,10 @@ public class LocationService {
     private final CloudinaryService cloudinaryService;
     private final LocationDao locationDao;
 
-    public LocationService(CloudinaryService cloudinaryService, @Qualifier("locationJPAService") LocationDao locationDao) {
+    public LocationService(
+            CloudinaryService cloudinaryService,
+            @Qualifier("locationJPAService") LocationDao locationDao
+    ) {
         this.cloudinaryService = cloudinaryService;
         this.locationDao = locationDao;
     }
@@ -46,21 +49,21 @@ public class LocationService {
                     url
             );
             locationDao.insertLocation(location);
-        } catch (IOException e) {
-            // TODO -> tell the user something
+        }
+        catch (IOException e) {
+            throw new UnprocessableEntityException("image could not be processed");
         }
     }
 
-    public boolean deleteLocation(Integer id) {
+    public void deleteLocation(Integer id) {
         if (locationDao.existsLocationById(id)) {
             locationDao.deleteLocationById(id);
         } else {
             throw new ResourceNotFoundException("location with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
-    public boolean updateLocationInformation(Integer id, LocationUpdateInformationDto dto) {
+    public void updateLocationInformation(Integer id, LocationUpdateInformationDto dto) {
         Location location = getLocation(id);
 
         boolean changes = false;
@@ -79,7 +82,6 @@ public class LocationService {
         }
 
         locationDao.updateLocation(location);
-        return changes;
     }
 
     public void updateLocationPicture(Integer id, MultipartFile picture) {
@@ -95,7 +97,7 @@ public class LocationService {
                 throw new IOException();
             }
         } catch (IOException e) {
-            // TODO -> tell the user something
+            throw new UnprocessableEntityException("image could not be processed");
         }
     }
 }

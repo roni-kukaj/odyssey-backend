@@ -57,16 +57,15 @@ public class ActivityService {
         activityDao.insertActivity(activity);
     }
 
-    public boolean deleteActivity(Integer id) {
+    public void deleteActivity(Integer id) {
         if (activityDao.existsActivityById(id)) {
             activityDao.deleteActivityById(id);
         } else {
             throw new ResourceNotFoundException("activity with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
-    public boolean updateActivity(Integer id, ActivityUpdateRequest request) {
+    public void updateActivity(Integer id, ActivityUpdateRequest request) {
         Activity existingActivity = getActivity(id);
 
         if (activityDao.existsActivityByNameAndLocationId(request.name(), request.locationId())) {
@@ -103,7 +102,5 @@ public class ActivityService {
         }
 
         activityDao.updateActivity(existingActivity);
-        return changes;
     }
-
 }

@@ -1,5 +1,6 @@
 package com.odyssey.locations;
 
+import com.odyssey.cloudinaryService.CloudinaryService;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,11 +23,14 @@ class LocationServiceTest {
 
     @Mock
     private LocationDao locationDao;
+    @Mock
+    private CloudinaryService cloudinaryService;
+
     private LocationService underTest;
 
     @BeforeEach
     void setUp() {
-        underTest = new LocationService(locationDao);
+        underTest = new LocationService(cloudinaryService, locationDao);
     }
 
     @Test

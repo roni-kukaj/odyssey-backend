@@ -5,6 +5,7 @@ import com.odyssey.events.Event;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
+import com.odyssey.exception.UnprocessableEntityException;
 import com.odyssey.fileService.FileService;
 import com.odyssey.locations.Location;
 import com.odyssey.locations.LocationDao;
@@ -24,7 +25,11 @@ public class LocalCuisineService {
     private final LocationDao locationDao;
     private final CloudinaryService cloudinaryService;
 
-    public LocalCuisineService(@Qualifier("localCuisineJPAService") LocalCuisineDao localCuisineDao, @Qualifier("locationJPAService") LocationDao locationDao, CloudinaryService cloudinaryService) {
+    public LocalCuisineService(
+            @Qualifier("localCuisineJPAService") LocalCuisineDao localCuisineDao,
+            @Qualifier("locationJPAService") LocationDao locationDao,
+            CloudinaryService cloudinaryService
+    ) {
         this.localCuisineDao = localCuisineDao;
         this.locationDao = locationDao;
         this.cloudinaryService = cloudinaryService;
@@ -61,27 +66,10 @@ public class LocalCuisineService {
                     dto.name(), dto.description(), url, location
             );
             localCuisineDao.insertLocalCuisine(localCuisine);
-        } catch (IOException e) {
-            // TODO -> tell the user something
         }
-    }
-
-    public void addLocalCuisine(LocalCuisineRegistrationRequest request) {
-        if (localCuisineDao.existsLocalCuisineByNameAndLocationId(request.name(), request.locationId())) {
-            throw new DuplicateResourceException("local cuisine already exists");
+        catch (IOException e) {
+            throw new UnprocessableEntityException("image could not be processed");
         }
-        Location location = locationDao.selectLocationById(request.locationId())
-                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.locationId())));
-
-        LocalCuisine localCuisine = new LocalCuisine(
-                null, // Assuming ID is auto-generated.
-                request.name(),
-                request.description(),
-                request.image(),
-                location
-        );
-
-        localCuisineDao.insertLocalCuisine(localCuisine);
     }
 
     public void deleteLocalCuisine(Integer id) {
@@ -133,48 +121,9 @@ public class LocalCuisineService {
             else {
                 throw new IOException();
             }
-        } catch (IOException e) {
-            // TODO -> tell the user something
+        }
+        catch (IOException e) {
+            throw new UnprocessableEntityException("image could not be processed");
         }
     }
-
-    public boolean updateLocalCuisine(Integer id, LocalCuisineUpdateRequest request) {
-        LocalCuisine existingLocalCuisine = getLocalCuisine(id);
-
-        if (localCuisineDao.existsLocalCuisineByNameAndLocationId(request.name(), request.locationId())) {
-            throw new DuplicateResourceException("Local Cuisine already exists");
-        }
-        Location location = locationDao.selectLocationById(request.locationId())
-                .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.locationId())));
-
-        boolean changes = false;
-
-        if (request.name() != null && !request.name().equals(existingLocalCuisine.getName())) {
-            existingLocalCuisine.setName(request.name());
-            changes = true;
-        }
-        if (request.description() != null && !request.description().equals(existingLocalCuisine.getDescription())) {
-            existingLocalCuisine.setDescription(request.description());
-            changes = true;
-        }
-        if (request.image() != null && !request.image().equals(existingLocalCuisine.getImage())) {
-            existingLocalCuisine.setImage(request.image());
-            changes = true;
-        }
-
-        if (request.locationId() != null && !request.locationId().equals(existingLocalCuisine.getLocation().getId())) {
-            existingLocalCuisine.setLocation(location);
-        }
-
-        if (!changes) {
-            throw new RequestValidationException("no data changes");
-        }
-
-        localCuisineDao.updateLocalCuisine(existingLocalCuisine);
-        return changes;
-    }
-
-
-
-
 }

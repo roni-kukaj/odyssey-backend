@@ -10,6 +10,7 @@ import com.odyssey.user.UserDao;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,8 @@ public class PlanService {
     public PlanService(
             @Qualifier("planJPAService") PlanDao planDao,
             @Qualifier("userJPAService") UserDao userDao,
-            @Qualifier("locationJPAService") LocationDao locationDao) {
+            @Qualifier("locationJPAService") LocationDao locationDao
+    ) {
         this.planDao = planDao;
         this.userDao = userDao;
         this.locationDao = locationDao;
@@ -53,7 +55,7 @@ public class PlanService {
         Location location = locationDao.selectLocationById(request.locationId())
                 .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.userId())));
 
-        Date date = request.date();
+        LocalDate date = request.date();
         Plan plan = new Plan(user, location, date);
 
         if (planDao.existsPlanByUserIdAndLocationId(request.userId(), request.locationId())) {
@@ -63,36 +65,27 @@ public class PlanService {
         planDao.insertPlan(plan);
     }
 
-    public boolean deletePlan(Integer id) {
+    public void deletePlan(Integer id) {
         if (planDao.existsPlanById(id)) {
             planDao.deletePlanById(id);
         }
         else {
             throw new ResourceNotFoundException("plan with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
-    public boolean deletePlansByUserId(Integer userId) {
+    public void deletePlansByUserId(Integer userId) {
         if (!userDao.existsUserById(userId)) {
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
         }
         planDao.deletePlanByUserId(userId);
-        return false;
     }
 
-    public boolean updatePlan(Integer id, PlanUpdateRequest request) {
+    public void updatePlan(Integer id, PlanUpdateRequest request) {
         Plan existingPlan = getPlan(id);
 
         Location location = locationDao.selectLocationById(request.locationId())
                 .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.locationId())));
-
-        User user = userDao.selectUserById(request.userId())
-                .orElseThrow(() -> new ResourceNotFoundException("user with id [%s] not found".formatted(request.userId())));
-
-        if (!request.userId().equals(existingPlan.getUser().getId())) {
-            throw new RequestValidationException("cannot change the user");
-        }
 
         boolean changes = false;
 
@@ -110,7 +103,6 @@ public class PlanService {
         }
 
         planDao.updatePlan(existingPlan);
-        return changes;
     }
 
 }

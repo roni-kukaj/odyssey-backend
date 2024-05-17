@@ -46,10 +46,4 @@ public class BookmarksController {
         bookmarksService.deleteBookmarks(bookmarksId);
     }
 
-    @PutMapping("/{bookmarksId}")
-    public void updateBookmarks(@PathVariable("bookmarksId") Integer bookmarksId, @RequestBody BookmarksUpdateRequest request){
-        bookmarksService.updateBookmarks(bookmarksId, request);
-    }
-
-
 }

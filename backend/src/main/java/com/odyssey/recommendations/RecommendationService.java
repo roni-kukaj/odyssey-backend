@@ -21,10 +21,11 @@ public class RecommendationService
     private final UserDao userDao;
     private final ActivityDao activityDao;
 
-    public RecommendationService(@Qualifier("recommendationJPAService")
-                                 RecommendationDao recommendationDao,
-                                 @Qualifier("userJPAService") UserDao userDao,
-                                 @Qualifier("activityJPAService") ActivityDao activityDao) {
+    public RecommendationService(
+            @Qualifier("recommendationJPAService") RecommendationDao recommendationDao,
+            @Qualifier("userJPAService") UserDao userDao,
+            @Qualifier("activityJPAService") ActivityDao activityDao
+    ) {
         this.recommendationDao = recommendationDao;
         this.userDao = userDao;
         this.activityDao = activityDao;
@@ -75,58 +76,29 @@ public class RecommendationService
         recommendationDao.insertRecommendation(recommendation);
     }
 
-    public boolean deleteRecommendation(Integer id){
+    public void deleteRecommendation(Integer id){
         if(recommendationDao.existsRecommendationById(id)){
             recommendationDao.deleteRecommendationById(id);
         }
-        else{
+        else {
             throw new ResourceNotFoundException("recommendation with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
-    public boolean updateRecommendation(Integer id, RecommendationUpdateRequest recommendationUpdateRequest){
+    public void updateRecommendation(Integer id, RecommendationUpdateRequest recommendationUpdateRequest){
         Recommendation existingRecommendation = getRecommendation(id);
-
-        if(recommendationDao.existsRecommendationByUserIdAndActivityId(recommendationUpdateRequest.userId(), recommendationUpdateRequest.activityId())){
-            throw new DuplicateResourceException("recommendation already exists");
-        }
-
-        User user = userDao.selectUserById(recommendationUpdateRequest.userId()).orElseThrow(
-                () -> new ResourceNotFoundException("user with id [%s] not found".formatted(recommendationUpdateRequest.userId()))
-        );
-
-        Activity activity = activityDao.selectActivityById(recommendationUpdateRequest.activityId()).orElseThrow(
-                () -> new ResourceNotFoundException("activity with id [%s] not found".formatted(recommendationUpdateRequest.activityId()))
-        );
 
         boolean changes = false;
 
-        if(recommendationUpdateRequest.description() != null && !recommendationUpdateRequest.description().equals(existingRecommendation.getDescription())){
+        if (recommendationUpdateRequest.description() != null && !recommendationUpdateRequest.description().equals(existingRecommendation.getDescription())){
             existingRecommendation.setDescription(recommendationUpdateRequest.description());
             changes = true;
         }
 
-        if(recommendationUpdateRequest.userId() != null && !recommendationUpdateRequest.userId().equals(existingRecommendation.getUser().getId())){
-            existingRecommendation.setUser(user);
-            changes = true;
-        }
-
-        if(recommendationUpdateRequest.activityId() != null && !recommendationUpdateRequest.activityId().equals(existingRecommendation.getActivity().getId())){
-            existingRecommendation.setActivity(activity);
-            changes = true;
-        }
-
-        if(!changes){
+        if (!changes){
             throw new RequestValidationException("no changes were found");
         }
 
         recommendationDao.upateRecommendation(existingRecommendation);
-        return changes;
-
     }
-
-
-
-
 }

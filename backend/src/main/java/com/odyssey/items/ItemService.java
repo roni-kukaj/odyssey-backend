@@ -41,27 +41,25 @@ public class ItemService {
         itemDao.insertItem(item);
     }
 
-    public boolean deleteItem(Integer id) {
+    public void deleteItem(Integer id) {
         if (itemDao.existsItemById(id)) {
             itemDao.deleteItemById(id);
         }
         else {
             throw new ResourceNotFoundException("item with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
-    public boolean deleteItemByName(String name) {
+    public void deleteItemByName(String name) {
         if (itemDao.existsItemByName(name)) {
             itemDao.deleteItemByName(name);
         }
         else {
             throw new ResourceNotFoundException("item with name [%s] not found".formatted(name));
         }
-        return false;
     }
 
-    public boolean updateItem(Integer id, ItemUpdateRequest request) {
+    public void updateItem(Integer id, ItemUpdateRequest request) {
         Item existingItem = getItem(id);
 
         if (itemDao.existsItemByName(request.name())) {
@@ -80,8 +78,6 @@ public class ItemService {
         }
 
         itemDao.updateItem(existingItem);
-        return changes;
-
     }
 
 }

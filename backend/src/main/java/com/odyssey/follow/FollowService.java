@@ -66,22 +66,18 @@ public class FollowService {
 
     }
 
-    public boolean deleteFollow(Integer id) {
+    public void deleteFollow(Integer id) {
         if (followersDao.existsFollowById(id)) {
             followersDao.deleteFollowById(id);
         }
         else {
             throw new ResourceNotFoundException("record with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
-    public boolean deleteFollowByFollowerIdAndFollowingId(FollowDeleteRequest request){
+    public void deleteFollowByFollowerIdAndFollowingId(FollowDeleteRequest request){
         Follow follow = followersDao.selectByFollowerIdAndFollowingId(request.followerId(), request.followingId())
                 .orElseThrow(() -> new ResourceNotFoundException("user with id [%s] does not follow user with id [%s]".formatted(request.followerId(), request.followingId())));
         followersDao.deleteFollowById(follow.getId());
-
-        return false;
     }
-
 }

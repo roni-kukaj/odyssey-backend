@@ -4,8 +4,6 @@ import com.odyssey.cloudinaryService.CloudinaryService;
 import com.odyssey.fileService.FileService;
 import com.odyssey.role.Role;
 import com.odyssey.role.RoleDao;
-import com.odyssey.role.RoleRepository;
-import com.odyssey.role.RoleService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.odyssey.exception.*;
@@ -22,7 +20,11 @@ public class UserService {
     private final RoleDao roleDao;
     private final CloudinaryService cloudinaryService;
 
-    public UserService(@Qualifier("userJPAService") UserDao userDao, @Qualifier("roleJPAService") RoleDao roleDao, CloudinaryService cloudinaryService) {
+    public UserService(
+            @Qualifier("userJPAService") UserDao userDao,
+            @Qualifier("roleJPAService") RoleDao roleDao,
+            CloudinaryService cloudinaryService
+    ) {
         this.userDao = userDao;
         this.roleDao = roleDao;
         this.cloudinaryService = cloudinaryService;
@@ -62,14 +64,13 @@ public class UserService {
         userDao.insertUser(user);
     }
 
-    public boolean deleteUser(Integer id) {
+    public void deleteUser(Integer id) {
         if (userDao.existsUserById(id)) {
             userDao.deleteUserById(id);
         }
         else {
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(id));
         }
-        return false;
     }
 
     public void updateUser(Integer id, UserUpdateInformationDto dto) {
@@ -106,11 +107,11 @@ public class UserService {
             user.setAvatar(newUrl);
             userDao.updateUser(user);
         } catch (IOException e) {
-            // TODO -> tell the user something
+            throw new UnprocessableEntityException("image could not be processed");
         }
     }
 
-    public boolean updateUser(Integer id, UserUpdateRequest updateRequest) {
+    public void updateUser(Integer id, UserUpdateRequest updateRequest) {
         User user = getUser(id);
         boolean changes = false;
 
@@ -152,7 +153,6 @@ public class UserService {
             throw new RequestValidationException("no data changes found");
         }
         userDao.updateUser(user);
-        return changes;
     }
 
 }

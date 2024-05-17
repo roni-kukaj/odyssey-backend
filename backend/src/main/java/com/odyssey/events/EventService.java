@@ -3,6 +3,7 @@ package com.odyssey.events;
 import com.odyssey.cloudinaryService.CloudinaryService;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
+import com.odyssey.exception.UnprocessableEntityException;
 import com.odyssey.fileService.FileService;
 import com.odyssey.locations.Location;
 import com.odyssey.locations.LocationDao;
@@ -46,41 +47,24 @@ public class EventService {
         File file = FileService.convertFile(dto.image());
 
         try {
-
             String url = cloudinaryService.uploadImage(file, "events");
             Event event = new Event(
                     dto.name(), dto.description(), url, dto.date(), dto.cost(), dto.duration(), location
             );
             eventDao.insertEvent(event);
-        } catch (IOException e) {
-            // TODO -> tell the user something
+        }
+        catch (IOException e) {
+            throw new UnprocessableEntityException("image could not be processed");
         }
     }
 
-    public void addEvent(EventRegistrationRequest eventRegistrationRequest){
-        if(eventDao.existsEventByName(eventRegistrationRequest.name())){
-            throw new DuplicateResourceException("event already exists");
-        }
-        Location location = locationDao.selectLocationById(eventRegistrationRequest.location_id()).orElseThrow(()-> new ResourceNotFoundException("location with id [%s] not found".formatted(eventRegistrationRequest.location_id())));
-
-        Event event = new Event(
-                eventRegistrationRequest.name(), eventRegistrationRequest.description(),
-                eventRegistrationRequest.image(), eventRegistrationRequest.date(),
-                eventRegistrationRequest.cost(), eventRegistrationRequest.duration(),
-                location
-        );
-        eventDao.insertEvent(event);
-    }
-
-
-    public boolean deleteEvent(Integer id){
-        if(eventDao.existsEventById(id)){
+    public void deleteEvent(Integer id){
+        if (eventDao.existsEventById(id)) {
             eventDao.deleteEventById(id);
         }
         else {
             throw new ResourceNotFoundException("event with id [%s] not found".formatted(id) );
         }
-        return false;
     }
 
     public void updateEventInformation(Integer id, EventUpdateInformationDto dto) {
@@ -89,6 +73,7 @@ public class EventService {
                 .orElseThrow(()-> new ResourceNotFoundException("location with id [%s] not found".formatted(dto.locationId())));
 
         boolean changes = false;
+
         if(dto.name() != null && !dto.name().equals(event.getName())){
             event.setName(dto.name());
             changes = true;
@@ -135,52 +120,7 @@ public class EventService {
                 throw new IOException();
             }
         } catch (IOException e) {
-            // TODO -> tell the user something
+            throw new UnprocessableEntityException("image could not be processed");
         }
     }
-
-    public boolean updateEvent(Integer id, EventUpdateRequest eventUpdateRequest){
-        Event event = getEvent(id);
-        Location location = locationDao.selectLocationById(eventUpdateRequest.location_id()).orElseThrow(()-> new ResourceNotFoundException("location with id [%s] not found".formatted(eventUpdateRequest.location_id())));
-        boolean changes = false;
-        if(eventUpdateRequest.name() != null && !eventUpdateRequest.name().equals(event.getName())){
-            event.setName(eventUpdateRequest.name());
-            changes = true;
-        }
-
-        if(eventUpdateRequest.description()!=null && !eventUpdateRequest.description().equals(event.getDescription())){
-            event.setDescription(eventUpdateRequest.description());
-            changes = true;
-        }
-
-        if(eventUpdateRequest.cost()!=null && !eventUpdateRequest.cost().equals(event.getCost())){
-            event.setCost(eventUpdateRequest.cost());
-            changes = true;
-        }
-
-        if(eventUpdateRequest.date()!=null && !eventUpdateRequest.date().equals(event.getDate())){
-            event.setDate(eventUpdateRequest.date());
-            changes = true;
-        }
-
-        if(eventUpdateRequest.duration()!=null && !eventUpdateRequest.duration().equals(event.getDuration())){
-            event.setDuration(eventUpdateRequest.duration());
-            changes = true;
-        }
-
-        if (eventUpdateRequest.image()!=null && !eventUpdateRequest.image().equals(event.getImage())){
-            event.setImage(eventUpdateRequest.image());
-            changes = true;
-        }
-
-        if(eventUpdateRequest.location_id() != null && !eventUpdateRequest.location_id().equals(event.getLocation().getId())){
-            event.setLocation(location);
-            changes = true;
-        }
-
-        eventDao.updateEvent(event);
-        return changes;
-
-    }
-
 }
