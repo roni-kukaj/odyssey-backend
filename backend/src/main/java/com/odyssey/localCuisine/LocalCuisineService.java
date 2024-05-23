@@ -1,7 +1,6 @@
 package com.odyssey.localCuisine;
 
 import com.odyssey.cloudinaryService.CloudinaryService;
-import com.odyssey.events.Event;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
@@ -76,11 +75,11 @@ public class LocalCuisineService {
         if (localCuisineDao.existsLocalCuisineById(id)) {
             localCuisineDao.deleteLocalCuisineById(id);
         } else {
-            throw new ResourceNotFoundException("Local Cuisine with id [%s] not found".formatted(id));
+            throw new ResourceNotFoundException("local cuisine with id [%s] not found".formatted(id));
         }
     }
 
-    public void updateLocalCuisineInformation(Integer id, LocalCuisineUpdateInformationDto dto) {
+    public void updateLocalCuisine(Integer id, LocalCuisineUpdateDto dto) {
         LocalCuisine existingLocalCuisine = getLocalCuisine(id);
         if (localCuisineDao.existsLocalCuisineByNameAndLocationId(dto.name(), dto.locationId())) {
             throw new DuplicateResourceException("local cuisine already exists");
@@ -100,30 +99,23 @@ public class LocalCuisineService {
         }
         if (dto.locationId() != null && !dto.locationId().equals(existingLocalCuisine.getLocation().getId())) {
             existingLocalCuisine.setLocation(location);
+            changes = true;
         }
 
         if (!changes) {
             throw new RequestValidationException("no data changes");
         }
 
-        localCuisineDao.updateLocalCuisine(existingLocalCuisine);
-    }
-
-    public void updateLocalCuisinePicture(Integer id, MultipartFile image) {
-        LocalCuisine localCuisine = getLocalCuisine(id);
         try {
-            File file = FileService.convertFile(image);
+            File file = FileService.convertFile(dto.file());
             String newUrl = cloudinaryService.uploadImage(file, "localCuisine");
-            if (cloudinaryService.deleteImageByUrl(localCuisine.getImage())) {
-                localCuisine.setImage(newUrl);
-                localCuisineDao.updateLocalCuisine(localCuisine);
-            }
-            else {
-                throw new IOException();
-            }
+            cloudinaryService.deleteImageByUrl(existingLocalCuisine.getImage());
+            existingLocalCuisine.setImage(newUrl);
         }
         catch (IOException e) {
             throw new UnprocessableEntityException("image could not be processed");
         }
+
+        localCuisineDao.updateLocalCuisine(existingLocalCuisine);
     }
 }

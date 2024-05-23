@@ -34,7 +34,6 @@ class ActivityServiceTest {
         underTest = new ActivityService(activityDao, locationDao);
     }
 
-
     @Test
     void getAllActivities() {
         // When

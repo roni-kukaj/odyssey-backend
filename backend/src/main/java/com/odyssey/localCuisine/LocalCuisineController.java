@@ -1,13 +1,12 @@
 package com.odyssey.localCuisine;
 
 
-import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
+import com.odyssey.locations.LocationRegistrationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -33,15 +32,8 @@ public class LocalCuisineController {
     }
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public void registerLocalCuisine(
-            @RequestParam("name") String name,
-            @RequestParam("description") String description,
-            @RequestPart("image") MultipartFile image,
-            @RequestParam("locationId") Integer locationId
-    ) {
-        localCuisineService.addLocalCuisine(new LocalCuisineRegistrationDto(
-                name, description, image, locationId
-        ));
+    public void registerLocalCuisine(@ModelAttribute LocalCuisineRegistrationDto dto) {
+        localCuisineService.addLocalCuisine(dto);
     }
 
     @DeleteMapping("/{localCuisineId}")
@@ -52,17 +44,10 @@ public class LocalCuisineController {
     @PutMapping("/{localCuisineId}")
     public void updateLocalCuisine(
             @PathVariable("localCuisineId") Integer localCuisineId,
-            @RequestBody LocalCuisineUpdateInformationDto dto) {
-        localCuisineService.updateLocalCuisineInformation(localCuisineId, dto);
+            @ModelAttribute LocalCuisineUpdateDto dto) {
+        localCuisineService.updateLocalCuisine(localCuisineId, dto);
     }
 
-    @PutMapping(value = "/{localCuisineId}/picture", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public void updateLocalCuisinePicture(
-            @PathVariable("localCuisineId") Integer localCuisineId,
-            @RequestParam("file") MultipartFile file
-    ) {
-        localCuisineService.updateLocalCuisinePicture(localCuisineId, file);
-    }
 
 
 }

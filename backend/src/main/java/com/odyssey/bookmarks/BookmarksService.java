@@ -59,7 +59,7 @@ public class BookmarksService {
         Location location = locationDao.selectLocationById(bookmarksRegistrationRequest.locationId())
                 .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".
                         formatted(bookmarksRegistrationRequest.locationId()))
-        );
+                );
 
         User user = userDao.selectUserById(bookmarksRegistrationRequest.userId()).orElseThrow(
                 () -> new ResourceNotFoundException("user with id [%s] not found"

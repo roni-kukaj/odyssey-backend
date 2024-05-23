@@ -1,7 +1,6 @@
 package com.odyssey.news;
 
 import com.odyssey.cloudinaryService.CloudinaryService;
-import com.odyssey.events.Event;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
@@ -76,7 +75,7 @@ public class NewsService {
         }
     }
 
-    public void updateNewsInformation(Integer id, NewsUpdateInformationDto dto) {
+    public void updateNews(Integer id, NewsUpdateDto dto) {
         News existingNews = getNews(id);
 
         if (newsDao.existsNewsByTitleAndAuthorId(dto.title(), existingNews.getAuthor().getId())){
@@ -96,23 +95,16 @@ public class NewsService {
         if (!changes) {
             throw new RequestValidationException("no changes were found");
         }
-        newsDao.updateNews(existingNews);
-    }
 
-    public void updateNewsPicture(Integer id, MultipartFile image) {
-        News existingNews = getNews(id);
         try {
-            File file = FileService.convertFile(image);
+            File file = FileService.convertFile(dto.file());
             String newUrl = cloudinaryService.uploadImage(file, "news");
-            if (cloudinaryService.deleteImageByUrl(existingNews.getPicture())) {
-                existingNews.setPicture(newUrl);
-                newsDao.updateNews(existingNews);
-            }
-            else {
-                throw new IOException();
-            }
+            cloudinaryService.deleteImageByUrl(existingNews.getPicture());
+            existingNews.setPicture(newUrl);
         } catch (IOException e) {
             throw new UnprocessableEntityException("image could not be processed");
         }
+
+        newsDao.updateNews(existingNews);
     }
 }

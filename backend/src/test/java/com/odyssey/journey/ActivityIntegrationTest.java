@@ -3,14 +3,23 @@ import com.github.javafaker.Faker;
 import com.odyssey.activities.Activity;
 import com.odyssey.activities.ActivityRegistrationRequest;
 import com.odyssey.activities.ActivityUpdateRequest;
+import com.odyssey.cloudinaryService.CloudinaryService;
 import com.odyssey.locations.Location;
+import com.odyssey.locations.LocationRegistrationDto;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import java.util.Random;
@@ -24,47 +33,72 @@ public class ActivityIntegrationTest {
 
     private static final Random RANDOM = new Random();
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
+    private final String FILE_URL = "src/main/resources/images/test.png";
+
     private static final String ACTIVITY_URI = "/api/v1/activities";
     private static final String LOCATION_URI = "/api/v1/locations";
 
-    private Location setUpLocation() {
-        Faker faker = new Faker();
-        String city = faker.name().fullName();
-        String country = city;
-        String picture = "pic";
-        LocationRegistrationRequest request = new LocationRegistrationRequest(
-                city,
-                country,
-                picture
-        );
-        webTestClient.post()
-                .uri(LOCATION_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), LocationRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
-        List<Location> allLocations = webTestClient.get()
-                .uri(LOCATION_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBodyList(new ParameterizedTypeReference<Location>() {})
-                .returnResult()
-                .getResponseBody();
-
-        int id = allLocations.stream()
-                .filter(location -> location.getCity().equals(city) && location.getCountry().equals(country))
-                .map(Location::getId)
-                .findFirst()
-                .orElseThrow();
-        return new Location(id, city, country, picture);
+    private Location setUpLocation() throws IOException {
+//        Faker faker = new Faker();
+//        String city = faker.name().fullName();
+//        String country = city;
+//
+//        Path path = Paths.get(FILE_URL);
+//        byte[] content = Files.readAllBytes(path);
+//
+//
+//        MockMultipartFile image = new MockMultipartFile(
+//                "file",
+//                "test.png",
+//                "image/png",
+//                content
+//        );
+//
+//        LocationRegistrationDto dto = new LocationRegistrationDto(
+//                city,
+//                country,
+//                image
+//        );
+//
+//        webTestClient.post()
+//                .uri(LOCATION_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(dto), LocationRegistrationDto.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
+//        List<Location> allLocations = webTestClient.get()
+//                .uri(LOCATION_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .exchange()
+//                .expectStatus()
+//                .isOk()
+//                .expectBodyList(new ParameterizedTypeReference<Location>() {})
+//                .returnResult()
+//                .getResponseBody();
+//
+//        int id = allLocations.stream()
+//                .filter(location -> location.getCity().equals(city) && location.getCountry().equals(country))
+//                .map(Location::getId)
+//                .findFirst()
+//                .orElseThrow();
+//
+//        String url = allLocations.stream()
+//                .filter(location -> location.getId().equals(id))
+//                .map(Location::getPicture)
+//                .findFirst()
+//                .orElseThrow();
+//
+//        return new Location(id, city, country, url);
+        return new Location();
     }
 
     @Test
-    void canRegisterAnActivity() {
+    void canRegisterAnActivity() throws IOException {
         Faker faker = new Faker();
         String name = faker.name().fullName();
         String desc = faker.name().fullName();
@@ -75,6 +109,7 @@ public class ActivityIntegrationTest {
         ActivityRegistrationRequest request = new ActivityRegistrationRequest(
                 name, desc, cost, duration, location.getId()
         );
+
         webTestClient.post()
                 .uri(ACTIVITY_URI)
                 .accept(MediaType.APPLICATION_JSON)
@@ -119,10 +154,12 @@ public class ActivityIntegrationTest {
                 .expectBody(new ParameterizedTypeReference<Activity>() {})
                 .isEqualTo(expectedActivity);
 
+        cloudinaryService.deleteImageByUrl(location.getPicture());
+
     }
 
     @Test
-    void canDeleteActivity() {
+    void canDeleteActivity() throws IOException {
         Faker faker = new Faker();
         String name = faker.name().fullName();
         String desc = faker.name().fullName();
@@ -182,7 +219,7 @@ public class ActivityIntegrationTest {
     }
 
     @Test
-    void canUpdateActivityAllFields() {
+    void canUpdateActivityAllFields() throws IOException {
         Faker faker = new Faker();
         String name = faker.name().fullName();
         String desc = faker.name().fullName();

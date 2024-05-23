@@ -224,19 +224,17 @@ public class RecommendationServiceTest {
         activity.setId(1);
         String description = "Must visit";
 
-        Recommendation recommendation = new Recommendation(description,user,activity);
+        Recommendation recommendation = new Recommendation(description, user, activity);
         when(recommendationDao.selectRecommendationById(id)).thenReturn(Optional.of(recommendation));
 
         String newDescription = "Must visit the palace";
-        User user1 = new User();
-        user1.setId(2);
-        Activity activity1 = new Activity();
-        activity1.setId(2);
 
-        RecommendationUpdateRequest recommendationUpdateRequest = new RecommendationUpdateRequest(newDescription, user1.getId(), activity1.getId());
-        when(userDao.selectUserById(user1.getId())).thenReturn(Optional.of(user1));
-        when(activityDao.selectActivityById(activity1.getId())).thenReturn(Optional.of(activity1));
-        underTest.updateRecommendation(id,recommendationUpdateRequest);
+        RecommendationUpdateRequest request =
+                new RecommendationUpdateRequest(
+                        newDescription
+                );
+
+        underTest.updateRecommendation(id, request);
 
         ArgumentCaptor<Recommendation> recommendationArgumentCaptor = ArgumentCaptor.forClass(Recommendation.class);
         verify(recommendationDao).upateRecommendation(recommendationArgumentCaptor.capture());
@@ -244,9 +242,9 @@ public class RecommendationServiceTest {
         Recommendation capturedRecommendation = recommendationArgumentCaptor.getValue();
 
         assertThat(capturedRecommendation.getId()).isNull();
-        assertThat(capturedRecommendation.getDescription()).isEqualTo(recommendationUpdateRequest.description());
-        assertThat(capturedRecommendation.getUser().getId()).isEqualTo(recommendationUpdateRequest.userId());
-        assertThat(capturedRecommendation.getActivity().getId()).isEqualTo(recommendationUpdateRequest.activityId());
+        assertThat(capturedRecommendation.getDescription()).isEqualTo(request.description());
+        assertThat(capturedRecommendation.getUser().getId()).isEqualTo(user.getId());
+        assertThat(capturedRecommendation.getActivity().getId()).isEqualTo(activity.getId());
     }
 
     @Test
@@ -261,15 +259,11 @@ public class RecommendationServiceTest {
         Recommendation recommendation = new Recommendation(description,user,activity);
         when(recommendationDao.selectRecommendationById(id)).thenReturn(Optional.of(recommendation));
 
-        RecommendationUpdateRequest recommendationUpdateRequest = new RecommendationUpdateRequest(
-                recommendation.getDescription(), user.getId(),activity.getId()
+        RecommendationUpdateRequest request = new RecommendationUpdateRequest(
+                recommendation.getDescription()
         );
 
-        when(userDao.selectUserById(user.getId())).thenReturn(Optional.of(user));
-        when(activityDao.selectActivityById(activity.getId())).thenReturn(Optional.of(activity));
-        when(recommendationDao.existsRecommendationByUserIdAndActivityId(recommendationUpdateRequest.userId(),recommendationUpdateRequest.activityId())).thenReturn(false);
-
-        assertThatThrownBy(() -> underTest.updateRecommendation(id, recommendationUpdateRequest))
+        assertThatThrownBy(() -> underTest.updateRecommendation(id, request))
                 .isInstanceOf(RequestValidationException.class)
                 .hasMessage("no changes were found");
 

@@ -1,13 +1,11 @@
 package com.odyssey.posts;
 
 import com.odyssey.cloudinaryService.CloudinaryService;
-import com.odyssey.events.Event;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.exception.UnprocessableEntityException;
 import com.odyssey.fileService.FileService;
-import com.odyssey.plans.Plan;
 import com.odyssey.trips.Trip;
 import com.odyssey.trips.TripDao;
 import com.odyssey.user.User;
@@ -19,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -29,6 +26,7 @@ public class PostService {
     private final UserDao userDao;
     private final TripDao tripDao;
     private final CloudinaryService cloudinaryService;
+    private PostUpdateDto d;
 
     public PostService(
             @Qualifier("postJPAService") PostDao postDao,
@@ -65,6 +63,10 @@ public class PostService {
         Trip trip = tripDao.selectTripById(dto.tripId())
                 .orElseThrow(() -> new ResourceNotFoundException("trip with id [%s] not found".formatted(dto.tripId())));
 
+        if (postDao.existsPostByUserIdAndTripId(dto.userId(), dto.tripId())) {
+            throw new DuplicateResourceException("a trip can only have one post");
+        }
+
         LocalDate postedTime = LocalDate.now();
         File file = FileService.convertFile(dto.image());
         try {
@@ -94,7 +96,7 @@ public class PostService {
         postDao.deletePostsByUserId(userId);
     }
 
-    public void updatePostInformation(Integer id, PostUpdateInformationDto dto) {
+    public void updatePost(Integer id, PostUpdateDto dto) {
         Post existingPost = getPost(id);
 
         boolean changes = false;
@@ -108,23 +110,16 @@ public class PostService {
             throw new RequestValidationException("no data changes");
         }
 
-        postDao.updatePost(existingPost);
-    }
-
-    public void updatePostPicture(Integer id, MultipartFile image) {
-        Post post = getPost(id);
         try {
-            File file = FileService.convertFile(image);
+            d = dto;
+            File file = FileService.convertFile(dto.file());
             String newUrl = cloudinaryService.uploadImage(file, "posts");
-            if (cloudinaryService.deleteImageByUrl(post.getImage())) {
-                post.setImage(newUrl);
-                postDao.updatePost(post);
-            }
-            else {
-                throw new IOException();
-            }
+            cloudinaryService.deleteImageByUrl(existingPost.getImage());
+                existingPost.setImage(newUrl);
         } catch (IOException e) {
             throw new UnprocessableEntityException("image could not be processed");
         }
+
+        postDao.updatePost(existingPost);
     }
 }

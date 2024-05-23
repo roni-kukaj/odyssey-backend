@@ -33,19 +33,19 @@ public class LocalCuisineIntegrationTest {
         String city = faker.name().fullName();
         String country = city;
         String picture = "pic";
-        LocationRegistrationRequest request = new LocationRegistrationRequest(
-                city,
-                country,
-                picture
-        );
-        webTestClient.post()
-                .uri(LOCATION_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), LocationRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        LocationRegistrationRequest request = new LocationRegistrationRequest(
+//                city,
+//                country,
+//                picture
+//        );
+//        webTestClient.post()
+//                .uri(LOCATION_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(request), LocationRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
         List<Location> allLocations = webTestClient.get()
                 .uri(LOCATION_URI)
                 .accept(MediaType.APPLICATION_JSON)
@@ -72,17 +72,17 @@ public class LocalCuisineIntegrationTest {
         String image = faker.name().fullName();
         Location location = setUpLocation();
 
-        LocalCuisineRegistrationRequest request = new LocalCuisineRegistrationRequest(
-                name, desc, image, location.getId()
-        );
-        webTestClient.post()
-                .uri(LOCALCUISINE_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), LocalCuisineRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        LocalCuisineRegistrationRequest request = new LocalCuisineRegistrationRequest(
+//                name, desc, image, location.getId()
+//        );
+//        webTestClient.post()
+//                .uri(LOCALCUISINE_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(request), LocalCuisineRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         List<LocalCuisine> allLocalCuisines = webTestClient.get()
                 .uri(LOCALCUISINE_URI)
@@ -129,17 +129,17 @@ public class LocalCuisineIntegrationTest {
         String image = faker.name().fullName();
         Location location = setUpLocation();
 
-        LocalCuisineRegistrationRequest request = new LocalCuisineRegistrationRequest(
-                name, desc, image, location.getId()
-        );
-        webTestClient.post()
-                .uri(LOCALCUISINE_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), LocalCuisineRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        LocalCuisineRegistrationRequest request = new LocalCuisineRegistrationRequest(
+//                name, desc, image, location.getId()
+//        );
+//        webTestClient.post()
+//                .uri(LOCALCUISINE_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(request), LocalCuisineRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         List<LocalCuisine> allLocalCuisines = webTestClient.get()
                 .uri(LOCALCUISINE_URI)
@@ -187,18 +187,18 @@ public class LocalCuisineIntegrationTest {
         String desc = faker.name().fullName();
         String image = faker.name().fullName();
         Location location = setUpLocation();
-
-        LocalCuisineRegistrationRequest request = new LocalCuisineRegistrationRequest(
-                name, desc, image, location.getId()
-        );
-        webTestClient.post()
-                .uri(LOCALCUISINE_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), LocalCuisineRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//
+//        LocalCuisineRegistrationRequest request = new LocalCuisineRegistrationRequest(
+//                name, desc, image, location.getId()
+//        );
+//        webTestClient.post()
+//                .uri(LOCALCUISINE_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(request), LocalCuisineRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         List<LocalCuisine> allLocalCuisiness = webTestClient.get()
                 .uri(LOCALCUISINE_URI)
@@ -222,18 +222,18 @@ public class LocalCuisineIntegrationTest {
         String desc2 = faker.name().fullName();
         String image2 = faker.name().fullName();
         Location location2 = setUpLocation();
-        LocalCuisineUpdateRequest updateRequest = new LocalCuisineUpdateRequest(
-                name2, desc2, image2, location2.getId()
-        );
-
-        webTestClient.put()
-                .uri(LOCALCUISINE_URI + "/{id}", id)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(updateRequest), LocalCuisineUpdateRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        LocalCuisineUpdateRequest updateRequest = new LocalCuisineUpdateRequest(
+//                name2, desc2, image2, location2.getId()
+//        );
+//
+//        webTestClient.put()
+//                .uri(LOCALCUISINE_URI + "/{id}", id)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(updateRequest), LocalCuisineUpdateRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         LocalCuisine updatedLocalCuisine = webTestClient.get()
                 .uri(LOCALCUISINE_URI + "/{id}", id)

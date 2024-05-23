@@ -1,7 +1,5 @@
 package com.odyssey.flights;
 
-import com.odyssey.events.Event;
-import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.locations.Location;
@@ -12,9 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
@@ -29,6 +24,7 @@ class FlightServiceTest {
     private FlightDao flightDao;
     @Mock
     private LocationDao locationDao;
+
     private FlightService underTest;
 
     @BeforeEach

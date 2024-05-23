@@ -2,7 +2,6 @@ package com.odyssey.posts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,15 +28,8 @@ public class PostController {
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public void registerPost(
-            @RequestParam("text") String text,
-            @RequestPart("file") MultipartFile file,
-            @RequestParam("userId") Integer userId,
-            @RequestParam("tripId") Integer tripId
-    ) {
-        postService.addPost(new PostRegistrationDto(
-                text, userId, tripId, file
-        ));
+    public void registerPost(@ModelAttribute PostRegistrationDto dto) {
+        postService.addPost(dto);
     }
 
     @DeleteMapping("/{postId}")
@@ -53,16 +45,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public void updatePostInformation(
             @PathVariable("postId") Integer postId,
-            @RequestBody PostUpdateInformationDto dto) {
-        postService.updatePostInformation(postId, dto);
+            @ModelAttribute PostUpdateDto dto) {
+        postService.updatePost(postId, dto);
     }
-
-    @PutMapping(value = "/{postId}/picture", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public void updatePostPicture(
-            @PathVariable("postId") Integer postId,
-            @RequestPart("file") MultipartFile file
-    ) {
-        postService.updatePostPicture(postId, file);
-    }
-
 }

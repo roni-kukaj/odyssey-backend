@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public record EventRegistrationDto (
         String name,
         String description,
-        MultipartFile image,
+        MultipartFile file,
         LocalDate date,
         Double cost,
         Integer duration,

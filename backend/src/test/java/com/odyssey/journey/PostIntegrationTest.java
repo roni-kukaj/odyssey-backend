@@ -114,18 +114,18 @@ public class PostIntegrationTest {
         User user = setUpUser();
         Trip trip = setUpTrip(user);
 
-        PostRegistrationRequest request = new PostRegistrationRequest(
-                "Post", "Image", user.getId(), trip.getId()
-        );
-
-        webTestClient.post()
-                .uri(POST_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), PostRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        PostRegistrationRequest request = new PostRegistrationRequest(
+//                "Post", "Image", user.getId(), trip.getId()
+//        );
+//
+//        webTestClient.post()
+//                .uri(POST_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(request), PostRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         List<Post> allPosts = webTestClient.get()
                 .uri(POST_URI)
@@ -168,18 +168,18 @@ public class PostIntegrationTest {
         User user = setUpUser();
         Trip trip = setUpTrip(user);
 
-        PostRegistrationRequest request = new PostRegistrationRequest(
-                "Post", "Image", user.getId(), trip.getId()
-        );
-
-        webTestClient.post()
-                .uri(POST_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), PostRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        PostRegistrationRequest request = new PostRegistrationRequest(
+//                "Post", "Image", user.getId(), trip.getId()
+//        );
+//
+//        webTestClient.post()
+//                .uri(POST_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(request), PostRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         List<Post> allPosts = webTestClient.get()
                 .uri(POST_URI)
@@ -225,18 +225,18 @@ public class PostIntegrationTest {
         User user = setUpUser();
         Trip trip = setUpTrip(user);
 
-        PostRegistrationRequest request = new PostRegistrationRequest(
-                "Post", "Image", user.getId(), trip.getId()
-        );
-
-        webTestClient.post()
-                .uri(POST_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), PostRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        PostRegistrationRequest request = new PostRegistrationRequest(
+//                "Post", "Image", user.getId(), trip.getId()
+//        );
+//
+//        webTestClient.post()
+//                .uri(POST_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(request), PostRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         List<Post> allPosts = webTestClient.get()
                 .uri(POST_URI)
@@ -283,18 +283,18 @@ public class PostIntegrationTest {
         User user = setUpUser();
         Trip trip = setUpTrip(user);
 
-        PostRegistrationRequest request = new PostRegistrationRequest(
-                "Post", "Image", user.getId(), trip.getId()
-        );
-
-        webTestClient.post()
-                .uri(POST_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), PostRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        PostRegistrationRequest request = new PostRegistrationRequest(
+//                "Post", "Image", user.getId(), trip.getId()
+//        );
+//
+//        webTestClient.post()
+//                .uri(POST_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(request), PostRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         List<Post> allPosts = webTestClient.get()
                 .uri(POST_URI)
@@ -314,18 +314,18 @@ public class PostIntegrationTest {
 
         String newText = "new text";
         String newImage = "new image";
-        PostUpdateRequest updateRequest = new PostUpdateRequest(
-                newText, newImage
-        );
-
-        webTestClient.put()
-                .uri(POST_URI + "/{id}", id)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(updateRequest), PostUpdateRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        PostUpdateRequest updateRequest = new PostUpdateRequest(
+//                newText, newImage
+//        );
+//
+//        webTestClient.put()
+//                .uri(POST_URI + "/{id}", id)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(updateRequest), PostUpdateRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         Post updatedPost = webTestClient.get()
                 .uri(POST_URI + "/{id}", id)

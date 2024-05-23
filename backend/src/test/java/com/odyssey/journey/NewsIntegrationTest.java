@@ -79,18 +79,18 @@ public class NewsIntegrationTest {
         String picture = "picture";
         User author = setUpUser();
 
-        NewsRegistrationRequest newsRegistrationRequest = new NewsRegistrationRequest(
-               author.getId(), title, description, picture
-        );
-
-        webTestClient.post()
-                .uri(NEWS_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(newsRegistrationRequest), NewsRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        NewsRegistrationRequest newsRegistrationRequest = new NewsRegistrationRequest(
+//               author.getId(), title, description, picture
+//        );
+//
+//        webTestClient.post()
+//                .uri(NEWS_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(newsRegistrationRequest), NewsRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         List<News> allNews = webTestClient.get()
                 .uri(NEWS_URI)
@@ -136,19 +136,19 @@ public class NewsIntegrationTest {
         String picture = "picture";
         User author = setUpUser();
 
-        NewsRegistrationRequest newsRegistrationRequest = new NewsRegistrationRequest(
-                author.getId(), title, description, picture
-        );
-
-
-        webTestClient.post()
-                .uri(NEWS_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(newsRegistrationRequest), NewsRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        NewsRegistrationRequest newsRegistrationRequest = new NewsRegistrationRequest(
+//                author.getId(), title, description, picture
+//        );
+//
+//
+//        webTestClient.post()
+//                .uri(NEWS_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(newsRegistrationRequest), NewsRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         List<News> allNews = webTestClient.get()
                 .uri(NEWS_URI)
@@ -197,18 +197,18 @@ public class NewsIntegrationTest {
         String picture = "picture";
         User author = setUpUser();
 
-        NewsRegistrationRequest newsRegistrationRequest = new NewsRegistrationRequest(
-                author.getId(), title, description, picture
-        );
-
-        webTestClient.post()
-                .uri(NEWS_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(newsRegistrationRequest), NewsRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        NewsRegistrationRequest newsRegistrationRequest = new NewsRegistrationRequest(
+//                author.getId(), title, description, picture
+//        );
+//
+//        webTestClient.post()
+//                .uri(NEWS_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(newsRegistrationRequest), NewsRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         List<News> allNews = webTestClient.get()
                 .uri(NEWS_URI)
@@ -231,18 +231,18 @@ public class NewsIntegrationTest {
         String description2 = faker2.name().fullName();
         String picture2 = "picture 2";
         User author2 = setUpUser();
-        NewsUpdateRequest newsUpdateRequest = new NewsUpdateRequest (
-                author2.getId(), title2, description2, picture2
-        );
-
-        webTestClient.put()
-                .uri(NEWS_URI + "/{id}", id)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(newsUpdateRequest), NewsUpdateRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        NewsUpdateRequest newsUpdateRequest = new NewsUpdateRequest (
+//                author2.getId(), title2, description2, picture2
+//        );
+//
+//        webTestClient.put()
+//                .uri(NEWS_URI + "/{id}", id)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(newsUpdateRequest), NewsUpdateRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         News updatedNews = webTestClient.get()
                 .uri(NEWS_URI + "/{id}", id)

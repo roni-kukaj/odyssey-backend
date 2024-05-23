@@ -2,6 +2,7 @@ package com.odyssey.events;
 
 import com.odyssey.cloudinaryService.CloudinaryService;
 import com.odyssey.exception.DuplicateResourceException;
+import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.exception.UnprocessableEntityException;
 import com.odyssey.fileService.FileService;
@@ -44,7 +45,7 @@ public class EventService {
         Location location = locationDao.selectLocationById(dto.locationId())
                 .orElseThrow(()-> new ResourceNotFoundException("location with id [%s] not found".formatted(dto.locationId())));
 
-        File file = FileService.convertFile(dto.image());
+        File file = FileService.convertFile(dto.file());
 
         try {
             String url = cloudinaryService.uploadImage(file, "events");
@@ -67,7 +68,7 @@ public class EventService {
         }
     }
 
-    public void updateEventInformation(Integer id, EventUpdateInformationDto dto) {
+    public void updateEventInformation(Integer id, EventUpdateDto dto) {
         Event event = getEvent(id);
         Location location = locationDao.selectLocationById(dto.locationId())
                 .orElseThrow(()-> new ResourceNotFoundException("location with id [%s] not found".formatted(dto.locationId())));
@@ -103,24 +104,19 @@ public class EventService {
             event.setLocation(location);
             changes = true;
         }
+        if (!changes) {
+            throw new RequestValidationException("no data changes found");
+        }
 
-        eventDao.updateEvent(event);
-    }
-
-    public void updateEventImage(Integer id, MultipartFile image) {
-        Event event = getEvent(id);
         try {
-            File file = FileService.convertFile(image);
+            File file = FileService.convertFile(dto.file());
             String newUrl = cloudinaryService.uploadImage(file, "events");
-            if (cloudinaryService.deleteImageByUrl(event.getImage())) {
-                event.setImage(newUrl);
-                eventDao.updateEvent(event);
-            }
-            else {
-                throw new IOException();
-            }
-        } catch (IOException e) {
+            cloudinaryService.deleteImageByUrl(event.getImage());
+            event.setImage(newUrl);
+        }
+        catch (IOException e) {
             throw new UnprocessableEntityException("image could not be processed");
         }
+        eventDao.updateEvent(event);
     }
 }
