@@ -304,10 +304,9 @@ class PlanServiceTest {
         newLocation.setId(newLocationId);
         LocalDate newDate = date.plus(90, ChronoUnit.DAYS);
         PlanUpdateRequest request = new PlanUpdateRequest(
-                userId, newLocationId, newDate
+                newLocationId, newDate
         );
 
-        when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
         when(locationDao.selectLocationById(newLocationId)).thenReturn(Optional.of(location));
         lenient().when(planDao.existsPlanByUserIdAndLocationId(userId, newLocationId)).thenReturn(false);
 
@@ -321,7 +320,6 @@ class PlanServiceTest {
         Plan capturedPlan = activityArgumentCaptor.getValue();
 
         assertThat(capturedPlan.getId()).isEqualTo(id);
-        assertThat(capturedPlan.getUser().getId()).isEqualTo(request.userId());
         assertThat(capturedPlan.getLocation().getId()).isEqualTo(request.locationId());
         assertThat(capturedPlan.getVisitDate()).isEqualTo(request.date());
 

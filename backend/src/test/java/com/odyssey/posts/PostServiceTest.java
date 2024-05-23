@@ -18,7 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -42,6 +44,10 @@ public class PostServiceTest {
     private TripDao tripDao;
     @Mock
     private CloudinaryService cloudinaryService;
+
+    private final String FILE_URL = "src/main/resources/images/test.png";
+    private Path path;
+    private byte[] content;
 
     private PostService underTest;
 
@@ -134,15 +140,22 @@ public class PostServiceTest {
         trip.setId(tripId);
         LocalDate date = LocalDate.now();
 
-        PostRegistrationRequest request = new PostRegistrationRequest(
-                "", "", user.getId(), trip.getId()
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
+        );
+
+        PostRegistrationDto dto = new PostRegistrationDto(
+                "", userId, trip.getId(), image
         );
         when(postDao.existsPostByUserIdAndTripId(userId, tripId)).thenReturn(false);
         when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
         when(tripDao.selectTripById(tripId)).thenReturn(Optional.of(trip));
 
         // When
-        underTest.addPost(request);
+        underTest.addPost(dto);
 
         // Then
         ArgumentCaptor<Post> postArgumentCaptor = ArgumentCaptor.forClass(Post.class);
@@ -151,9 +164,10 @@ public class PostServiceTest {
         Post capturedPost = postArgumentCaptor.getValue();
 
         assertThat(capturedPost.getId()).isNull();
-        assertThat(capturedPost.getUser().getId()).isEqualTo(request.userId());
-        assertThat(capturedPost.getTrip().getId()).isEqualTo(request.tripId());
-        assertThat(capturedPost.getText()).isEqualTo(request.text());
+        assertThat(capturedPost.getUser().getId()).isEqualTo(dto.userId());
+        assertThat(capturedPost.getTrip().getId()).isEqualTo(dto.tripId());
+        assertThat(capturedPost.getText()).isEqualTo(dto.text());
+        assertThat(capturedPost.getImage()).isEqualTo(null);
         assertThat(capturedPost.getPostedTime()).isEqualTo(date);
     }
 
@@ -168,17 +182,24 @@ public class PostServiceTest {
         trip.setId(tripId);
         LocalDate date = LocalDate.now();
 
-        PostRegistrationRequest request = new PostRegistrationRequest(
-                "", "", user.getId(), trip.getId()
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
+        );
+
+        PostRegistrationDto dto = new PostRegistrationDto(
+                "", user.getId(), trip.getId(), image
         );
         lenient().when(postDao.existsPostByUserIdAndTripId(userId, tripId)).thenReturn(false);
         when(userDao.selectUserById(userId)).thenReturn(Optional.empty());
         lenient().when(tripDao.selectTripById(tripId)).thenReturn(Optional.of(trip));
 
         // When
-        assertThatThrownBy(() -> underTest.addPost(request))
+        assertThatThrownBy(() -> underTest.addPost(dto))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("user with id [%s] not found".formatted(request.userId()));
+                .hasMessage("user with id [%s] not found".formatted(dto.userId()));
 
         // Then
         verify(postDao, never()).insertPost(any());
@@ -195,8 +216,15 @@ public class PostServiceTest {
         trip.setId(tripId);
         LocalDate date = LocalDate.now();
 
-        PostRegistrationRequest request = new PostRegistrationRequest(
-                "", "", user.getId(), trip.getId()
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
+        );
+
+        PostRegistrationDto request = new PostRegistrationDto(
+                "", user.getId(), trip.getId(), image
         );
         lenient().when(postDao.existsPostByUserIdAndTripId(userId, tripId)).thenReturn(false);
         lenient().when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
@@ -222,8 +250,15 @@ public class PostServiceTest {
         trip.setId(tripId);
         LocalDate date = LocalDate.now();
 
-        PostRegistrationRequest request = new PostRegistrationRequest(
-                "", "", user.getId(), trip.getId()
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
+        );
+
+        PostRegistrationDto request = new PostRegistrationDto(
+                "", user.getId(), trip.getId(), image
         );
         when(postDao.existsPostByUserIdAndTripId(userId, tripId)).thenReturn(true);
         lenient().when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
@@ -313,15 +348,20 @@ public class PostServiceTest {
         when(postDao.selectPostById(id)).thenReturn(Optional.of(post));
 
         String newText = "new text";
-        String newImage = "a";
-        PostUpdateRequest request = new PostUpdateRequest(
-                newText, newImage
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
+        );
+        PostUpdateDto dto = new PostUpdateDto (
+                newText, image
         );
 
         lenient().when(postDao.selectPostById(id)).thenReturn(Optional.of(post));
 
         // When
-        underTest.updatePost(id, request);
+        underTest.updatePost(id, dto);
 
         // Then
         ArgumentCaptor<Post> postArgumentCaptor = ArgumentCaptor.forClass(Post.class);
@@ -332,8 +372,8 @@ public class PostServiceTest {
         assertThat(capturedPost.getId()).isEqualTo(1);
         assertThat(capturedPost.getUser().getId()).isEqualTo(userId);
         assertThat(capturedPost.getTrip().getId()).isEqualTo(tripId);
-        assertThat(capturedPost.getText()).isEqualTo(request.text());
-        assertThat(capturedPost.getImage()).isEqualTo(request.image());
+        assertThat(capturedPost.getText()).isEqualTo(dto.text());
+        assertThat(capturedPost.getImage()).isEqualTo(null);
         assertThat(capturedPost.getPostedTime()).isEqualTo(date);
 
     }

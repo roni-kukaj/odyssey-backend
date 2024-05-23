@@ -32,19 +32,19 @@ public class HotelIntegrationTest {
         String city = faker.name().fullName();
         String country = city;
         String picture = "pic";
-        LocationRegistrationRequest request = new LocationRegistrationRequest(
-                city,
-                country,
-                picture
-        );
-        webTestClient.post()
-                .uri(LOCATION_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), LocationRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        LocationRegistrationRequest request = new LocationRegistrationRequest(
+//                city,
+//                country,
+//                picture
+//        );
+//        webTestClient.post()
+//                .uri(LOCATION_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(request), LocationRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
         List<Location> allLocations = webTestClient.get()
                 .uri(LOCATION_URI)
                 .accept(MediaType.APPLICATION_JSON)

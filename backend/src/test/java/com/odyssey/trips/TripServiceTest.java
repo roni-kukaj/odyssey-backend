@@ -176,7 +176,7 @@ public class TripServiceTest {
 
     @Test
     void updateTrip() {
-        int id=2;
+        int id = 2;
 
         User user = new User();
         int user_id = 2;
@@ -193,19 +193,18 @@ public class TripServiceTest {
         List<Integer> activitiesId = new ArrayList<>();
         List<Integer> placesId = new ArrayList<>();
 
-       Trip trip = new Trip(user,startDate,endDate,items,places,activities,events);
-       when(userDao.selectUserById(user_id)).thenReturn(Optional.of(user));
+       Trip trip = new Trip(user, startDate, endDate, items, places, activities, events);
        when(tripDao.selectTripById(id)).thenReturn(Optional.of(trip));
 
-       LocalDate startDate1 = LocalDate.of(2024,8,15);
-       LocalDate endDate1 = LocalDate.of(2024,8,20);
+        LocalDate startDate1 = LocalDate.of(2024,8,15);
+        LocalDate endDate1 = LocalDate.of(2024,8,20);
         Set<Item> items1 = new HashSet<>();
         Set<Location> places1 = new HashSet<>();
         Set<Activity> activities1 = new HashSet<>();
         Set<Event> events1 = new HashSet<>();
 
         TripUpdateRequest tripUpdateRequest = new TripUpdateRequest(
-                user.getId(), startDate1, endDate1, itemsId, placesId, activitiesId, eventsId
+                startDate1, endDate1, itemsId, placesId, activitiesId, eventsId
         );
 
         underTest.updateTrip(id, tripUpdateRequest);
@@ -216,7 +215,7 @@ public class TripServiceTest {
         Trip capturedTrip = tripArgumentCaptor.getValue();
 
         Assertions.assertThat(capturedTrip.getId()).isNull();
-        Assertions.assertThat(capturedTrip.getUser().getId()).isEqualTo(tripUpdateRequest.userId());
+        Assertions.assertThat(capturedTrip.getUser().getId()).isEqualTo(user.getId());
         Assertions.assertThat(capturedTrip.getStartDate()).isEqualTo(tripUpdateRequest.startDate());
         Assertions.assertThat(capturedTrip.getEndDate()).isEqualTo(tripUpdateRequest.endDate());
 
@@ -255,18 +254,23 @@ public class TripServiceTest {
         Set<Event> events = new HashSet<>();
 
         List<Integer> itemsId = new ArrayList<>();
-        List<Integer>eventsId = new ArrayList<>();
-        List<Integer>activitesId = new ArrayList<>();
-        List<Integer>placesId = new ArrayList<>();
+        List<Integer> eventsId = new ArrayList<>();
+        List<Integer> activitesId = new ArrayList<>();
+        List<Integer> placesId = new ArrayList<>();
 
-       Trip trip = new Trip(user,startDate,endDate,items,places,activities,events);
+        Trip trip = new Trip(user,startDate,endDate,items,places,activities,events);
         when(tripDao.selectTripById(id)).thenReturn(Optional.of(trip));
-        TripUpdateRequest tripUpdateRequest = new TripUpdateRequest(trip.getUser().getId(),trip.getStartDate(),trip.getEndDate(),itemsId,placesId,activitesId,eventsId);
+
+        TripUpdateRequest request = new TripUpdateRequest(
+                trip.getStartDate(), trip.getEndDate(), itemsId, placesId, activitesId, eventsId
+        );
+
         lenient().when(userDao.selectUserById(user.getId())).thenReturn(Optional.of(user));
-        lenient().when(tripDao.existsTripByUserIdAndStartDate(tripUpdateRequest.userId(),tripUpdateRequest.startDate())).thenReturn(false);
-        AssertionsForClassTypes.assertThatThrownBy(()->underTest.updateTrip(id,tripUpdateRequest))
+
+        AssertionsForClassTypes.assertThatThrownBy(()->underTest.updateTrip(id, request))
                 .isInstanceOf(RequestValidationException.class)
                 .hasMessage("no data changes");
+
         verify(tripDao,never()).insertTrip(any());
 
     }

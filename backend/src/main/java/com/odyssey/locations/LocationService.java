@@ -63,7 +63,7 @@ public class LocationService {
         }
     }
 
-    public void updateLocationInformation(Integer id, LocationUpdateInformationDto dto) {
+    public void updateLocation(Integer id, LocationUpdateDto dto) {
         Location location = getLocation(id);
 
         boolean changes = false;
@@ -81,23 +81,15 @@ public class LocationService {
             throw new RequestValidationException("no data changes found");
         }
 
-        locationDao.updateLocation(location);
-    }
-
-    public void updateLocationPicture(Integer id, MultipartFile picture) {
-        Location location = getLocation(id);
         try {
-            File file = FileService.convertFile(picture);
+            File file = FileService.convertFile(dto.file());
             String newUrl = cloudinaryService.uploadImage(file, "locations");
-            if (cloudinaryService.deleteImageByUrl(location.getPicture())) {
-                location.setPicture(newUrl);
-                locationDao.updateLocation(location);
-            }
-            else {
-                throw new IOException();
-            }
+            cloudinaryService.deleteImageByUrl(location.getPicture());
+            location.setPicture(newUrl);
         } catch (IOException e) {
             throw new UnprocessableEntityException("image could not be processed");
         }
+
+        locationDao.updateLocation(location);
     }
 }

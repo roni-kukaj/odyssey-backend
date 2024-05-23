@@ -227,15 +227,10 @@ public class ReviewServiceTest {
 
         String newDescription = "Good to visit";
         Integer newRating = 4;
-        User user1 = new User();
-        user1.setId(2);
-        Location location1 = new Location();
-        location1.setId(2);
 
-        ReviewUpdateRequest reviewUpdateRequest = new ReviewUpdateRequest(newDescription, newRating, user1.getId(), location1.getId());
-        when(userDao.selectUserById(user1.getId())).thenReturn(Optional.of(user1));
-        when(locationDao.selectLocationById(location1.getId())).thenReturn(Optional.of(location1));
-        underTest.updateReview(id,reviewUpdateRequest);
+        ReviewUpdateRequest request = new ReviewUpdateRequest(newDescription, newRating);
+
+        underTest.updateReview(id, request);
 
         ArgumentCaptor<Review> reviewArgumentCaptor = ArgumentCaptor.forClass(Review.class);
         verify(reviewDao).updateReview(reviewArgumentCaptor.capture());
@@ -243,10 +238,10 @@ public class ReviewServiceTest {
         Review capturedReview = reviewArgumentCaptor.getValue();
 
         Assertions.assertThat(capturedReview.getId()).isNull();
-        Assertions.assertThat(capturedReview.getDescription()).isEqualTo(reviewUpdateRequest.description());
-        Assertions.assertThat(capturedReview.getRating()).isEqualTo(reviewUpdateRequest.rating());
-        Assertions.assertThat(capturedReview.getUser().getId()).isEqualTo(reviewUpdateRequest.userId());
-        Assertions.assertThat(capturedReview.getLocation().getId()).isEqualTo(reviewUpdateRequest.locationId());
+        Assertions.assertThat(capturedReview.getDescription()).isEqualTo(request.description());
+        Assertions.assertThat(capturedReview.getRating()).isEqualTo(request.rating());
+        Assertions.assertThat(capturedReview.getUser().getId()).isEqualTo(user.getId());
+        Assertions.assertThat(capturedReview.getLocation().getId()).isEqualTo(location.getId());
     }
 
 
@@ -263,15 +258,11 @@ public class ReviewServiceTest {
         Review review = new Review(description,rating,user,location);
         when(reviewDao.selectReviewById(id)).thenReturn(Optional.of(review));
 
-        ReviewUpdateRequest reviewUpdateRequest = new ReviewUpdateRequest(
-                review.getDescription(), review.getRating(),user.getId(),location.getId()
+        ReviewUpdateRequest request = new ReviewUpdateRequest (
+                review.getDescription(), review.getRating()
         );
 
-        when(userDao.selectUserById(user.getId())).thenReturn(Optional.of(user));
-        when(locationDao.selectLocationById(location.getId())).thenReturn(Optional.of(location));
-        when(reviewDao.existsReviewByUserAndLocationId(reviewUpdateRequest.userId(), reviewUpdateRequest.locationId())).thenReturn(false);
-
-        Assertions.assertThatThrownBy(() -> underTest.updateReview(id, reviewUpdateRequest))
+        Assertions.assertThatThrownBy(() -> underTest.updateReview(id, request))
                 .isInstanceOf(RequestValidationException.class)
                 .hasMessage("no changes were found");
 

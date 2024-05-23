@@ -73,7 +73,7 @@ public class UserService {
         }
     }
 
-    public void updateUser(Integer id, UserUpdateInformationDto dto) {
+    public void updateUser(Integer id, UserUpdateDto dto) {
         User user = getUser(id);
         boolean changes = false;
 
@@ -96,19 +96,15 @@ public class UserService {
         if (!changes) {
             throw new RequestValidationException("no data changes found");
         }
-        userDao.updateUser(user);
-    }
-
-    public void updateUserAvatar(Integer id, MultipartFile image) {
-        User user = getUser(id);
         try {
-            File file = FileService.convertFile(image);
+            File file = FileService.convertFile(dto.file());
             String newUrl = cloudinaryService.uploadImage(file, "avatars");
             user.setAvatar(newUrl);
-            userDao.updateUser(user);
         } catch (IOException e) {
             throw new UnprocessableEntityException("image could not be processed");
         }
+
+        userDao.updateUser(user);
     }
 
     public void updateUser(Integer id, UserUpdateRequest updateRequest) {

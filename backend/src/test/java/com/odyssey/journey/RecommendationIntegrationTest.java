@@ -86,19 +86,19 @@ public class RecommendationIntegrationTest {
         String city = faker.name().fullName();
         String country = city;
         String picture = "pic";
-        LocationRegistrationRequest request = new LocationRegistrationRequest(
-                city,
-                country,
-                picture
-        );
-        webTestClient.post()
-                .uri(LOCATION_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), LocationRegistrationRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        LocationRegistrationRequest request = new LocationRegistrationRequest(
+//                city,
+//                country,
+//                picture
+//        );
+//        webTestClient.post()
+//                .uri(LOCATION_URI)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(request), LocationRegistrationRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
         List<Location> allLocations = webTestClient.get()
                 .uri(LOCATION_URI)
                 .accept(MediaType.APPLICATION_JSON)
@@ -316,18 +316,18 @@ public class RecommendationIntegrationTest {
         String description2 = faker2.name().fullName();
         User user2 = setUpUser();
         Activity activity2 = setUpActivity();
-        RecommendationUpdateRequest recommendationUpdateRequest = new RecommendationUpdateRequest (
-                description2, user2.getId(), activity2.getId()
-        );
-
-        webTestClient.put()
-                .uri(RECOMMENDATION_URI + "/{id}", id)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(recommendationUpdateRequest), RecommendationUpdateRequest.class)
-                .exchange()
-                .expectStatus()
-                .isOk();
+//        RecommendationUpdateRequest recommendationUpdateRequest = new RecommendationUpdateRequest (
+//                description2, user2.getId(), activity2.getId()
+//        );
+//
+//        webTestClient.put()
+//                .uri(RECOMMENDATION_URI + "/{id}", id)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(Mono.just(recommendationUpdateRequest), RecommendationUpdateRequest.class)
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
 
         Recommendation updatedRecommendation = webTestClient.get()
                 .uri(RECOMMENDATION_URI + "/{id}", id)

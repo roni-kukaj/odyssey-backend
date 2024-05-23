@@ -47,6 +47,4 @@ public class PlanController {
         planService.updatePlan(planId, request);
     }
 
-
-
 }
