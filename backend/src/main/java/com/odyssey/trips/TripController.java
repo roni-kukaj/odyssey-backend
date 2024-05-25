@@ -13,17 +13,17 @@ public class TripController {
     private TripService tripService;
 
     @GetMapping
-    public List<Trip> getAllTrips() {
+    public List<TripDto> getAllTrips() {
         return tripService.getAllTrips();
     }
 
     @GetMapping("/{tripId}")
-    public Trip getTrip(@PathVariable("tripId") Integer tripId) {
+    public TripDto getTrip(@PathVariable("tripId") Integer tripId) {
         return tripService.getTrip(tripId);
     }
 
     @GetMapping("/user/{userId}")
-    public List<Trip> getTripsByUserId(@PathVariable("userId") Integer userId) {
+    public List<TripDto> getTripsByUserId(@PathVariable("userId") Integer userId) {
         return tripService.getTripsByUserId(userId);
     }
 

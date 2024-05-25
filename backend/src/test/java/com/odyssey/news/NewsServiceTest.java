@@ -13,6 +13,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
+import com.odyssey.role.Role;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -34,6 +35,8 @@ public class NewsServiceTest {
     @Mock
     private CloudinaryService cloudinaryService;
 
+    private final NewsDtoMapper newsDtoMapper = new NewsDtoMapper();
+
     private final String FILE_URL = "src/main/resources/images/test.png";
     private Path path;
     private byte[] content;
@@ -42,7 +45,7 @@ public class NewsServiceTest {
 
     @BeforeEach
     void setUp(){
-        underTest = new NewsService(newsDao, authorDao, cloudinaryService);
+        underTest = new NewsService(newsDao, authorDao, cloudinaryService, newsDtoMapper);
     }
 
     @Test
@@ -55,11 +58,12 @@ public class NewsServiceTest {
     void getNews() {
         int id = 1;
         News news = new News(
-                id, "title", "desc", "pic1", new User()
+                id, "title", "desc", "pic1", new User(1, "", "", "", "", "", new Role(1, "USER"))
         );
+        NewsDto newsDto = newsDtoMapper.apply(news);
         when(newsDao.selectNewsById(id)).thenReturn(Optional.of(news));
-        News news1 = underTest.getNews(id);
-        assertThat(news1).isEqualTo(news);
+        NewsDto news1 = underTest.getNews(id);
+        assertThat(news1).isEqualTo(newsDto);
     }
 
 

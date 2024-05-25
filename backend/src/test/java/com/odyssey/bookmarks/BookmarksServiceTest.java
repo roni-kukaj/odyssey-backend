@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.odyssey.role.Role;
 
 import java.util.Optional;
 
@@ -33,11 +34,13 @@ public class BookmarksServiceTest {
     @Mock
     private UserDao userDao;
 
+    private BookmarksDtoMapper bookmarksDtoMapper = new BookmarksDtoMapper();
+
     private BookmarksService underTest;
 
     @BeforeEach
     void setUp(){
-        underTest = new BookmarksService(bookmarksDao,locationDao,userDao);
+        underTest = new BookmarksService(bookmarksDao,locationDao,userDao, bookmarksDtoMapper);
     }
 
     @Test
@@ -49,10 +52,14 @@ public class BookmarksServiceTest {
     @Test
     void getBookmarks() {
         int id = 1;
-        Bookmarks bookmarks = new Bookmarks(id, new Location(), new User());
+        Bookmarks bookmarks = new Bookmarks(id, new Location(), new User(1, "test", "test", "test", "test", "test", new Role(1, "USER")));
+        BookmarksDto bookmarksDto = bookmarksDtoMapper.apply(bookmarks);
+
         when(bookmarksDao.selectBookmarksById(id)).thenReturn(Optional.of(bookmarks));
-        Bookmarks bookmarks1 = underTest.getBookmarksById(id);
-        assertThat(bookmarks1).isEqualTo(bookmarks);
+
+        BookmarksDto bookmarks1 = underTest.getBookmarksById(id);
+
+        assertThat(bookmarks1).isEqualTo(bookmarksDto);
     }
 
     @Test

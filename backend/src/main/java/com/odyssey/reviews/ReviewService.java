@@ -7,45 +7,58 @@ import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
 import com.odyssey.locations.Location;
 import com.odyssey.locations.LocationDao;
+import com.odyssey.recommendations.RecommendationDtoMapper;
 import com.odyssey.user.User;
 import com.odyssey.user.UserDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewService {
     private final ReviewDao reviewDao;
     private final UserDao userDao;
     private final LocationDao locationDao;
+    private final ReviewDtoMapper reviewDtoMapper;
 
-    public ReviewService(ReviewDao reviewDao, UserDao userDao, LocationDao locationDao) {
+    public ReviewService(ReviewDao reviewDao, UserDao userDao, LocationDao locationDao, ReviewDtoMapper reviewDtoMapper) {
         this.reviewDao = reviewDao;
         this.userDao = userDao;
         this.locationDao = locationDao;
+        this.reviewDtoMapper = reviewDtoMapper;
     }
 
-    public List<Review>getAllReviews(){
-        return reviewDao.selectAllReviews();
+    private Review getReviewById(Integer id) {
+        return reviewDao.selectReviewById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("review with id [%s] not found".formatted(id)));
     }
 
-    public Review getReview(Integer id){
-        return reviewDao.selectReviewById(id).
-                orElseThrow(()-> new ResourceNotFoundException("review with id [%s] not found".formatted(id)));
+    public List<ReviewDto>getAllReviews(){
+        return reviewDao.selectAllReviews()
+                .stream().map(reviewDtoMapper).collect(Collectors.toList());
     }
 
-    public List<Review> getReviewByUserId(Integer userId){
+    public ReviewDto getReview(Integer id){
+        return reviewDao.selectReviewById(id)
+                .map(reviewDtoMapper)
+                .orElseThrow(()-> new ResourceNotFoundException("review with id [%s] not found".formatted(id)));
+    }
+
+    public List<ReviewDto> getReviewByUserId(Integer userId){
         if (!userDao.existsUserById(userId)) {
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
         }
-        return reviewDao.selectReviewByUserId(userId);
+        return reviewDao.selectReviewByUserId(userId)
+                .stream().map(reviewDtoMapper).collect(Collectors.toList());
     }
 
-    public List<Review>getReviewByLocationId(Integer locationId) {
+    public List<ReviewDto>getReviewByLocationId(Integer locationId) {
         if (!locationDao.existsLocationById(locationId)) {
             throw new ResourceNotFoundException("location with id [%s] not found".formatted(locationId));
         }
-        return reviewDao.selectReviewByLocationId(locationId);
+        return reviewDao.selectReviewByLocationId(locationId)
+                .stream().map(reviewDtoMapper).collect(Collectors.toList());
     }
 
     public void addReview(ReviewRegistrationRequest reviewRegisterRequest){
@@ -73,7 +86,7 @@ public class ReviewService {
     }
 
     public void updateReview(Integer id, ReviewUpdateRequest reviewUpdateRequest){
-        Review existingReview = getReview(id);
+        Review existingReview = getReviewById(id);
 
         boolean changes = false;
 

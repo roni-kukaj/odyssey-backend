@@ -37,11 +37,13 @@ public class ReviewServiceTest {
     @Mock
     private LocationDao locationDao;
 
+    private final ReviewDtoMapper reviewDtoMapper = new ReviewDtoMapper();
+
     private ReviewService underTest;
 
     @BeforeEach
      void setUp() {
-        underTest = new ReviewService(reviewDao, userDao, locationDao);
+        underTest = new ReviewService(reviewDao, userDao, locationDao, reviewDtoMapper);
     }
 
     @Test
@@ -54,9 +56,10 @@ public class ReviewServiceTest {
     void getReview() {
         int id = 4;
         Review review = new Review(id,"The best place to visit", 5, new User(), new Location());
+        ReviewDto reviewDto = reviewDtoMapper.apply(review);
         when(reviewDao.selectReviewById(id)).thenReturn(Optional.of(review));
-        Review review1 = underTest.getReview(id);
-        assertThat(review1).isEqualTo(review);
+        ReviewDto review1 = underTest.getReview(id);
+        assertThat(review1).isEqualTo(reviewDto);
     }
 
     @Test

@@ -14,34 +14,47 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NewsService {
     private final NewsDao newsDao;
     private final UserDao authorDao;
     private final CloudinaryService cloudinaryService;
+    private final NewsDtoMapper newsDtoMapper;
 
-    public NewsService(NewsDao newsDao, UserDao authorDao, CloudinaryService cloudinaryService) {
+    public NewsService(NewsDao newsDao, UserDao authorDao, CloudinaryService cloudinaryService, NewsDtoMapper newsDtoMapper) {
         this.newsDao = newsDao;
         this.authorDao = authorDao;
         this.cloudinaryService = cloudinaryService;
+        this.newsDtoMapper = newsDtoMapper;
     }
 
-    public List<News> getAllNews(){
-        return newsDao.selectAllNews();
-
+    public List<NewsDto> getAllNews(){
+        return newsDao.selectAllNews()
+                .stream()
+                .map(newsDtoMapper)
+                .collect(Collectors.toList());
     }
 
-    public News getNews(Integer id){
+    public NewsDto getNews(Integer id){
+        return newsDao.selectNewsById(id)
+                .map(newsDtoMapper)
+                .orElseThrow(()->
+                new ResourceNotFoundException("news with id [%s] not found".formatted(id)));
+    }
+
+    private News getNewsById(Integer id) {
         return newsDao.selectNewsById(id).orElseThrow(()->
                 new ResourceNotFoundException("news with id [%s] not found".formatted(id)));
     }
 
-    public List<News>getNewsByAuthorId(Integer authorId){
+    public List<NewsDto>getNewsByAuthorId(Integer authorId){
         if(!authorDao.existsUserById(authorId)){
             throw new ResourceNotFoundException("author with id [%s] not found".formatted(authorId));
         }
-        return newsDao.selectNewsByAuthorId(authorId);
+        return newsDao.selectNewsByAuthorId(authorId)
+                .stream().map(newsDtoMapper).collect(Collectors.toList());
     }
 
     public void addNews(NewsRegistrationDto dto) {
@@ -76,7 +89,7 @@ public class NewsService {
     }
 
     public void updateNews(Integer id, NewsUpdateDto dto) {
-        News existingNews = getNews(id);
+        News existingNews = getNewsById(id);
 
         if (newsDao.existsNewsByTitleAndAuthorId(dto.title(), existingNews.getAuthor().getId())){
             throw new DuplicateResourceException("news already exists");

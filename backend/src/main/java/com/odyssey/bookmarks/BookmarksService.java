@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookmarksService {
@@ -19,34 +20,44 @@ public class BookmarksService {
     private final BookmarksDao bookmarksDao;
     private final LocationDao locationDao;
     private final UserDao userDao;
+    private final BookmarksDtoMapper bookmarksDtoMapper;
 
-    public BookmarksService(BookmarksDao bookmarksDao, LocationDao locationDao, UserDao userDao) {
+    public BookmarksService(BookmarksDao bookmarksDao, LocationDao locationDao, UserDao userDao, BookmarksDtoMapper bookmarksDtoMapper) {
         this.bookmarksDao = bookmarksDao;
         this.locationDao = locationDao;
         this.userDao = userDao;
+        this.bookmarksDtoMapper = bookmarksDtoMapper;
     }
 
-    public List<Bookmarks>getAllBookmarks(){
-        return bookmarksDao.selectAllBookmarks();
+    public List<BookmarksDto>getAllBookmarks(){
+        return bookmarksDao.selectAllBookmarks()
+                .stream()
+                .map(bookmarksDtoMapper)
+                .collect(Collectors.toList());
     }
 
-    public Optional<Bookmarks>getBookmarksByLocationId(Integer locationId){
+    public Optional<BookmarksDto>getBookmarksByLocationId(Integer locationId){
         if(!locationDao.existsLocationById(locationId)){
             throw new ResourceNotFoundException("location with id [%s] not found".formatted(locationId));
         }
-        return bookmarksDao.selectBookmarksByLocationId(locationId);
+        return bookmarksDao.selectBookmarksByLocationId(locationId)
+                .map(bookmarksDtoMapper);
     }
 
-    public Optional<Bookmarks>getBookmarksByUserId(Integer userId){
+    public Optional<BookmarksDto>getBookmarksByUserId(Integer userId){
         if(!userDao.existsUserById(userId)){
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
         }
-        return bookmarksDao.selectBookmarksByUserId(userId);
+        return bookmarksDao.selectBookmarksByUserId(userId)
+                .map(bookmarksDtoMapper);
     }
 
-    public Bookmarks getBookmarksById(Integer id){
-        return bookmarksDao.selectBookmarksById(id).orElseThrow(()->
-                new ResourceNotFoundException("bookmark with id [%s] not found".formatted(id)));
+    public BookmarksDto getBookmarksById(Integer id){
+        return bookmarksDao.selectBookmarksById(id)
+                .map(bookmarksDtoMapper)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("bookmark with id [%s] not found".formatted(id))
+                );
     }
 
     public void addBookmarks(BookmarksRegistrationRequest bookmarksRegistrationRequest){

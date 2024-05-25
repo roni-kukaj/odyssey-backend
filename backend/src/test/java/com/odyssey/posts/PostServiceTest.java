@@ -1,11 +1,7 @@
 package com.odyssey.posts;
 
 import com.odyssey.cloudinaryService.CloudinaryService;
-import com.odyssey.locations.Location;
-import com.odyssey.plans.Plan;
-import com.odyssey.plans.PlanRegistrationRequest;
-import com.odyssey.plans.PlanService;
-import com.odyssey.plans.PlanUpdateRequest;
+import com.odyssey.role.Role;
 import com.odyssey.trips.Trip;
 import com.odyssey.trips.TripDao;
 import com.odyssey.user.User;
@@ -45,6 +41,8 @@ public class PostServiceTest {
     @Mock
     private CloudinaryService cloudinaryService;
 
+    private final PostDtoMapper postDtoMapper = new PostDtoMapper();
+
     private final String FILE_URL = "src/main/resources/images/test.png";
     private Path path;
     private byte[] content;
@@ -53,7 +51,7 @@ public class PostServiceTest {
 
     @BeforeEach
     void setUp() {
-        underTest = new PostService(postDao, userDao, tripDao, cloudinaryService);
+        underTest = new PostService(postDao, userDao, tripDao, cloudinaryService, postDtoMapper);
     }
 
     @Test
@@ -69,21 +67,25 @@ public class PostServiceTest {
     void getPost() {
         // Given
         int id = 1;
+        User user = new User(1, "", "", "", "", "", new Role(1, "USER"));
+        Trip trip = new Trip();
+        trip.setUser(user);
         Post post = new Post(
                 id,
                 "", "",
                 LocalDate.now(),
-                new User(),
-                new Trip()
+                user,
+                trip
         );
+        PostDto postDto = postDtoMapper.apply(post);
 
         when(postDao.selectPostById(id)).thenReturn(Optional.of(post));
 
         // When
-        Post actual = underTest.getPost(id);
+        PostDto actual = underTest.getPost(id);
 
         // Then
-        assertThat(actual).isEqualTo(post);
+        assertThat(actual).isEqualTo(postDto);
     }
 
     @Test

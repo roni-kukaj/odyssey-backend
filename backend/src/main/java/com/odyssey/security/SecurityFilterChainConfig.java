@@ -40,6 +40,16 @@ public class SecurityFilterChainConfig {
                             "/api/v1/auth/login"
                     )
                     .permitAll()
+                    .requestMatchers(
+                            HttpMethod.GET,
+                            "/api/v1/news",
+                            "/api/v1/activities",
+                            "/api/v1/events",
+                            "/api/v1/flights",
+                            "/api/v1/hotels",
+                            "/api/v1/recommendations"
+                    )
+                    .permitAll()
                     .anyRequest()
                     .authenticated()
                 )

@@ -15,17 +15,17 @@ public class NewsController {
     private NewsService newsService;
 
     @GetMapping
-    public List<News> getAllNews(){
+    public List<NewsDto> getAllNews(){
         return newsService.getAllNews();
     }
 
     @GetMapping("/{newsId}")
-    public News getNewsById(@PathVariable("newsId") Integer newsId){
+    public NewsDto getNewsById(@PathVariable("newsId") Integer newsId){
         return newsService.getNews(newsId);
     }
 
     @GetMapping("/user/{authorId}")
-    public List<News> getNewsByAuthorId(@PathVariable("authorId") Integer authorId){
+    public List<NewsDto> getNewsByAuthorId(@PathVariable("authorId") Integer authorId){
         return newsService.getNewsByAuthorId(authorId);
     }
 

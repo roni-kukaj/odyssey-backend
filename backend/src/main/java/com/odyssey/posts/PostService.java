@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -26,33 +27,43 @@ public class PostService {
     private final UserDao userDao;
     private final TripDao tripDao;
     private final CloudinaryService cloudinaryService;
-    private PostUpdateDto d;
+    private final PostDtoMapper postDtoMapper;
 
     public PostService(
             @Qualifier("postJPAService") PostDao postDao,
             @Qualifier("userJPAService") UserDao userDao,
             @Qualifier("tripJPAService") TripDao tripDao,
-            CloudinaryService cloudinaryService
+            CloudinaryService cloudinaryService,
+            PostDtoMapper postDtoMapper
     ) {
         this.postDao = postDao;
         this.userDao = userDao;
         this.tripDao = tripDao;
         this.cloudinaryService = cloudinaryService;
+        this.postDtoMapper = postDtoMapper;
     }
 
-    public List<Post> getAllPosts() {
-        return postDao.selectAllPosts();
+    public List<PostDto> getAllPosts() {
+        return postDao.selectAllPosts()
+                .stream().map(postDtoMapper).collect(Collectors.toList());
     }
 
-    public List<Post> getPostsByUserId(Integer userId) {
+    public List<PostDto> getPostsByUserId(Integer userId) {
         if (!userDao.existsUserById(userId)){
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
         }
-        return postDao.selectPostsByUserId(userId);
+        return postDao.selectPostsByUserId(userId)
+                .stream().map(postDtoMapper).collect(Collectors.toList());
     }
 
-    public Post getPost(Integer id) {
+    private Post getPostById(Integer id) {
         return postDao.selectPostById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("post with id [%s] not found".formatted(id)));
+    }
+
+    public PostDto getPost(Integer id) {
+        return postDao.selectPostById(id)
+                .map(postDtoMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("post with id [%s] not found".formatted(id)));
     }
 
@@ -97,7 +108,7 @@ public class PostService {
     }
 
     public void updatePost(Integer id, PostUpdateDto dto) {
-        Post existingPost = getPost(id);
+        Post existingPost = getPostById(id);
 
         boolean changes = false;
 
@@ -111,7 +122,6 @@ public class PostService {
         }
 
         try {
-            d = dto;
             File file = FileService.convertFile(dto.file());
             String newUrl = cloudinaryService.uploadImage(file, "posts");
             cloudinaryService.deleteImageByUrl(existingPost.getImage());

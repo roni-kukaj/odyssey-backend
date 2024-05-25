@@ -13,22 +13,22 @@ public class FollowController {
     private FollowService followersService;
 
     @GetMapping
-    public List<Follow> getFollowers() {
+    public List<FollowDto> getFollowers() {
         return followersService.getAllFollowers();
     }
 
     @GetMapping("/{followerId}")
-    public List<Follow> getFollowingByFollowerId(@PathVariable("followerId") Integer followerId) {
+    public List<FollowDto> getFollowingByFollowerId(@PathVariable("followerId") Integer followerId) {
         return followersService.getAllFollowingOfUserById(followerId);
     }
 
     @GetMapping("/{userId}/followers")
-    public List<Follow> getFollowersOfUserById(@PathVariable("userId") Integer userId) {
+    public List<FollowDto> getFollowersOfUserById(@PathVariable("userId") Integer userId) {
         return followersService.getAllFollowersOfUserById(userId);
     }
 
     @GetMapping("/record/{recordId}")
-    public Follow getFollowById(@PathVariable("recordId") Integer recordId) {
+    public FollowDto getFollowById(@PathVariable("recordId") Integer recordId) {
         return followersService.getFollowById(recordId);
     }
 

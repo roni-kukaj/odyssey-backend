@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RecommendationService
@@ -20,38 +21,51 @@ public class RecommendationService
     private final RecommendationDao recommendationDao ;
     private final UserDao userDao;
     private final ActivityDao activityDao;
+    private final RecommendationDtoMapper recommendationDtoMapper;
 
     public RecommendationService(
             @Qualifier("recommendationJPAService") RecommendationDao recommendationDao,
             @Qualifier("userJPAService") UserDao userDao,
-            @Qualifier("activityJPAService") ActivityDao activityDao
-    ) {
+            @Qualifier("activityJPAService") ActivityDao activityDao,
+            RecommendationDtoMapper recommendationDtoMapper
+            ) {
         this.recommendationDao = recommendationDao;
         this.userDao = userDao;
         this.activityDao = activityDao;
+        this.recommendationDtoMapper = recommendationDtoMapper;
     }
 
-    public List<Recommendation> getAllRecommendations(){
-        return recommendationDao.selectAllRecommendations();
+    private Recommendation getRecommendationById(Integer id) {
+        return recommendationDao.selectRecommendationById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("recommendation with id [%s] not found ".formatted(id)));
+
     }
 
-    public Recommendation getRecommendationByActivityId(Integer activityId){
+    public List<RecommendationDto> getAllRecommendations(){
+        return recommendationDao.selectAllRecommendations()
+                .stream().map(recommendationDtoMapper).collect(Collectors.toList());
+    }
+
+    public RecommendationDto getRecommendationByActivityId(Integer activityId){
         if(!activityDao.existsActivityById(activityId)){
             throw new ResourceNotFoundException("activity with id [%s] not found".formatted(activityId));
         }
         return recommendationDao.selectRecommendationByActivityId(activityId)
+                .map(recommendationDtoMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("recommendation not found"));
     }
-    public Recommendation getRecommendationByUserId(Integer userId){
+    public RecommendationDto getRecommendationByUserId(Integer userId){
         if(!userDao.existsUserById(userId)){
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
         }
         return recommendationDao.selectRecommendationByActivityId(userId)
+                .map(recommendationDtoMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("recommendation not found"));
     }
 
-    public Recommendation getRecommendation(Integer id){
+    public RecommendationDto getRecommendation(Integer id){
        return recommendationDao.selectRecommendationById(id)
+               .map(recommendationDtoMapper)
                .orElseThrow(()-> new ResourceNotFoundException("recommendation with id [%s] not found ".formatted(id)));
     }
 
@@ -86,7 +100,7 @@ public class RecommendationService
     }
 
     public void updateRecommendation(Integer id, RecommendationUpdateRequest recommendationUpdateRequest){
-        Recommendation existingRecommendation = getRecommendation(id);
+        Recommendation existingRecommendation = getRecommendationById(id);
 
         boolean changes = false;
 

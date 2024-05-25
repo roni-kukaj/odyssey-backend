@@ -36,9 +36,11 @@ public class RecommendationServiceTest {
 
     private RecommendationService underTest;
 
+    private final RecommendationDtoMapper recommendationDtoMapper = new RecommendationDtoMapper();
+
     @BeforeEach
     void setUp(){
-        underTest = new RecommendationService(recommendationDao,userDao,activityDao);
+        underTest = new RecommendationService(recommendationDao,userDao,activityDao, recommendationDtoMapper);
     }
 
     @Test
@@ -56,10 +58,10 @@ public class RecommendationServiceTest {
                 new User(),
                 new Activity()
         );
-
+        RecommendationDto recommendationDto = recommendationDtoMapper.apply(recommendation);
         when(recommendationDao.selectRecommendationById(id)).thenReturn(Optional.of(recommendation));
-        Recommendation recommendation1 = underTest.getRecommendation(id);
-        assertThat(recommendation1).isEqualTo(recommendation);
+        RecommendationDto recommendation1 = underTest.getRecommendation(id);
+        assertThat(recommendation1).isEqualTo(recommendationDto);
     }
 
     @Test

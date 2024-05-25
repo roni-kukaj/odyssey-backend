@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PlanService {
@@ -21,30 +22,41 @@ public class PlanService {
     private final PlanDao planDao;
     private final UserDao userDao;
     private final LocationDao locationDao;
+    private final PlanDtoMapper planDtoMapper;
 
     public PlanService(
             @Qualifier("planJPAService") PlanDao planDao,
             @Qualifier("userJPAService") UserDao userDao,
-            @Qualifier("locationJPAService") LocationDao locationDao
+            @Qualifier("locationJPAService") LocationDao locationDao,
+            PlanDtoMapper planDtoMapper
     ) {
         this.planDao = planDao;
         this.userDao = userDao;
         this.locationDao = locationDao;
+        this.planDtoMapper = planDtoMapper;
     }
 
-    public List<Plan> getAllPlans() {
-        return planDao.selectAllPlans();
+    private Plan getPlanById(Integer id) {
+        return planDao.selectPlanById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("plan with id [%s] not found".formatted(id)));
     }
 
-    public List<Plan> getPlansByUserId(Integer userId) {
+    public List<PlanDto> getAllPlans() {
+        return planDao.selectAllPlans()
+                .stream().map(planDtoMapper).collect(Collectors.toList());
+    }
+
+    public List<PlanDto> getPlansByUserId(Integer userId) {
         if (!userDao.existsUserById(userId)) {
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
         }
-        return planDao.selectPlanByUserId(userId);
+        return planDao.selectPlanByUserId(userId)
+                .stream().map(planDtoMapper).collect(Collectors.toList());
     }
 
-    public Plan getPlan(Integer id) {
+    public PlanDto getPlan(Integer id) {
         return planDao.selectPlanById(id)
+                .map(planDtoMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("plan with id [%s] not found".formatted(id)));
     }
 
@@ -82,7 +94,7 @@ public class PlanService {
     }
 
     public void updatePlan(Integer id, PlanUpdateRequest request) {
-        Plan existingPlan = getPlan(id);
+        Plan existingPlan = getPlanById(id);
 
         Location location = locationDao.selectLocationById(request.locationId())
                 .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(request.locationId())));

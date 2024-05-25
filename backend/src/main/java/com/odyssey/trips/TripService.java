@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TripService {
@@ -33,6 +34,7 @@ public class TripService {
     private final LocationDao locationDao;
     private final ActivityDao activityDao;
     private final EventDao eventDao;
+    private final TripDtoMapper tripDtoMapper;
 
     public TripService(
             @Qualifier("tripJPAService") TripDao tripDao,
@@ -40,30 +42,40 @@ public class TripService {
             @Qualifier("itemJPAService") ItemDao itemDao,
             @Qualifier("locationJPAService") LocationDao locationDao,
             @Qualifier("activityJPAService") ActivityDao activityDao,
-            @Qualifier("eventJPAService") EventDao eventDao
-            ) {
+            @Qualifier("eventJPAService") EventDao eventDao,
+            TripDtoMapper tripDtoMapper
+    ) {
         this.tripDao = tripDao;
         this.userDao = userDao;
         this.itemDao = itemDao;
         this.locationDao = locationDao;
         this.activityDao = activityDao;
         this.eventDao = eventDao;
+        this.tripDtoMapper = tripDtoMapper;
     }
 
-    public List<Trip> getAllTrips() {
-        return tripDao.selectAllTrips();
+    public List<TripDto> getAllTrips() {
+        return tripDao.selectAllTrips()
+                .stream().map(tripDtoMapper).collect(Collectors.toList());
     }
 
-    public Trip getTrip(Integer id){
+    private Trip getTripById(Integer id){
         return tripDao.selectTripById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("trip with id [%s] not found".formatted(id)));
     }
 
-    public List<Trip> getTripsByUserId(Integer userId) {
+    public TripDto getTrip(Integer id){
+        return tripDao.selectTripById(id)
+                .map(tripDtoMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("trip with id [%s] not found".formatted(id)));
+    }
+
+    public List<TripDto> getTripsByUserId(Integer userId) {
         if (!userDao.existsUserById(userId)) {
             throw new ResourceNotFoundException("user with id [%s] not found".formatted(userId));
         }
-        return tripDao.selectTripsByUserId(userId);
+        return tripDao.selectTripsByUserId(userId)
+                .stream().map(tripDtoMapper).collect(Collectors.toList());
     }
 
     public void addTrip(TripRegistrationRequest request) {
@@ -112,7 +124,7 @@ public class TripService {
     }
 
     public void updateTrip(Integer tripId, TripUpdateRequest request) {
-        Trip existingTrip = getTrip(tripId);
+        Trip existingTrip = getTripById(tripId);
         Set<Item> items = new HashSet<>();
         Set<Location> places = new HashSet<>();
         Set<Activity> activities = new HashSet<>();

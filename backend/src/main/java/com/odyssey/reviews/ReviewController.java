@@ -15,23 +15,23 @@ public class ReviewController {
     private ReviewService reviewService;
 
     @GetMapping
-    public List<Review> getAllReviews(){
+    public List<ReviewDto> getAllReviews(){
         return reviewService.getAllReviews();
     }
 
     @GetMapping("/{reviewId}")
-    public Review getReviewById(@PathVariable ("reviewId") Integer reviewId){
+    public ReviewDto getReviewById(@PathVariable ("reviewId") Integer reviewId){
         return reviewService.getReview(reviewId);
 
     }
 
     @GetMapping("/user/{userId}")
-    public List<Review>getReviewByUserId(@PathVariable("userId") Integer userId){
+    public List<ReviewDto>getReviewByUserId(@PathVariable("userId") Integer userId){
         return reviewService.getReviewByUserId(userId);
     }
 
     @GetMapping("/location/{locationId}")
-    public List<Review>getReviewByLocationId(@PathVariable("locationId") Integer locationId){
+    public List<ReviewDto>getReviewByLocationId(@PathVariable("locationId") Integer locationId){
         return reviewService.getReviewByLocationId(locationId);
     }
 

@@ -30,9 +30,11 @@ class FollowServiceTest {
     private UserDao userDao;
     private FollowService underTest;
 
+    private FollowDtoMapper followDtoMapper = new FollowDtoMapper();
+
     @BeforeEach
     void setUp() {
-        underTest = new FollowService(followDao, userDao);
+        underTest = new FollowService(followDao, userDao, followDtoMapper);
     }
 
     @Test
@@ -74,16 +76,17 @@ class FollowServiceTest {
         Integer id = 1;
         Follow follow = new Follow(
                 id,
-                new User(),
-                new User()
+                new User(1, "", "", "", "", "", new Role(1, "USER")),
+                new User(2, "", "", "", "", "", new Role(1, "USER"))
         );
+        FollowDto followDto = followDtoMapper.apply(follow);
         when(followDao.selectById(id)).thenReturn(Optional.of(follow));
 
         // When
-        Follow actual = underTest.getFollowById(id);
+        FollowDto actual = underTest.getFollowById(id);
 
         // Then
-        assertThat(actual).isEqualTo(follow);
+        assertThat(actual).isEqualTo(followDto);
     }
 
     @Test

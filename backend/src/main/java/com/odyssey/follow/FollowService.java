@@ -9,34 +9,47 @@ import org.springframework.stereotype.Service;
 import com.odyssey.user.UserDao;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FollowService {
 
     private final FollowDao followersDao;
     private final UserDao userDao;
+    private final FollowDtoMapper followDtoMapper;
 
     public FollowService(
             @Qualifier("followersJPAService") FollowDao followersDao,
-            @Qualifier("userJPAService") UserDao userDao
-            ) {
+            @Qualifier("userJPAService") UserDao userDao, FollowDtoMapper followDtoMapper
+    ) {
         this.followersDao = followersDao;
         this.userDao = userDao;
+        this.followDtoMapper = followDtoMapper;
     }
 
-    public List<Follow> getAllFollowers() {
-        return followersDao.selectAllFollowers();
+    public List<FollowDto> getAllFollowers() {
+        return followersDao.selectAllFollowers()
+                .stream()
+                .map(followDtoMapper)
+                .collect(Collectors.toList());
     }
 
-    public List<Follow> getAllFollowingOfUserById(Integer followerId) {
-        return followersDao.selectAllFollowingOfUserById(followerId);
+    public List<FollowDto> getAllFollowingOfUserById(Integer followerId) {
+        return followersDao.selectAllFollowingOfUserById(followerId)
+                .stream()
+                .map(followDtoMapper)
+                .collect(Collectors.toList());
     }
-    public List<Follow> getAllFollowersOfUserById(Integer followingId) {
-        return followersDao.selectAllFollowersOfUserById(followingId);
+    public List<FollowDto> getAllFollowersOfUserById(Integer followingId) {
+        return followersDao.selectAllFollowersOfUserById(followingId)
+                .stream()
+                .map(followDtoMapper)
+                .collect(Collectors.toList());
     }
 
-    public Follow getFollowById(Integer id) {
+    public FollowDto getFollowById(Integer id) {
         return followersDao.selectById(id)
+                .map(followDtoMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("follow record with id [%s] not found".formatted(id)));
     }
 

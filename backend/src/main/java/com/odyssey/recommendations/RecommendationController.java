@@ -14,22 +14,22 @@ public class RecommendationController {
     private RecommendationService recommendationService;
 
     @GetMapping
-    public List<Recommendation> getAllRecommendations(){
+    public List<RecommendationDto> getAllRecommendations(){
         return recommendationService.getAllRecommendations();
     }
 
     @GetMapping("/{recommendationId}")
-    public Recommendation getRecommendationById(@PathVariable("recommendationId") Integer recommendationId){
+    public RecommendationDto getRecommendationById(@PathVariable("recommendationId") Integer recommendationId){
         return recommendationService.getRecommendation(recommendationId);
     }
 
     @GetMapping("/user/{userId}")
-    public Recommendation getRecommendationByUserId(@PathVariable("userId") Integer userId){
+    public RecommendationDto getRecommendationByUserId(@PathVariable("userId") Integer userId){
         return recommendationService.getRecommendationByUserId(userId);
     }
 
     @GetMapping("/activity/{activityId}")
-    public Recommendation getRecommendationByActivityId(@PathVariable("activityId") Integer activityId){
+    public RecommendationDto getRecommendationByActivityId(@PathVariable("activityId") Integer activityId){
         return recommendationService.getRecommendationByActivityId(activityId);
     }
 

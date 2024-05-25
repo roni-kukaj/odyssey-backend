@@ -48,10 +48,11 @@ public class TripServiceTest {
     private ItemDao itemDao;
 
     private TripService underTest;
+    private TripDtoMapper tripDtoMapper = new TripDtoMapper();
 
     @BeforeEach
     void setUp(){
-        underTest = new TripService(tripDao, userDao, itemDao, locationDao, activityDao, eventDao);
+        underTest = new TripService(tripDao, userDao, itemDao, locationDao, activityDao, eventDao, tripDtoMapper);
     }
 
     @Test
@@ -70,9 +71,10 @@ public class TripServiceTest {
         Set<Activity> activities = new HashSet<>();
         Set<Event> events = new HashSet<>();
         Trip trip = new Trip(id,new User(),startDate,endDate,items,places,activities,events);
+        TripDto tripDto = tripDtoMapper.apply(trip);
         when(tripDao.selectTripById(id)).thenReturn(Optional.of(trip));
-        Trip trip1 = underTest.getTrip(id);
-        assertThat(trip1).isEqualTo(trip);
+        TripDto trip1 = underTest.getTrip(id);
+        assertThat(trip1).isEqualTo(tripDto);
     }
 
     @Test

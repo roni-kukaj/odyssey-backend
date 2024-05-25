@@ -17,22 +17,22 @@ public class BookmarksController {
     private BookmarksService bookmarksService;
 
     @GetMapping
-    public List<Bookmarks> getAllBookmarks(){
+    public List<BookmarksDto> getAllBookmarks(){
         return bookmarksService.getAllBookmarks();
     }
 
     @GetMapping("/{bookmarksId}")
-    public Bookmarks getBookmarksById(@PathVariable("bookmarksId") Integer bookmarksId){
+    public BookmarksDto getBookmarksById(@PathVariable("bookmarksId") Integer bookmarksId){
         return bookmarksService.getBookmarksById(bookmarksId);
     }
 
     @GetMapping("/user/{userId}")
-    public Optional<Bookmarks> getBookmarksByUserId(@PathVariable("userId") Integer userId){
+    public Optional<BookmarksDto> getBookmarksByUserId(@PathVariable("userId") Integer userId){
         return bookmarksService.getBookmarksByUserId(userId);
     }
 
     @GetMapping("/location/{locationId}")
-    public Optional<Bookmarks> getBookmarksByLocationId(@PathVariable("locationId") Integer locationId){
+    public Optional<BookmarksDto> getBookmarksByLocationId(@PathVariable("locationId") Integer locationId){
         return bookmarksService.getBookmarksByLocationId(locationId);
     }
 

@@ -13,17 +13,17 @@ public class PlanController {
     private PlanService planService;
 
     @GetMapping
-    public List<Plan> getAllPlans() {
+    public List<PlanDto> getAllPlans() {
         return planService.getAllPlans();
     }
 
     @GetMapping("/user/{userId}")
-    public List<Plan> getPlansByUserId(@PathVariable("userId") Integer userId) {
+    public List<PlanDto> getPlansByUserId(@PathVariable("userId") Integer userId) {
         return planService.getPlansByUserId(userId);
     }
 
     @GetMapping("/{planId}")
-    public Plan getPlan(@PathVariable("planId") Integer planId) {
+    public PlanDto getPlan(@PathVariable("planId") Integer planId) {
         return planService.getPlan(planId);
     }
 

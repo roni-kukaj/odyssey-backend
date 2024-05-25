@@ -13,17 +13,17 @@ public class PostController {
     private PostService postService;
 
     @GetMapping
-    public List<Post> getAllPosts() {
+    public List<PostDto> getAllPosts() {
         return postService.getAllPosts();
     }
 
     @GetMapping("/user/{userId}")
-    public List<Post> getPostsByUserId(@PathVariable("userId") Integer userId) {
+    public List<PostDto> getPostsByUserId(@PathVariable("userId") Integer userId) {
         return postService.getPostsByUserId(userId);
     }
 
     @GetMapping("/{postId}")
-    public Post getPlan(@PathVariable("postId") Integer postId) {
+    public PostDto getPlan(@PathVariable("postId") Integer postId) {
         return postService.getPost(postId);
     }
 

@@ -40,10 +40,11 @@ class PlanServiceTest {
     private UserDao userDao;
 
     private PlanService underTest;
+    private final PlanDtoMapper planDtoMapper = new PlanDtoMapper();
 
     @BeforeEach
     void setUp() {
-        underTest = new PlanService(planDao, userDao, locationDao);
+        underTest = new PlanService(planDao, userDao, locationDao, planDtoMapper);
     }
 
     @Test
@@ -65,14 +66,15 @@ class PlanServiceTest {
                 new Location(),
                 LocalDate.now()
         );
+        PlanDto planDto = planDtoMapper.apply(plan);
 
         when(planDao.selectPlanById(id)).thenReturn(Optional.of(plan));
 
         // When
-        Plan actual = underTest.getPlan(id);
+        PlanDto actual = underTest.getPlan(id);
 
         // Then
-        assertThat(actual).isEqualTo(plan);
+        assertThat(actual).isEqualTo(planDto);
     }
 
     @Test
