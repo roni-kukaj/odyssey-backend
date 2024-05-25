@@ -12,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -29,11 +30,14 @@ class UserServiceTest {
     @Mock private RoleDao roleDao;
     @Mock
     private CloudinaryService cloudinaryService;
+    @Mock
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private UserService underTest;
+    private final UserDtoMapper userDtoMapper = new UserDtoMapper();
 
     @BeforeEach
     void setUp() {
-        underTest = new UserService(userDao, roleDao, cloudinaryService);
+        underTest = new UserService(userDao, roleDao, cloudinaryService, passwordEncoder, userDtoMapper);
     }
 
     @Test
@@ -61,11 +65,13 @@ class UserServiceTest {
 
         when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
 
+        UserDto dto = userDtoMapper.apply(user);
+
         // When
-        User actual = underTest.getUser(id);
+        UserDto actual = underTest.getUser(id);
 
         // Then
-        assertThat(actual).isEqualTo(user);
+        assertThat(actual).isEqualTo(dto);
     }
 
     @Test
@@ -92,9 +98,7 @@ class UserServiceTest {
                 "Filan Fisteku",
                 "filanfisteku",
                 "filanfisteku@gmail.com",
-                "passi",
-                "avatar1",
-                1
+                "passi"
         );
 
         Role role = new Role(1, "user"); // Create a mock Role object
@@ -113,8 +117,6 @@ class UserServiceTest {
         assertThat(capturedUser.getFullname()).isEqualTo(request.fullname());
         assertThat(capturedUser.getUsername()).isEqualTo(request.username());
         assertThat(capturedUser.getEmail()).isEqualTo(request.email());
-        assertThat(capturedUser.getPassword()).isEqualTo(request.password());
-        assertThat(capturedUser.getRole().getId()).isEqualTo(request.role_id());
     }
 
     @Test
@@ -128,9 +130,7 @@ class UserServiceTest {
                 "Filan Fisteku",
                 "filanfisteku",
                 "filani@gmail.com",
-                "passi",
-                "avatar1",
-                1
+                "passi"
         );
 
         // When
@@ -153,9 +153,7 @@ class UserServiceTest {
                 "Filan Fisteku",
                 "filanfisteku",
                 "filanfisteku@gmail.com",
-                "passi",
-                "avatar1",
-                1
+                "passi"
         );
 
         // When

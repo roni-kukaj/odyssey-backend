@@ -43,7 +43,7 @@ public class TripIntegrationTest {
         String avatar = "avatar";
         Role role = new Role(1, "user");
         UserRegistrationRequest request = new UserRegistrationRequest(
-                name, username, email, password, avatar, role.getId()
+                name, username, email, password
         );
         webTestClient.post()
                 .uri(USER_URI)

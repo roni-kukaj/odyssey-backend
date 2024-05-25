@@ -6,6 +6,7 @@ import java.util.Optional;
 public interface UserDao {
     List<User> selectAllUsers();
     Optional<User> selectUserById(Integer Id);
+    Optional<User> selectUserByUsername(String username);
     void insertUser(User user);
     void updateUser(User user);
     boolean existsUserByEmail(String email);

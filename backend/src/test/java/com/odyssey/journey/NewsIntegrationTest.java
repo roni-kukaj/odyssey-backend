@@ -42,7 +42,7 @@ public class NewsIntegrationTest {
         role.setName("admin");
 
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest(
-                name, username, email, password, avatar, roleId
+                name, username, email, password
         );
         webTestClient.post()
                 .uri(AUTHOR_URI)

@@ -48,7 +48,7 @@ public class FollowIntegrationTest {
         Role role = new Role(1, "user");
 
         UserRegistrationRequest request1 = new UserRegistrationRequest(
-                name, username, email, password, avatar, 1
+                name, username, email, password
         );
         Faker faker2 = new Faker();
         Name fakerName2 = faker2.name();
@@ -58,7 +58,7 @@ public class FollowIntegrationTest {
         String password2 = "123";
         String avatar2 = "avatar1";
         UserRegistrationRequest request2 = new UserRegistrationRequest(
-                name2, username2, email2, password2, avatar2, 1
+                name2, username2, email2, password2
         );
         webTestClient.post()
                 .uri(USER_URI)
@@ -165,7 +165,7 @@ public class FollowIntegrationTest {
         Role role = new Role(1, "user");
 
         UserRegistrationRequest request1 = new UserRegistrationRequest(
-                name, username, email, password, avatar, 1
+                name, username, email, password
         );
         Faker faker2 = new Faker();
         Name fakerName2 = faker2.name();
@@ -175,7 +175,7 @@ public class FollowIntegrationTest {
         String password2 = "123";
         String avatar2 = "avatar1";
         UserRegistrationRequest request2 = new UserRegistrationRequest(
-                name2, username2, email2, password2, avatar2, 1
+                name2, username2, email2, password2
         );
         webTestClient.post()
                 .uri(USER_URI)
@@ -287,7 +287,7 @@ public class FollowIntegrationTest {
         Role role = new Role(1, "user");
 
         UserRegistrationRequest request1 = new UserRegistrationRequest(
-                name, username, email, password, avatar, 1
+                name, username, email, password
         );
         Faker faker2 = new Faker();
         Name fakerName2 = faker2.name();
@@ -297,7 +297,7 @@ public class FollowIntegrationTest {
         String password2 = "123";
         String avatar2 = "avatar1";
         UserRegistrationRequest request2 = new UserRegistrationRequest(
-                name2, username2, email2, password2, avatar2, 1
+                name2, username2, email2, password2
         );
         webTestClient.post()
                 .uri(USER_URI)

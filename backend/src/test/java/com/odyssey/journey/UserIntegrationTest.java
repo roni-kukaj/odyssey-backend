@@ -7,6 +7,7 @@ import com.odyssey.role.RoleDao;
 import com.odyssey.role.RoleRegistrationRequest;
 import com.odyssey.role.RoleRepository;
 import com.odyssey.user.User;
+import com.odyssey.user.UserDto;
 import com.odyssey.user.UserRegistrationRequest;
 import com.odyssey.user.UserUpdateRequest;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
@@ -47,59 +49,59 @@ public class UserIntegrationTest {
         String username = name;
         String email = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
         String password = "123";
-        String avatar = "avatar1";
-        Role role = new Role(1, "user");
+        Role role = new Role(1, "USER");
 
         UserRegistrationRequest request = new UserRegistrationRequest(
-            name, username, email, password, avatar, 1
+            name, username, email, password
         );
 
         // send a post request
-        webTestClient.post()
+        String token = webTestClient.post()
                 .uri(USER_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(request), UserRegistrationRequest.class)
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .returnResult(Void.class)
+                .getRequestHeaders()
+                .get(HttpHeaders.AUTHORIZATION).get(0);
 
         // get all customers
-        List<User> allUsers = webTestClient.get()
+        List<UserDto> allUsers = webTestClient.get()
                 .uri(USER_URI)
                 .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(new ParameterizedTypeReference<User>() {})
+                .expectBodyList(new ParameterizedTypeReference<UserDto>() {})
                 .returnResult()
                 .getResponseBody();
-
-        // make sure that the customer is present
-        User expectedUser = new User(
-                name, username, email, password, avatar, role
-        );
-
-        assertThat(allUsers)
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                .contains(expectedUser);
 
         // get customer by id
 
         int id = allUsers.stream()
-                .filter(user -> user.getEmail().equals(email))
-                .map(User::getId)
+                .filter(user -> user.email().equals(email))
+                .map(UserDto::id)
                 .findFirst()
                 .orElseThrow();
-        expectedUser.setId(id);
+        // make sure that the customer is present
+        UserDto expectedUser = new UserDto(
+                id, name, username, email, password, role
+        );
+
+        assertThat(allUsers).contains(expectedUser);
 
         webTestClient.get()
                 .uri(USER_URI + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(new ParameterizedTypeReference<User>() {})
+                .expectBody(new ParameterizedTypeReference<UserDto>() {})
                 .isEqualTo(expectedUser);
     }
 
@@ -116,7 +118,7 @@ public class UserIntegrationTest {
         Role role = new Role(1, "user");
 
         UserRegistrationRequest request = new UserRegistrationRequest(
-                name, username, email, password, avatar, 1
+                name, username, email, password
         );
 
         // send a post request
@@ -185,7 +187,7 @@ public class UserIntegrationTest {
         Role role = new Role(1, "user");
 
         UserRegistrationRequest request = new UserRegistrationRequest(
-                name, username, email, password, avatar, 1
+                name, username, email, password
         );
 
         // send a post request

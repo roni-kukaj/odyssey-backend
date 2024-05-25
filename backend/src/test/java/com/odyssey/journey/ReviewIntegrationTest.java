@@ -46,7 +46,7 @@ public class ReviewIntegrationTest {
         role.setName("user");
 
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest(
-                name, username, email, password, avatar, roleId
+                name, username, email, password
         );
 
         webTestClient.post()
