@@ -33,6 +33,6 @@ public class AuthenticationService {
         User principal = (User) authentication.getPrincipal();
         UserDto userDto = mapper.apply(principal);
         String token = jwtUtil.issueToken(userDto.username(), userDto.role().getName());
-        return new AuthenticationResponse(token);
+        return new AuthenticationResponse(token, userDto);
     }
 }

@@ -33,6 +33,11 @@ public class UserController {
         return userService.getUser(userId);
     }
 
+    @GetMapping("/username/{username}")
+    public UserDto getUserByUsername(@PathVariable("username") String username) {
+        return userService.getUserByUsername(username);
+    }
+
     @PostMapping()
     public ResponseEntity<?> registerUser(@RequestBody UserRegistrationRequest request) {
         userService.addUser(request);

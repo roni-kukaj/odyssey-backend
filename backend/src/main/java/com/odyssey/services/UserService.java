@@ -57,6 +57,12 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("user with id [%s] not found".formatted(id)));
     }
 
+    public UserDto getUserByUsername(String username) {
+        return userDao.selectUserByUsername(username)
+                .map(userDtoMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("user with username [%s] not found".formatted(username)));
+    }
+
     public void addUser(UserRegistrationRequest userRegistrationRequest) {
         String email = userRegistrationRequest.email();
         if (userDao.existsUserByEmail(email)) {
