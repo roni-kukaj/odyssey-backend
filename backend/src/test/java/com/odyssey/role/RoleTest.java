@@ -1,5 +1,6 @@
 package com.odyssey.role;
 
+import com.odyssey.models.Role;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

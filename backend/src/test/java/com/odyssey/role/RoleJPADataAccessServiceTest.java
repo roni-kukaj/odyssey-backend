@@ -1,12 +1,14 @@
 package com.odyssey.role;
 
+import com.odyssey.models.Role;
+import com.odyssey.repositories.RoleRepository;
+import com.odyssey.services.data.RoleJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 class RoleJPADataAccessServiceTest {

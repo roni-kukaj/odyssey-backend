@@ -1,6 +1,7 @@
 package com.odyssey.events;
 
-import com.odyssey.locations.Location;
+import com.odyssey.models.Location;
+import com.odyssey.models.Event;
 import org.junit.Test;
 
 import java.time.LocalDate;

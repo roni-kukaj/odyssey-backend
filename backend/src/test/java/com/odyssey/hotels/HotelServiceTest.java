@@ -1,13 +1,15 @@
 package com.odyssey.hotels;
 
-import com.odyssey.activities.Activity;
-import com.odyssey.activities.ActivityRegistrationRequest;
+import com.odyssey.daos.HotelDao;
+import com.odyssey.dtos.HotelRegistrationRequest;
+import com.odyssey.dtos.HotelUpdateRequest;
 import com.odyssey.exception.RequestValidationException;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
+import com.odyssey.models.Location;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.Hotel;
+import com.odyssey.services.HotelService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -17,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

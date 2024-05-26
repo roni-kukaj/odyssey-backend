@@ -1,7 +1,8 @@
 package com.odyssey.tripActivities;
 
-import com.odyssey.activities.Activity;
-import com.odyssey.trips.Trip;
+import com.odyssey.models.Activity;
+import com.odyssey.models.TripActivity;
+import com.odyssey.models.Trip;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

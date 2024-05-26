@@ -1,8 +1,13 @@
 package com.odyssey.locations;
 
-import com.odyssey.cloudinaryService.CloudinaryService;
+import com.odyssey.services.cloudinary.CloudinaryService;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.dtos.LocationRegistrationDto;
+import com.odyssey.dtos.LocationUpdateDto;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
+import com.odyssey.models.Location;
+import com.odyssey.services.LocationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

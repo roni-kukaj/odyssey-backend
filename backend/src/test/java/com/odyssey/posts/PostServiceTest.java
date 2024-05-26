@@ -1,11 +1,18 @@
 package com.odyssey.posts;
 
-import com.odyssey.cloudinaryService.CloudinaryService;
-import com.odyssey.role.Role;
-import com.odyssey.trips.Trip;
-import com.odyssey.trips.TripDao;
-import com.odyssey.user.User;
-import com.odyssey.user.UserDao;
+import com.odyssey.services.cloudinary.CloudinaryService;
+import com.odyssey.daos.PostDao;
+import com.odyssey.dtos.PostDto;
+import com.odyssey.dtos.PostRegistrationDto;
+import com.odyssey.dtos.PostUpdateDto;
+import com.odyssey.models.Post;
+import com.odyssey.models.Role;
+import com.odyssey.models.Trip;
+import com.odyssey.daos.TripDao;
+import com.odyssey.models.User;
+import com.odyssey.daos.UserDao;
+import com.odyssey.services.PostService;
+import com.odyssey.services.utils.PostDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.odyssey.exception.DuplicateResourceException;
@@ -17,16 +24,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

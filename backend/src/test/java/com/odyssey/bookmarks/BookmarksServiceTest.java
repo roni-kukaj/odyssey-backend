@@ -1,21 +1,25 @@
 package com.odyssey.bookmarks;
 
 
+import com.odyssey.daos.BookmarksDao;
+import com.odyssey.dtos.BookmarksDto;
+import com.odyssey.dtos.BookmarksRegistrationRequest;
 import com.odyssey.exception.DuplicateResourceException;
-import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
-import com.odyssey.recommendations.Recommendation;
-import com.odyssey.user.User;
-import com.odyssey.user.UserDao;
+import com.odyssey.models.Location;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.Bookmarks;
+import com.odyssey.models.User;
+import com.odyssey.daos.UserDao;
+import com.odyssey.services.BookmarksService;
+import com.odyssey.services.utils.BookmarksDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.odyssey.role.Role;
+import com.odyssey.models.Role;
 
 import java.util.Optional;
 

@@ -1,6 +1,7 @@
 package com.odyssey.news;
 
-import com.odyssey.user.User;
+import com.odyssey.models.News;
+import com.odyssey.models.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

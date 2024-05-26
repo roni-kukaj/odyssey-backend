@@ -1,11 +1,16 @@
 package com.odyssey.localCuisine;
 
-import com.odyssey.cloudinaryService.CloudinaryService;
+import com.odyssey.services.cloudinary.CloudinaryService;
+import com.odyssey.daos.LocalCuisineDao;
+import com.odyssey.dtos.LocalCuisineRegistrationDto;
+import com.odyssey.dtos.LocalCuisineUpdateDto;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
+import com.odyssey.models.Location;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.LocalCuisine;
+import com.odyssey.services.LocalCuisineService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

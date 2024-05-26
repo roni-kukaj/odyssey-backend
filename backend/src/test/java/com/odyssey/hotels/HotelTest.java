@@ -1,6 +1,7 @@
 package com.odyssey.hotels;
 
-import com.odyssey.locations.Location;
+import com.odyssey.models.Location;
+import com.odyssey.models.Hotel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

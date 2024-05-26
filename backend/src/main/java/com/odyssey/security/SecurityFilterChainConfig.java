@@ -1,7 +1,6 @@
 package com.odyssey.security;
 
 import com.odyssey.jwt.JWTAuthenticationFilter;
-import com.odyssey.user.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,6 +13,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityFilterChainConfig {
@@ -22,7 +24,11 @@ public class SecurityFilterChainConfig {
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
-    public SecurityFilterChainConfig(AuthenticationProvider authenticationProvider, JWTAuthenticationFilter jwtAuthenticationFilter, AuthenticationEntryPoint authenticationEntryPoint) {
+    public SecurityFilterChainConfig(
+            AuthenticationProvider authenticationProvider,
+            JWTAuthenticationFilter jwtAuthenticationFilter,
+            AuthenticationEntryPoint authenticationEntryPoint
+    ) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.authenticationEntryPoint = authenticationEntryPoint;
@@ -31,36 +37,45 @@ public class SecurityFilterChainConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(
-                            HttpMethod.POST,
-                            "/api/v1/users",
-                            "/api/v1/auth/login"
-                    )
-                    .permitAll()
-                    .requestMatchers(
-                            HttpMethod.GET,
-                            "/api/v1/news",
-                            "/api/v1/activities",
-                            "/api/v1/events",
-                            "/api/v1/flights",
-                            "/api/v1/hotels",
-                            "/api/v1/recommendations"
-                    )
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated()
+            .csrf(csrf -> csrf.disable())
+            .cors(Customizer.withDefaults())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                        HttpMethod.POST,
+                        "/api/v1/users",
+                        "/api/v1/auth/login",
+                        "/api/v1/subscribers"
                 )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .permitAll()
+                .requestMatchers(
+                        HttpMethod.GET,
+                        "/api/v1/news",
+                        "/api/v1/news/**",
+                        "/api/v1/activities",
+                        "/api/v1/activities/**",
+                        "/api/v1/events",
+                        "/api/v1/events/**",
+                        "/api/v1/flights",
+                        "/api/v1/flights/**",
+                        "/api/v1/hotels",
+                        "/api/v1/hotels/**",
+                        "/api/v1/recommendations",
+                        "/api/v1/recommendations/**"
                 )
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(handler -> handler
-                    .authenticationEntryPoint(authenticationEntryPoint)
-                );
+                .permitAll()
+//                .requestMatchers(HttpMethod.DELETE, "/api/v1/users/{userId}")
+//                .hasAuthority("ADMIN")
+                .anyRequest()
+                .authenticated()
+            )
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .exceptionHandling(handler -> handler
+                .authenticationEntryPoint(authenticationEntryPoint)
+            );
 
         return http.build();
     }

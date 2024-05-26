@@ -1,7 +1,7 @@
 package com.odyssey.activities;
 
-import com.odyssey.locations.Location;
-import org.checkerframework.checker.units.qual.A;
+import com.odyssey.models.Location;
+import com.odyssey.models.Activity;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,7 +1,10 @@
 package com.odyssey.bookmarks;
 
-import com.odyssey.locations.Location;
-import com.odyssey.user.User;
+import com.odyssey.models.Location;
+import com.odyssey.models.Bookmarks;
+import com.odyssey.models.User;
+import com.odyssey.repositories.BookmarksRepository;
+import com.odyssey.services.data.BookmarksJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

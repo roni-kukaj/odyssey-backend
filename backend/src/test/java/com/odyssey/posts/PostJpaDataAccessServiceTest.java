@@ -1,6 +1,8 @@
 package com.odyssey.posts;
 
-import com.odyssey.plans.Plan;
+import com.odyssey.models.Post;
+import com.odyssey.repositories.PostRepository;
+import com.odyssey.services.data.PostJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

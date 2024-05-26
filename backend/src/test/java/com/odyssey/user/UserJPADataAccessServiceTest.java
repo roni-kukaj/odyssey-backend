@@ -1,6 +1,9 @@
 package com.odyssey.user;
 
-import com.odyssey.role.Role;
+import com.odyssey.models.Role;
+import com.odyssey.models.User;
+import com.odyssey.repositories.UserRepository;
+import com.odyssey.services.data.UserJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

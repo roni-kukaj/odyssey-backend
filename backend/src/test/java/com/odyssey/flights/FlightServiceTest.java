@@ -1,9 +1,15 @@
 package com.odyssey.flights;
 
+import com.odyssey.daos.FlightDao;
+import com.odyssey.dtos.FlightRegistrationRequest;
+import com.odyssey.dtos.FlightUpdateRequest;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
+import com.odyssey.models.Location;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.Flight;
+import com.odyssey.services.FlightNamingService;
+import com.odyssey.services.FlightService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,13 +1,12 @@
 package com.odyssey.plans;
 
-import com.odyssey.locations.Location;
-import com.odyssey.user.User;
+import com.odyssey.models.Location;
+import com.odyssey.models.Plan;
+import com.odyssey.models.User;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,10 +1,15 @@
 package com.odyssey.news;
 
-import com.odyssey.cloudinaryService.CloudinaryService;
-import com.odyssey.exception.RequestValidationException;
+import com.odyssey.services.cloudinary.CloudinaryService;
+import com.odyssey.daos.NewsDao;
+import com.odyssey.dtos.NewsDto;
+import com.odyssey.dtos.NewsRegistrationDto;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.user.User;
-import com.odyssey.user.UserDao;
+import com.odyssey.models.News;
+import com.odyssey.models.User;
+import com.odyssey.daos.UserDao;
+import com.odyssey.services.NewsService;
+import com.odyssey.services.utils.NewsDtoMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +18,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
-import com.odyssey.role.Role;
+import com.odyssey.models.Role;
 
 import java.nio.file.Path;
 import java.util.Optional;

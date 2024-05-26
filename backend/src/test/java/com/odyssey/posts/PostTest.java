@@ -1,7 +1,8 @@
 package com.odyssey.posts;
 
-import com.odyssey.trips.Trip;
-import com.odyssey.user.User;
+import com.odyssey.models.Post;
+import com.odyssey.models.Trip;
+import com.odyssey.models.User;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

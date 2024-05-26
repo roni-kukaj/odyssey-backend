@@ -1,8 +1,13 @@
 package com.odyssey.activities;
 
+import com.odyssey.daos.ActivityDao;
+import com.odyssey.dtos.ActivityRegistrationRequest;
+import com.odyssey.dtos.ActivityUpdateRequest;
 import com.odyssey.exception.RequestValidationException;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
+import com.odyssey.models.Location;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.Activity;
+import com.odyssey.services.ActivityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.odyssey.exception.DuplicateResourceException;
@@ -15,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

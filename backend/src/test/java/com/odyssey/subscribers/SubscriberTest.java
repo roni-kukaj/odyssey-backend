@@ -1,5 +1,6 @@
 package com.odyssey.subscribers;
 
+import com.odyssey.models.Subscriber;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

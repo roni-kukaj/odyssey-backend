@@ -1,11 +1,10 @@
 package com.odyssey.trips;
 
 
-import com.odyssey.activities.Activity;
-import com.odyssey.events.Event;
-import com.odyssey.items.Item;
-import com.odyssey.locations.Location;
-import com.odyssey.user.User;
+import com.odyssey.models.*;
+import com.odyssey.models.User;
+import com.odyssey.repositories.TripRepository;
+import com.odyssey.services.data.TripJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

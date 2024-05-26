@@ -1,9 +1,9 @@
 package com.odyssey.auth;
 
 import com.odyssey.jwt.JWTUtil;
-import com.odyssey.user.User;
-import com.odyssey.user.UserDto;
-import com.odyssey.user.UserDtoMapper;
+import com.odyssey.models.User;
+import com.odyssey.dtos.UserDto;
+import com.odyssey.services.utils.UserDtoMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

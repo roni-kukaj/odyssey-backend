@@ -1,6 +1,6 @@
 package com.odyssey.jwt;
 
-import com.odyssey.user.UsersDetailsService;
+import com.odyssey.services.UsersDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

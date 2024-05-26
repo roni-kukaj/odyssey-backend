@@ -1,19 +1,21 @@
 package com.odyssey.reviews;
 
 
-import com.odyssey.activities.Activity;
+import com.odyssey.daos.ReviewDao;
+import com.odyssey.dtos.ReviewDto;
+import com.odyssey.dtos.ReviewRegistrationRequest;
+import com.odyssey.dtos.ReviewUpdateRequest;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
-import com.odyssey.recommendations.Recommendation;
-import com.odyssey.recommendations.RecommendationRegistrationRequest;
-import com.odyssey.recommendations.RecommendationUpdateRequest;
-import com.odyssey.user.User;
-import com.odyssey.user.UserDao;
+import com.odyssey.models.Location;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.Review;
+import com.odyssey.models.User;
+import com.odyssey.daos.UserDao;
+import com.odyssey.services.ReviewService;
+import com.odyssey.services.utils.ReviewDtoMapper;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

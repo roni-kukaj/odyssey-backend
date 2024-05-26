@@ -1,7 +1,8 @@
 package com.odyssey.recommendations;
 
-import com.odyssey.activities.Activity;
-import com.odyssey.user.User;
+import com.odyssey.models.Activity;
+import com.odyssey.models.Recommendation;
+import com.odyssey.models.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
