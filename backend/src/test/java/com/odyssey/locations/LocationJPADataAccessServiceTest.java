@@ -1,5 +1,8 @@
 package com.odyssey.locations;
 
+import com.odyssey.models.Location;
+import com.odyssey.repositories.LocationRepository;
+import com.odyssey.services.data.LocationJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

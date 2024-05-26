@@ -1,9 +1,9 @@
 package com.odyssey.flights;
 
-import com.odyssey.locations.Location;
+import com.odyssey.models.Location;
+import com.odyssey.models.Flight;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;

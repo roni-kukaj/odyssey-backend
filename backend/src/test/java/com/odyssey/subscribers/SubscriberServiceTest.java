@@ -1,7 +1,11 @@
 package com.odyssey.subscribers;
 
+import com.odyssey.daos.SubscriberDao;
+import com.odyssey.dtos.SubscriberRegistrationRequest;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
+import com.odyssey.models.Subscriber;
+import com.odyssey.services.SubscriberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

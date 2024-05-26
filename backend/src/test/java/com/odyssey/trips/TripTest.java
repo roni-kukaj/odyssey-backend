@@ -1,11 +1,7 @@
 package com.odyssey.trips;
 
-import com.odyssey.activities.Activity;
-import com.odyssey.events.Event;
-import com.odyssey.items.Item;
-import com.odyssey.locations.Location;
-import com.odyssey.user.User;
-import org.checkerframework.checker.units.qual.A;
+import com.odyssey.models.*;
+import com.odyssey.models.User;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

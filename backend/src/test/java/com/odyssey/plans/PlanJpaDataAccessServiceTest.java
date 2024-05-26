@@ -1,5 +1,8 @@
 package com.odyssey.plans;
 
+import com.odyssey.models.Plan;
+import com.odyssey.repositories.PlanRepository;
+import com.odyssey.services.data.PlanJPADataAccessService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;

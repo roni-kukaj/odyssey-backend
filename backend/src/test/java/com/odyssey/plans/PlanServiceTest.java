@@ -1,11 +1,16 @@
 package com.odyssey.plans;
 
-import com.odyssey.activities.Activity;
-import com.odyssey.exception.RequestValidationException;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
-import com.odyssey.user.User;
-import com.odyssey.user.UserDao;
+import com.odyssey.daos.PlanDao;
+import com.odyssey.dtos.PlanDto;
+import com.odyssey.dtos.PlanRegistrationRequest;
+import com.odyssey.dtos.PlanUpdateRequest;
+import com.odyssey.models.Location;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.Plan;
+import com.odyssey.models.User;
+import com.odyssey.daos.UserDao;
+import com.odyssey.services.PlanService;
+import com.odyssey.services.utils.PlanDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.odyssey.exception.DuplicateResourceException;
@@ -16,16 +21,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -40,10 +42,11 @@ class PlanServiceTest {
     private UserDao userDao;
 
     private PlanService underTest;
+    private final PlanDtoMapper planDtoMapper = new PlanDtoMapper();
 
     @BeforeEach
     void setUp() {
-        underTest = new PlanService(planDao, userDao, locationDao);
+        underTest = new PlanService(planDao, userDao, locationDao, planDtoMapper);
     }
 
     @Test
@@ -65,14 +68,15 @@ class PlanServiceTest {
                 new Location(),
                 LocalDate.now()
         );
+        PlanDto planDto = planDtoMapper.apply(plan);
 
         when(planDao.selectPlanById(id)).thenReturn(Optional.of(plan));
 
         // When
-        Plan actual = underTest.getPlan(id);
+        PlanDto actual = underTest.getPlan(id);
 
         // Then
-        assertThat(actual).isEqualTo(plan);
+        assertThat(actual).isEqualTo(planDto);
     }
 
     @Test

@@ -1,6 +1,9 @@
 package com.odyssey.news;
 
-import com.odyssey.user.User;
+import com.odyssey.models.News;
+import com.odyssey.models.User;
+import com.odyssey.repositories.NewsRepository;
+import com.odyssey.services.data.NewsJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

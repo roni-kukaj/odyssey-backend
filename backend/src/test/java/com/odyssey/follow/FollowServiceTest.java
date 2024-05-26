@@ -1,12 +1,18 @@
 package com.odyssey.follow;
 
+import com.odyssey.daos.FollowDao;
+import com.odyssey.dtos.FollowDeleteRequest;
+import com.odyssey.dtos.FollowDto;
+import com.odyssey.dtos.FollowRegistrationRequest;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.user.User;
-import com.odyssey.role.Role;
-import com.odyssey.user.UserDao;
-import com.odyssey.user.UserService;
+import com.odyssey.models.Follow;
+import com.odyssey.models.User;
+import com.odyssey.models.Role;
+import com.odyssey.daos.UserDao;
+import com.odyssey.services.FollowService;
+import com.odyssey.services.utils.FollowDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +24,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,9 +35,11 @@ class FollowServiceTest {
     private UserDao userDao;
     private FollowService underTest;
 
+    private FollowDtoMapper followDtoMapper = new FollowDtoMapper();
+
     @BeforeEach
     void setUp() {
-        underTest = new FollowService(followDao, userDao);
+        underTest = new FollowService(followDao, userDao, followDtoMapper);
     }
 
     @Test
@@ -74,16 +81,17 @@ class FollowServiceTest {
         Integer id = 1;
         Follow follow = new Follow(
                 id,
-                new User(),
-                new User()
+                new User(1, "", "", "", "", "", new Role(1, "USER")),
+                new User(2, "", "", "", "", "", new Role(1, "USER"))
         );
+        FollowDto followDto = followDtoMapper.apply(follow);
         when(followDao.selectById(id)).thenReturn(Optional.of(follow));
 
         // When
-        Follow actual = underTest.getFollowById(id);
+        FollowDto actual = underTest.getFollowById(id);
 
         // Then
-        assertThat(actual).isEqualTo(follow);
+        assertThat(actual).isEqualTo(followDto);
     }
 
     @Test

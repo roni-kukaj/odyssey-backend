@@ -1,7 +1,8 @@
 package com.odyssey.tripPlaces;
 
-import com.odyssey.locations.Location;
-import com.odyssey.trips.Trip;
+import com.odyssey.models.Location;
+import com.odyssey.models.TripPlace;
+import com.odyssey.models.Trip;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

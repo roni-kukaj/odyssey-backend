@@ -1,8 +1,8 @@
 package com.odyssey.tripEvents;
 
-import com.odyssey.events.Event;
-import com.odyssey.events.EventTest;
-import com.odyssey.trips.Trip;
+import com.odyssey.models.Event;
+import com.odyssey.models.TripEvent;
+import com.odyssey.models.Trip;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

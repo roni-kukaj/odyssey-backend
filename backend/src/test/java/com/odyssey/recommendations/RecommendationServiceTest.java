@@ -1,14 +1,20 @@
 package com.odyssey.recommendations;
 
 
-import com.odyssey.activities.Activity;
-import com.odyssey.activities.ActivityDao;
+import com.odyssey.daos.RecommendationDao;
+import com.odyssey.dtos.RecommendationDto;
+import com.odyssey.dtos.RecommendationRegistrationRequest;
+import com.odyssey.dtos.RecommendationUpdateRequest;
+import com.odyssey.models.Activity;
+import com.odyssey.daos.ActivityDao;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.user.User;
-import com.odyssey.user.UserDao;
-import org.checkerframework.checker.units.qual.A;
+import com.odyssey.models.Recommendation;
+import com.odyssey.models.User;
+import com.odyssey.daos.UserDao;
+import com.odyssey.services.RecommendationService;
+import com.odyssey.services.utils.RecommendationDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,9 +42,11 @@ public class RecommendationServiceTest {
 
     private RecommendationService underTest;
 
+    private final RecommendationDtoMapper recommendationDtoMapper = new RecommendationDtoMapper();
+
     @BeforeEach
     void setUp(){
-        underTest = new RecommendationService(recommendationDao,userDao,activityDao);
+        underTest = new RecommendationService(recommendationDao,userDao,activityDao, recommendationDtoMapper);
     }
 
     @Test
@@ -56,10 +64,10 @@ public class RecommendationServiceTest {
                 new User(),
                 new Activity()
         );
-
+        RecommendationDto recommendationDto = recommendationDtoMapper.apply(recommendation);
         when(recommendationDao.selectRecommendationById(id)).thenReturn(Optional.of(recommendation));
-        Recommendation recommendation1 = underTest.getRecommendation(id);
-        assertThat(recommendation1).isEqualTo(recommendation);
+        RecommendationDto recommendation1 = underTest.getRecommendation(id);
+        assertThat(recommendation1).isEqualTo(recommendationDto);
     }
 
     @Test

@@ -1,15 +1,18 @@
 package com.odyssey.posts;
 
-import com.odyssey.cloudinaryService.CloudinaryService;
-import com.odyssey.locations.Location;
-import com.odyssey.plans.Plan;
-import com.odyssey.plans.PlanRegistrationRequest;
-import com.odyssey.plans.PlanService;
-import com.odyssey.plans.PlanUpdateRequest;
-import com.odyssey.trips.Trip;
-import com.odyssey.trips.TripDao;
-import com.odyssey.user.User;
-import com.odyssey.user.UserDao;
+import com.odyssey.services.cloudinary.CloudinaryService;
+import com.odyssey.daos.PostDao;
+import com.odyssey.dtos.PostDto;
+import com.odyssey.dtos.PostRegistrationDto;
+import com.odyssey.dtos.PostUpdateDto;
+import com.odyssey.models.Post;
+import com.odyssey.models.Role;
+import com.odyssey.models.Trip;
+import com.odyssey.daos.TripDao;
+import com.odyssey.models.User;
+import com.odyssey.daos.UserDao;
+import com.odyssey.services.PostService;
+import com.odyssey.services.utils.PostDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.odyssey.exception.DuplicateResourceException;
@@ -21,16 +24,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -45,6 +44,8 @@ public class PostServiceTest {
     @Mock
     private CloudinaryService cloudinaryService;
 
+    private final PostDtoMapper postDtoMapper = new PostDtoMapper();
+
     private final String FILE_URL = "src/main/resources/images/test.png";
     private Path path;
     private byte[] content;
@@ -53,7 +54,7 @@ public class PostServiceTest {
 
     @BeforeEach
     void setUp() {
-        underTest = new PostService(postDao, userDao, tripDao, cloudinaryService);
+        underTest = new PostService(postDao, userDao, tripDao, cloudinaryService, postDtoMapper);
     }
 
     @Test
@@ -69,21 +70,25 @@ public class PostServiceTest {
     void getPost() {
         // Given
         int id = 1;
+        User user = new User(1, "", "", "", "", "", new Role(1, "USER"));
+        Trip trip = new Trip();
+        trip.setUser(user);
         Post post = new Post(
                 id,
                 "", "",
                 LocalDate.now(),
-                new User(),
-                new Trip()
+                user,
+                trip
         );
+        PostDto postDto = postDtoMapper.apply(post);
 
         when(postDao.selectPostById(id)).thenReturn(Optional.of(post));
 
         // When
-        Post actual = underTest.getPost(id);
+        PostDto actual = underTest.getPost(id);
 
         // Then
-        assertThat(actual).isEqualTo(post);
+        assertThat(actual).isEqualTo(postDto);
     }
 
     @Test

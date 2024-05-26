@@ -3,6 +3,21 @@ server:
   error:
     include-message: always
 
+cors:
+  allowed-origins: "*"
+  allowed-methods: "*"
+  allowed-headers: "*"
+  exposed-headers: "*"
+
+cloudinary:
+  default-activity-image: https://res.cloudinary.com/dphboq54c/image/upload/v1713752991/Odyssey-DB/activities/default-activity.jpg
+  default-event-image: https://res.cloudinary.com/dphboq54c/image/upload/v1713752992/Odyssey-DB/events/default-event.jpg
+  default-avatar-image: https://res.cloudinary.com/dphboq54c/image/upload/v1715904645/Odyssey-DB/avatars/default-avatar_mfg3bf.png
+  default-local-cuisine-image: https://res.cloudinary.com/dphboq54c/image/upload/v1713752993/Odyssey-DB/localCuisine/default-local-cuisine.jpg
+  default-location-image: https://res.cloudinary.com/dphboq54c/image/upload/v1713752987/Odyssey-DB/locations/default-location.jpg
+  default-news-image: https://res.cloudinary.com/dphboq54c/image/upload/v1713752990/Odyssey-DB/news/default-news.jpg
+  default-post-image: https://res.cloudinary.com/dphboq54c/image/upload/v1713752994/Odyssey-DB/posts/default-post.jpg
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5555/odyssey_db

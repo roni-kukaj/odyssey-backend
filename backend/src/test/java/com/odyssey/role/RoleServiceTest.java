@@ -1,7 +1,12 @@
 package com.odyssey.role;
 
+import com.odyssey.daos.RoleDao;
+import com.odyssey.dtos.RoleRegistrationRequest;
+import com.odyssey.dtos.RoleUpdateRequest;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
+import com.odyssey.models.Role;
+import com.odyssey.services.RoleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +18,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

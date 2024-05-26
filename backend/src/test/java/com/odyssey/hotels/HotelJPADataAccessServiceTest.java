@@ -1,15 +1,15 @@
 package com.odyssey.hotels;
 
-import com.odyssey.locations.Location;
-import org.checkerframework.checker.units.qual.A;
+import com.odyssey.models.Location;
+import com.odyssey.models.Hotel;
+import com.odyssey.repositories.HotelRepository;
+import com.odyssey.services.data.HotelJPADataAccessService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class HotelJPADataAccessServiceTest {
 

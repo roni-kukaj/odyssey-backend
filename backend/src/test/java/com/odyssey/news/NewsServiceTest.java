@@ -1,10 +1,15 @@
 package com.odyssey.news;
 
-import com.odyssey.cloudinaryService.CloudinaryService;
-import com.odyssey.exception.RequestValidationException;
+import com.odyssey.services.cloudinary.CloudinaryService;
+import com.odyssey.daos.NewsDao;
+import com.odyssey.dtos.NewsDto;
+import com.odyssey.dtos.NewsRegistrationDto;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.user.User;
-import com.odyssey.user.UserDao;
+import com.odyssey.models.News;
+import com.odyssey.models.User;
+import com.odyssey.daos.UserDao;
+import com.odyssey.services.NewsService;
+import com.odyssey.services.utils.NewsDtoMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
+import com.odyssey.models.Role;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -34,6 +40,8 @@ public class NewsServiceTest {
     @Mock
     private CloudinaryService cloudinaryService;
 
+    private final NewsDtoMapper newsDtoMapper = new NewsDtoMapper();
+
     private final String FILE_URL = "src/main/resources/images/test.png";
     private Path path;
     private byte[] content;
@@ -42,7 +50,7 @@ public class NewsServiceTest {
 
     @BeforeEach
     void setUp(){
-        underTest = new NewsService(newsDao, authorDao, cloudinaryService);
+        underTest = new NewsService(newsDao, authorDao, cloudinaryService, newsDtoMapper);
     }
 
     @Test
@@ -55,11 +63,12 @@ public class NewsServiceTest {
     void getNews() {
         int id = 1;
         News news = new News(
-                id, "title", "desc", "pic1", new User()
+                id, "title", "desc", "pic1", new User(1, "", "", "", "", "", new Role(1, "USER"))
         );
+        NewsDto newsDto = newsDtoMapper.apply(news);
         when(newsDao.selectNewsById(id)).thenReturn(Optional.of(news));
-        News news1 = underTest.getNews(id);
-        assertThat(news1).isEqualTo(news);
+        NewsDto news1 = underTest.getNews(id);
+        assertThat(news1).isEqualTo(newsDto);
     }
 
 

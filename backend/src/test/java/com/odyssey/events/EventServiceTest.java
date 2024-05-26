@@ -1,11 +1,16 @@
 package com.odyssey.events;
 
 
-import com.odyssey.cloudinaryService.CloudinaryService;
+import com.odyssey.services.cloudinary.CloudinaryService;
+import com.odyssey.daos.EventDao;
+import com.odyssey.dtos.EventRegistrationDto;
+import com.odyssey.dtos.EventUpdateDto;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
+import com.odyssey.models.Location;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.Event;
+import com.odyssey.services.EventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,18 +1,21 @@
 package com.odyssey.trips;
 
 
-import com.odyssey.activities.Activity;
-import com.odyssey.activities.ActivityDao;
-import com.odyssey.events.Event;
-import com.odyssey.events.EventDao;
+import com.odyssey.daos.TripDao;
+import com.odyssey.dtos.TripDto;
+import com.odyssey.dtos.TripRegistrationRequest;
+import com.odyssey.dtos.TripUpdateRequest;
+import com.odyssey.models.*;
+import com.odyssey.daos.ActivityDao;
+import com.odyssey.daos.EventDao;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.items.Item;
-import com.odyssey.items.ItemDao;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
-import com.odyssey.user.User;
-import com.odyssey.user.UserDao;
+import com.odyssey.daos.ItemDao;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.User;
+import com.odyssey.daos.UserDao;
+import com.odyssey.services.TripService;
+import com.odyssey.services.utils.TripDtoMapper;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,10 +51,11 @@ public class TripServiceTest {
     private ItemDao itemDao;
 
     private TripService underTest;
+    private TripDtoMapper tripDtoMapper = new TripDtoMapper();
 
     @BeforeEach
     void setUp(){
-        underTest = new TripService(tripDao, userDao, itemDao, locationDao, activityDao, eventDao);
+        underTest = new TripService(tripDao, userDao, itemDao, locationDao, activityDao, eventDao, tripDtoMapper);
     }
 
     @Test
@@ -70,9 +74,10 @@ public class TripServiceTest {
         Set<Activity> activities = new HashSet<>();
         Set<Event> events = new HashSet<>();
         Trip trip = new Trip(id,new User(),startDate,endDate,items,places,activities,events);
+        TripDto tripDto = tripDtoMapper.apply(trip);
         when(tripDao.selectTripById(id)).thenReturn(Optional.of(trip));
-        Trip trip1 = underTest.getTrip(id);
-        assertThat(trip1).isEqualTo(trip);
+        TripDto trip1 = underTest.getTrip(id);
+        assertThat(trip1).isEqualTo(tripDto);
     }
 
     @Test

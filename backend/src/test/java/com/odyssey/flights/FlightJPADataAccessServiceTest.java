@@ -1,15 +1,15 @@
 package com.odyssey.flights;
 
-import com.odyssey.locations.Location;
-import org.junit.jupiter.api.AfterAll;
+import com.odyssey.models.Location;
+import com.odyssey.models.Flight;
+import com.odyssey.repositories.FlightRepository;
+import com.odyssey.services.data.FlightJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.verify;
