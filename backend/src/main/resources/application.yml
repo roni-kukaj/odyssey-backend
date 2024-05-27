@@ -35,3 +35,7 @@ spring:
     web-application-type: servlet
   config:
     import: optional:cloudinary.properties
+
+springdoc:
+  api-docs:
+    path: /api-docs
