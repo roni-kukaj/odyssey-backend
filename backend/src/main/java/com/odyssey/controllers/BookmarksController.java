@@ -3,6 +3,8 @@ package com.odyssey.controllers;
 import com.odyssey.dtos.BookmarksDto;
 import com.odyssey.dtos.BookmarksRegistrationRequest;
 import com.odyssey.services.BookmarksService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +14,14 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/bookmarks")
+@Tag(name = "asd", description = "GET methods of Employee APIs")
 public class BookmarksController {
 
     @Autowired
     private BookmarksService bookmarksService;
 
+    @Operation(summary = "Update an employee",
+            description = "Update an existing employee. The response is updated Employee object with id, first name, and last name.")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MAINADMIN')")
     @GetMapping
     public List<BookmarksDto> getAllBookmarks(){

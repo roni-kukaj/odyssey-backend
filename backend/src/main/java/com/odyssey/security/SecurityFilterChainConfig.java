@@ -65,6 +65,18 @@ public class SecurityFilterChainConfig {
                         "/api/v1/locations/**"
                 )
                 .permitAll()
+                .requestMatchers(
+                        "/api-docs/**",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
+                        "/configuration/ui",
+                        "/configuration/security",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html"
+                )
+                .permitAll()
 //                .requestMatchers(HttpMethod.DELETE, "/api/v1/users/{userId}")
 //                .hasAuthority("ADMIN")
                 .anyRequest()
