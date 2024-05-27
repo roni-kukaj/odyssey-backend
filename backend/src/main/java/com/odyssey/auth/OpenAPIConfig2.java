@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
 
 @OpenAPIDefinition(
         info = @Info(contact =
-        @Contact(name = "HRM Team", email = "hrms@evonem.com"),
+        @Contact(name = "Team", email = "email@email.com"),
                 description = "OpenAPI Documentation for our application",
                 title = "OpenAPI Documentation",
                 version = "1.0.0",
@@ -26,6 +26,10 @@ import io.swagger.v3.oas.annotations.servers.Server;
                         description = "Local Environment",
                         url = "http://localhost:8000")
         }, security = {@SecurityRequirement(name = "BearerAuth")})
-@SecurityScheme(name = "BearerAuth", description = "JWT Authentication", scheme = "bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
+@SecurityScheme(name = "BearerAuth", description = "JWT Authentication",
+        scheme = "bearer",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        in = SecuritySchemeIn.HEADER)
 public class OpenAPIConfig2 {
 }
