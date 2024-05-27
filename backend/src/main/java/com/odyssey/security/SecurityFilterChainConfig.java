@@ -60,7 +60,9 @@ public class SecurityFilterChainConfig {
                         "/api/v1/hotels",
                         "/api/v1/hotels/**",
                         "/api/v1/recommendations",
-                        "/api/v1/recommendations/**"
+                        "/api/v1/recommendations/**",
+                        "/api/v1/locations",
+                        "/api/v1/locations/**"
                 )
                 .permitAll()
 //                .requestMatchers(HttpMethod.DELETE, "/api/v1/users/{userId}")
