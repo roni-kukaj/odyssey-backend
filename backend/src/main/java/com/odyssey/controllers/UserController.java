@@ -53,7 +53,7 @@ public class UserController {
         userService.addAdmin(request);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MAINADMIN')")
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable("userId") Integer userId) {
         userService.deleteUser(userId);

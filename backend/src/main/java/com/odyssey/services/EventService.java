@@ -48,9 +48,8 @@ public class EventService {
         Location location = locationDao.selectLocationById(dto.locationId())
                 .orElseThrow(()-> new ResourceNotFoundException("location with id [%s] not found".formatted(dto.locationId())));
 
-        File file = FileService.convertFile(dto.file());
-
         try {
+            File file = FileService.convertFile(dto.file());
             String url = cloudinaryService.uploadImage(file, "events");
             Event event = new Event(
                     dto.name(), dto.description(), url, dto.date(), dto.cost(), dto.duration(), location
