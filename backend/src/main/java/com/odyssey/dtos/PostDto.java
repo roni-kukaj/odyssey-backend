@@ -9,6 +9,7 @@ public record PostDto(
         String text,
         String image,
         LocalDate postedTime,
+        UserDto userDto,
         TripDto tripDto
 ) {
 }

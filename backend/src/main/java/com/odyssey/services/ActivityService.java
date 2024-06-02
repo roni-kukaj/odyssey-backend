@@ -51,7 +51,7 @@ public class ActivityService {
         Activity activity = new Activity(
                 request.name(),
                 request.description(),
-                request.cost(),
+                request.cost (),
                 request.duration(),
                 location
         );

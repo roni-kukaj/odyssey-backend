@@ -35,4 +35,16 @@ public class AuthenticationService {
         String token = jwtUtil.issueToken(userDto.username(), userDto.role().getName());
         return new AuthenticationResponse(token, userDto);
     }
+
+    public UserDto verifyUser(AuthenticationRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.username(),
+                        request.password()
+                )
+        );
+        User principal = (User) authentication.getPrincipal();
+        return mapper.apply(principal);
+    }
+
 }
