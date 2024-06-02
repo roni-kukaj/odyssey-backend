@@ -38,7 +38,6 @@ public class TripController {
         tripService.addTrip(request);
     }
 
-    @PreAuthorize("hasAuthority('USER')")
     @DeleteMapping("/{tripId}")
     public void deleteTrip(@PathVariable("tripId") Integer tripId) {
         tripService.deleteTripById(tripId);

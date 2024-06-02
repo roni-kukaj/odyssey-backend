@@ -122,17 +122,20 @@ public class PostService {
             changes = true;
         }
 
-        if (!changes) {
-            throw new RequestValidationException("no data changes");
-        }
-
         try {
-            File file = FileService.convertFile(dto.file());
-            String newUrl = cloudinaryService.uploadImage(file, "posts");
-            cloudinaryService.deleteImageByUrl(existingPost.getImage());
+            if (dto.file() != null) {
+                File file = FileService.convertFile(dto.file());
+                String newUrl = cloudinaryService.uploadImage(file, "posts");
+                cloudinaryService.deleteImageByUrl(existingPost.getImage());
                 existingPost.setImage(newUrl);
+                changes = true;
+            }
         } catch (IOException e) {
             throw new UnprocessableEntityException("image could not be processed");
+        }
+
+        if (!changes) {
+            throw new RequestValidationException("no data changes");
         }
 
         postDao.updatePost(existingPost);

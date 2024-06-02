@@ -80,17 +80,20 @@ public class LocationService {
             changes = true;
         }
 
-        if (!changes) {
-            throw new RequestValidationException("no data changes found");
-        }
-
         try {
-            File file = FileService.convertFile(dto.file());
-            String newUrl = cloudinaryService.uploadImage(file, "locations");
-            cloudinaryService.deleteImageByUrl(location.getPicture());
-            location.setPicture(newUrl);
+            if (dto.file() != null) {
+                File file = FileService.convertFile(dto.file());
+                String newUrl = cloudinaryService.uploadImage(file, "locations");
+                cloudinaryService.deleteImageByUrl(location.getPicture());
+                location.setPicture(newUrl);
+                changes = true;
+            }
         } catch (IOException e) {
             throw new UnprocessableEntityException("image could not be processed");
+        }
+
+        if (!changes) {
+            throw new RequestValidationException("no data changes found");
         }
 
         locationDao.updateLocation(location);

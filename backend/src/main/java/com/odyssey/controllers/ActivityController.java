@@ -47,7 +47,7 @@ public class ActivityController {
         activityService.deleteActivity(activityId);
     }
 
-    @Secured({"ADMIN", "MAINADMIN"})
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MAINADMIN')")
     @PutMapping("/{activityId}")
     public void updateActivity(@PathVariable("activityId") Integer activityId, @RequestBody ActivityUpdateRequest request) {
         activityService.updateActivity(activityId, request);

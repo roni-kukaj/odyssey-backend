@@ -62,7 +62,9 @@ public class SecurityFilterChainConfig {
                         "/api/v1/recommendations",
                         "/api/v1/recommendations/**",
                         "/api/v1/locations",
-                        "/api/v1/locations/**"
+                        "/api/v1/locations/**",
+                        "/api/v1/items",
+                        "/api/v1/items/**"
                 )
                 .permitAll()
                 .requestMatchers(

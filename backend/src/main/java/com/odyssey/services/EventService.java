@@ -106,19 +106,24 @@ public class EventService {
             event.setLocation(location);
             changes = true;
         }
-        if (!changes) {
-            throw new RequestValidationException("no data changes found");
-        }
 
         try {
-            File file = FileService.convertFile(dto.file());
-            String newUrl = cloudinaryService.uploadImage(file, "events");
-            cloudinaryService.deleteImageByUrl(event.getImage());
-            event.setImage(newUrl);
+            if (dto.file() != null) {
+                File file = FileService.convertFile(dto.file());
+                String newUrl = cloudinaryService.uploadImage(file, "events");
+                cloudinaryService.deleteImageByUrl(event.getImage());
+                event.setImage(newUrl);
+                changes = true;
+            }
         }
         catch (IOException e) {
             throw new UnprocessableEntityException("image could not be processed");
         }
+
+        if (!changes) {
+            throw new RequestValidationException("no data changes found");
+        }
+
         eventDao.updateEvent(event);
     }
 }

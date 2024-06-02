@@ -11,6 +11,7 @@ import java.util.function.Function;
 public class PostDtoMapper implements Function<Post, PostDto> {
 
     private final TripDtoMapper tripDtoMapper = new TripDtoMapper();
+    private final UserDtoMapper userDtoMapper = new UserDtoMapper();
 
     @Override
     public PostDto apply(Post post) {
@@ -19,6 +20,7 @@ public class PostDtoMapper implements Function<Post, PostDto> {
                 post.getText(),
                 post.getImage(),
                 post.getPostedTime(),
+                userDtoMapper.apply(post.getUser()),
                 tripDtoMapper.apply(post.getTrip())
         );
     }

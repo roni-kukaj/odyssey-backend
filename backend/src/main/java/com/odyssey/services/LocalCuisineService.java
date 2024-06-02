@@ -105,18 +105,22 @@ public class LocalCuisineService {
             changes = true;
         }
 
-        if (!changes) {
-            throw new RequestValidationException("no data changes");
-        }
 
         try {
-            File file = FileService.convertFile(dto.file());
-            String newUrl = cloudinaryService.uploadImage(file, "localCuisine");
-            cloudinaryService.deleteImageByUrl(existingLocalCuisine.getImage());
-            existingLocalCuisine.setImage(newUrl);
+            if (dto.file() != null) {
+                File file = FileService.convertFile(dto.file());
+                String newUrl = cloudinaryService.uploadImage(file, "localCuisine");
+                cloudinaryService.deleteImageByUrl(existingLocalCuisine.getImage());
+                existingLocalCuisine.setImage(newUrl);
+                changes = true;
+            }
         }
         catch (IOException e) {
             throw new UnprocessableEntityException("image could not be processed");
+        }
+
+        if (!changes) {
+            throw new RequestValidationException("no data changes");
         }
 
         localCuisineDao.updateLocalCuisine(existingLocalCuisine);

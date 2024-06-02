@@ -106,21 +106,26 @@ public class NewsService {
             existingNews.setTitle(dto.title());
             changes = true;
         }
-        if (dto.description() != null && !dto.description().equals(existingNews.getDescription())){
+        if (dto.description() != null && !dto.description().equals(existingNews.getDescription())) {
             existingNews.setDescription(dto.description());
             changes = true;
         }
-        if (!changes) {
-            throw new RequestValidationException("no changes were found");
-        }
 
         try {
-            File file = FileService.convertFile(dto.file());
-            String newUrl = cloudinaryService.uploadImage(file, "news");
-            cloudinaryService.deleteImageByUrl(existingNews.getPicture());
-            existingNews.setPicture(newUrl);
+            if (dto.file() != null) {
+                File file = FileService.convertFile(dto.file());
+                String newUrl = cloudinaryService.uploadImage(file, "news");
+                cloudinaryService.deleteImageByUrl(existingNews.getPicture());
+                existingNews.setPicture(newUrl);
+                changes = true;
+            }
+
         } catch (IOException e) {
             throw new UnprocessableEntityException("image could not be processed");
+        }
+
+        if (!changes) {
+            throw new RequestValidationException("no changes were found");
         }
 
         newsDao.updateNews(existingNews);
