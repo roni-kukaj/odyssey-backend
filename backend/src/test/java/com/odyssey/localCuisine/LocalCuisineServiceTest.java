@@ -1,19 +1,28 @@
 package com.odyssey.localCuisine;
 
-
-
+import com.odyssey.services.cloudinary.CloudinaryService;
+import com.odyssey.daos.LocalCuisineDao;
+import com.odyssey.dtos.LocalCuisineRegistrationDto;
+import com.odyssey.dtos.LocalCuisineUpdateDto;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.RequestValidationException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
+import com.odyssey.models.Location;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.LocalCuisine;
+import com.odyssey.services.LocalCuisineService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,14 +37,21 @@ public class LocalCuisineServiceTest {
     private LocalCuisineDao localCuisineDao;
     @Mock
     private LocationDao locationDao;
+    @Mock
+    private CloudinaryService cloudinaryService;
+
+    private final String FILE_URL = "src/main/resources/images/test.png";
+    private Path path;
+    private byte[] content;
 
     private LocalCuisineService underTest;
 
     @BeforeEach
-    void setUp() {
-        underTest = new LocalCuisineService(localCuisineDao, locationDao);
+    void setUp() throws IOException {
+        underTest = new LocalCuisineService(localCuisineDao, locationDao, cloudinaryService);
+        path = Paths.get(FILE_URL);
+        content = Files.readAllBytes(path);
     }
-
 
     @Test
     void getAllLocalCuisines() {
@@ -77,7 +93,7 @@ public class LocalCuisineServiceTest {
         // Then
         assertThatThrownBy(() -> underTest.getLocalCuisine(id))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Local Cuisine with id [%s] not found".formatted(id));
+                .hasMessage("local cuisine with id [%s] not found".formatted(id));
     }
 
     @Test
@@ -106,14 +122,22 @@ public class LocalCuisineServiceTest {
         location.setId(locationId);
         String name = "YourName";
 
-        LocalCuisineRegistrationRequest request = new LocalCuisineRegistrationRequest(
-                name, "Description",  "pic.jpg", locationId
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
         );
+
+       LocalCuisineRegistrationDto dto = new LocalCuisineRegistrationDto(
+               name, "", image, locationId
+       );
+
         when(locationDao.selectLocationById(locationId)).thenReturn(Optional.of(location));
         when(localCuisineDao.existsLocalCuisineByNameAndLocationId(name, locationId)).thenReturn(false);
 
         // When
-        underTest.addLocalCuisine(request);
+        underTest.addLocalCuisine(dto);
 
         // Then
         ArgumentCaptor<LocalCuisine> localCuisineArgumentCaptor = ArgumentCaptor.forClass(LocalCuisine.class);
@@ -122,10 +146,10 @@ public class LocalCuisineServiceTest {
         LocalCuisine capturedLocalCuisine = localCuisineArgumentCaptor.getValue();
 
         assertThat(capturedLocalCuisine.getId()).isNull();
-        assertThat(capturedLocalCuisine.getName()).isEqualTo(request.name());
-        assertThat(capturedLocalCuisine.getDescription()).isEqualTo(request.description());
-        assertThat(capturedLocalCuisine.getImage()).isEqualTo(request.image());
-        assertThat(capturedLocalCuisine.getLocation().getId()).isEqualTo(request.locationId());
+        assertThat(capturedLocalCuisine.getName()).isEqualTo(dto.name());
+        assertThat(capturedLocalCuisine.getDescription()).isEqualTo(dto.description());
+        assertThat(capturedLocalCuisine.getImage()).isEqualTo(null);
+        assertThat(capturedLocalCuisine.getLocation().getId()).isEqualTo(dto.locationId());
 
     }
 
@@ -137,16 +161,24 @@ public class LocalCuisineServiceTest {
         location.setId(locationId);
         String name = "YourName";
 
-        LocalCuisineRegistrationRequest request = new LocalCuisineRegistrationRequest(
-                name, "Description", "image.jpg", locationId
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
         );
+
+        LocalCuisineRegistrationDto dto = new LocalCuisineRegistrationDto(
+                name, "", image, locationId
+        );
+
         when(locationDao.selectLocationById(locationId)).thenReturn(Optional.empty());
         when(localCuisineDao.existsLocalCuisineByNameAndLocationId(name, locationId)).thenReturn(false);
 
         // When
-        assertThatThrownBy(() -> underTest.addLocalCuisine(request))
+        assertThatThrownBy(() -> underTest.addLocalCuisine(dto))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("location with id [%s] not found".formatted(request.locationId()));
+                .hasMessage("location with id [%s] not found".formatted(dto.locationId()));
 
         // Then
         verify(localCuisineDao, never()).insertLocalCuisine(any());
@@ -160,16 +192,23 @@ public class LocalCuisineServiceTest {
         location.setId(locationId);
         String name = "YourName";
 
-        LocalCuisineRegistrationRequest request = new LocalCuisineRegistrationRequest(
-                name, "Description", "pic.jpg",  locationId
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
+        );
+
+        LocalCuisineRegistrationDto dto = new LocalCuisineRegistrationDto(
+                name, "", image, locationId
         );
         lenient().when(locationDao.selectLocationById(locationId)).thenReturn(Optional.of(location));
         when(localCuisineDao.existsLocalCuisineByNameAndLocationId(name, locationId)).thenReturn(true);
 
         // When
-        assertThatThrownBy(() -> underTest.addLocalCuisine(request))
+        assertThatThrownBy(() -> underTest.addLocalCuisine(dto))
                 .isInstanceOf(DuplicateResourceException.class)
-                .hasMessage("Local Cuisine already exists");
+                .hasMessage("local cuisine already exists");
 
         // Then
         verify(localCuisineDao, never()).insertLocalCuisine(any());
@@ -197,7 +236,7 @@ public class LocalCuisineServiceTest {
         // When
         assertThatThrownBy(() -> underTest.deleteLocalCuisine(id))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Local Cuisine with id [%s] not found".formatted(id));
+                .hasMessage("local cuisine with id [%s] not found".formatted(id));
 
         // Then
         verify(localCuisineDao, never()).deleteLocalCuisineById(any());
@@ -216,7 +255,7 @@ public class LocalCuisineServiceTest {
                 id,
                 "YourName",
                 "Description",
-                "pic.jpg",
+                null,
                 l1
         );
 
@@ -224,21 +263,23 @@ public class LocalCuisineServiceTest {
 
         String newName = "Name";
         String newDesc = "Desc";
-        String newImage = "image.jpg";
 
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
+        );
 
-        LocalCuisineUpdateRequest request = new LocalCuisineUpdateRequest(
-                newName,
-                newDesc,
-                newImage,
-                l2.getId()
+        LocalCuisineUpdateDto dto = new LocalCuisineUpdateDto(
+                newName, newDesc, l2.getId(), image
         );
 
         when(locationDao.selectLocationById(l2.getId())).thenReturn(Optional.of(l2));
-        when(localCuisineDao.existsLocalCuisineByNameAndLocationId(request.name(), request.locationId())).thenReturn(false);
+        when(localCuisineDao.existsLocalCuisineByNameAndLocationId(dto.name(), dto.locationId())).thenReturn(false);
 
         // When
-        underTest.updateLocalCuisine(id, request);
+        underTest.updateLocalCuisine(id, dto);
 
         // Then
         ArgumentCaptor<LocalCuisine> localCuisineArgumentCaptor = ArgumentCaptor.forClass(LocalCuisine.class);
@@ -247,10 +288,10 @@ public class LocalCuisineServiceTest {
         LocalCuisine capturedLocalCuisine = localCuisineArgumentCaptor.getValue();
 
         assertThat(capturedLocalCuisine.getId()).isEqualTo(id);
-        assertThat(capturedLocalCuisine.getName()).isEqualTo(request.name());
-        assertThat(capturedLocalCuisine.getDescription()).isEqualTo(request.description());
-        assertThat(capturedLocalCuisine.getImage()).isEqualTo(request.image());
-        assertThat(capturedLocalCuisine.getLocation().getId()).isEqualTo(request.locationId());
+        assertThat(capturedLocalCuisine.getName()).isEqualTo(dto.name());
+        assertThat(capturedLocalCuisine.getDescription()).isEqualTo(dto.description());
+        assertThat(capturedLocalCuisine.getImage()).isEqualTo(null);
+        assertThat(capturedLocalCuisine.getLocation().getId()).isEqualTo(dto.locationId());
 
     }
 
@@ -272,18 +313,17 @@ public class LocalCuisineServiceTest {
 
         when(localCuisineDao.selectLocalCuisineById(id)).thenReturn(Optional.of(localCuisine));
 
-        LocalCuisineUpdateRequest request = new LocalCuisineUpdateRequest(
+        LocalCuisineUpdateDto dto = new LocalCuisineUpdateDto(
                 localCuisine.getName(),
                 localCuisine.getDescription(),
-                localCuisine.getImage(),
-                l1.getId()
+                l1.getId(),
+                null
         );
 
         when(locationDao.selectLocationById(l1.getId())).thenReturn(Optional.of(l1));
-        when(localCuisineDao.existsLocalCuisineByNameAndLocationId(request.name(), request.locationId())).thenReturn(false);
 
         // When
-        assertThatThrownBy(() -> underTest.updateLocalCuisine(id, request))
+        assertThatThrownBy(() -> underTest.updateLocalCuisine(id, dto))
                 .isInstanceOf(RequestValidationException.class)
                 .hasMessage("no data changes");
 

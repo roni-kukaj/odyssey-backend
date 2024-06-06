@@ -1,7 +1,10 @@
 package com.odyssey.localCuisine;
 
 
-import com.odyssey.locations.Location;
+import com.odyssey.models.Location;
+import com.odyssey.models.LocalCuisine;
+import com.odyssey.repositories.LocalCuisineRepository;
+import com.odyssey.services.data.LocalCuisineJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

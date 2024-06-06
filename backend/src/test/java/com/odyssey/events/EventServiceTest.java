@@ -1,17 +1,28 @@
 package com.odyssey.events;
 
 
+import com.odyssey.services.cloudinary.CloudinaryService;
+import com.odyssey.daos.EventDao;
+import com.odyssey.dtos.EventRegistrationDto;
+import com.odyssey.dtos.EventUpdateDto;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
+import com.odyssey.models.Location;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.Event;
+import com.odyssey.services.EventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -26,22 +37,27 @@ public class EventServiceTest {
     private EventDao eventDao;
     @Mock
     private LocationDao locationDao;
+    @Mock
+    private CloudinaryService cloudinaryService;
+
+    private final String FILE_URL = "src/main/resources/images/test.png";
+    private Path path;
+    private byte[] content;
+
     private EventService underTest;
 
     @BeforeEach
-    void setUp(){
-        underTest = new EventService(eventDao,locationDao);
+    void setUp() throws IOException {
+        underTest = new EventService(eventDao,locationDao, cloudinaryService);
+        path = Paths.get(FILE_URL);
+        content = Files.readAllBytes(path);
     }
-
 
     @Test
     void getAllEvents() {
         underTest.getAllEvents();
         verify(eventDao).selectAllEvents();
     }
-
-
-
 
     @Test
     void testGetEventById() {
@@ -56,7 +72,6 @@ public class EventServiceTest {
         Event actual = underTest.getEvent(id);
         assertThat(actual).isEqualTo(event);
     }
-
 
     @Test
     void willThrowWhenGetEventReturnEmptyOptional() {
@@ -76,26 +91,35 @@ public class EventServiceTest {
         location.setId(1);
         Double cost = 75.0;
         Integer duration = 2;
-        String image="Picture 1";
+
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
+        );
+
         when(eventDao.existsEventByName(name)).thenReturn(false);
         when(locationDao.selectLocationById(1)).thenReturn(Optional.of(location));
-        EventRegistrationRequest eventRegistrationRequest = new EventRegistrationRequest(
-                name,description,image,date,cost,duration,location.getId()
+
+        EventRegistrationDto dto = new EventRegistrationDto (
+                name, description, image, date, cost, duration, location.getId()
         );
-        underTest.addEvent(eventRegistrationRequest);
+
+        underTest.addEvent(dto);
 
         ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(Event.class);
         verify(eventDao).insertEvent(eventArgumentCaptor.capture());
 
         Event capturedEvent = eventArgumentCaptor.getValue();
         assertThat(capturedEvent.getId()).isNull();
-        assertThat(capturedEvent.getName()).isEqualTo(eventRegistrationRequest.name());
-        assertThat(capturedEvent.getDescription()).isEqualTo(eventRegistrationRequest.description());
-        assertThat(capturedEvent.getImage()).isEqualTo(eventRegistrationRequest.image());
-        assertThat(capturedEvent.getDuration()).isEqualTo(eventRegistrationRequest.duration());
-        assertThat(capturedEvent.getDate()).isEqualTo(eventRegistrationRequest.date());
-        assertThat(capturedEvent.getLocation().getId()).isEqualTo(eventRegistrationRequest.location_id());
-        assertThat(capturedEvent.getCost()).isEqualTo(eventRegistrationRequest.cost());
+        assertThat(capturedEvent.getName()).isEqualTo(dto.name());
+        assertThat(capturedEvent.getDescription()).isEqualTo(dto.description());
+        assertThat(capturedEvent.getImage()).isEqualTo(null);
+        assertThat(capturedEvent.getDuration()).isEqualTo(dto.duration());
+        assertThat(capturedEvent.getDate()).isEqualTo(dto.date());
+        assertThat(capturedEvent.getLocation().getId()).isEqualTo(dto.locationId());
+        assertThat(capturedEvent.getCost()).isEqualTo(dto.cost());
 
     }
 
@@ -109,12 +133,19 @@ public class EventServiceTest {
         location.setId(1);
         Double cost = 75.0;
         Integer duration = 2;
-        String image="Picture 1";
-        when(eventDao.existsEventByName(name)).thenReturn(true);
-        EventRegistrationRequest eventRegistrationRequest = new EventRegistrationRequest(
-                name,description,image,date,cost,duration,location.getId()
+
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
         );
-        assertThatThrownBy(()-> underTest.addEvent(eventRegistrationRequest)).isInstanceOf(DuplicateResourceException.class).hasMessage("event already exists");
+
+        when(eventDao.existsEventByName(name)).thenReturn(true);
+        EventRegistrationDto dto = new EventRegistrationDto (
+                name, description, image, date, cost, duration, location.getId()
+        );
+        assertThatThrownBy(()-> underTest.addEvent(dto)).isInstanceOf(DuplicateResourceException.class).hasMessage("event already exists");
 
     }
 
@@ -145,9 +176,17 @@ public class EventServiceTest {
         location.setId(1);
         Double cost = 75.0;
         Integer duration = 2;
-        String image="Picture 1";
 
-        Event event = new Event(name,description,image,date,cost,duration,location);
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
+        );
+
+        Event event = new Event(
+                name, description, "pic", date, cost, duration, location
+        );
         when(eventDao.selectEventById(id)).thenReturn(Optional.of(event));
 
         String newEvent = "Thanksgiving Day";
@@ -155,28 +194,29 @@ public class EventServiceTest {
         LocalDate newDate = LocalDate.of(2024,11,29);
         Location newlocation = new Location();
         newlocation.setId(2);
-        Double newcost = 78.0;
-        Integer newduration = 1;
-        String newimage = "Image 1";
+        Double newCost = 78.0;
+        Integer newDuration = 1;
         when(locationDao.selectLocationById(2)).thenReturn(Optional.of(newlocation));
 
-        EventUpdateRequest eventUpdateRequest = new EventUpdateRequest(newEvent,newDescription,newimage,newDate,newcost,newduration,newlocation.getId());
+        EventUpdateDto dto =
+                new EventUpdateDto(
+                        newEvent, newDescription, newDate, newCost, newDuration, newlocation.getId(), image
+                );
+
         lenient().when(eventDao.existsEventByName(newEvent)).thenReturn(false);
-        underTest.updateEvent(id, eventUpdateRequest);
+        underTest.updateEventInformation(id, dto);
 
         ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(Event.class);
 
         verify(eventDao).updateEvent(eventArgumentCaptor.capture());
 
         Event capturedEvent = eventArgumentCaptor.getValue();
-        assertThat(capturedEvent.getName()).isEqualTo(eventUpdateRequest.name());
-        assertThat(capturedEvent.getDescription()).isEqualTo(eventUpdateRequest.description());
-        assertThat(capturedEvent.getImage()).isEqualTo(eventUpdateRequest.image());
-        assertThat(capturedEvent.getDuration()).isEqualTo(eventUpdateRequest.duration());
-        assertThat(capturedEvent.getDate()).isEqualTo(eventUpdateRequest.date());
-        assertThat(capturedEvent.getLocation().getId()).isEqualTo(eventUpdateRequest.location_id());
-        assertThat(capturedEvent.getCost()).isEqualTo(eventUpdateRequest.cost());
-
-
+        assertThat(capturedEvent.getName()).isEqualTo(dto.name());
+        assertThat(capturedEvent.getDescription()).isEqualTo(dto.description());
+        assertThat(capturedEvent.getImage()).isEqualTo(null);
+        assertThat(capturedEvent.getDuration()).isEqualTo(dto.duration());
+        assertThat(capturedEvent.getDate()).isEqualTo(dto.date());
+        assertThat(capturedEvent.getLocation().getId()).isEqualTo(dto.locationId());
+        assertThat(capturedEvent.getCost()).isEqualTo(dto.cost());
     }
 }

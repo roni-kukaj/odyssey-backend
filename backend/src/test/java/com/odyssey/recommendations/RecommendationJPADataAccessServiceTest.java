@@ -1,8 +1,10 @@
 package com.odyssey.recommendations;
 
-import com.odyssey.activities.Activity;
-import com.odyssey.user.User;
-import org.checkerframework.checker.units.qual.A;
+import com.odyssey.models.Activity;
+import com.odyssey.models.Recommendation;
+import com.odyssey.models.User;
+import com.odyssey.repositories.RecommendationRepository;
+import com.odyssey.services.data.RecommendationJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

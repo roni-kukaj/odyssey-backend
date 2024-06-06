@@ -1,11 +1,16 @@
 package com.odyssey.plans;
 
-import com.odyssey.activities.Activity;
-import com.odyssey.exception.RequestValidationException;
-import com.odyssey.locations.Location;
-import com.odyssey.locations.LocationDao;
-import com.odyssey.user.User;
-import com.odyssey.user.UserDao;
+import com.odyssey.daos.PlanDao;
+import com.odyssey.dtos.PlanDto;
+import com.odyssey.dtos.PlanRegistrationRequest;
+import com.odyssey.dtos.PlanUpdateRequest;
+import com.odyssey.models.Location;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.models.Plan;
+import com.odyssey.models.User;
+import com.odyssey.daos.UserDao;
+import com.odyssey.services.PlanService;
+import com.odyssey.services.utils.PlanDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.odyssey.exception.DuplicateResourceException;
@@ -16,14 +21,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -38,10 +42,11 @@ class PlanServiceTest {
     private UserDao userDao;
 
     private PlanService underTest;
+    private final PlanDtoMapper planDtoMapper = new PlanDtoMapper();
 
     @BeforeEach
     void setUp() {
-        underTest = new PlanService(planDao, userDao, locationDao);
+        underTest = new PlanService(planDao, userDao, locationDao, planDtoMapper);
     }
 
     @Test
@@ -61,16 +66,17 @@ class PlanServiceTest {
                 id,
                 new User(),
                 new Location(),
-                new Date()
+                LocalDate.now()
         );
+        PlanDto planDto = planDtoMapper.apply(plan);
 
         when(planDao.selectPlanById(id)).thenReturn(Optional.of(plan));
 
         // When
-        Plan actual = underTest.getPlan(id);
+        PlanDto actual = underTest.getPlan(id);
 
         // Then
-        assertThat(actual).isEqualTo(plan);
+        assertThat(actual).isEqualTo(planDto);
     }
 
     @Test
@@ -127,7 +133,7 @@ class PlanServiceTest {
         location.setId(locationId);
 
         PlanRegistrationRequest request = new PlanRegistrationRequest(
-                userId, locationId, new Date()
+                userId, locationId, LocalDate.now()
         );
         when(planDao.existsPlanByUserIdAndLocationId(userId, locationId)).thenReturn(false);
         when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
@@ -159,7 +165,7 @@ class PlanServiceTest {
         location.setId(locationId);
 
         PlanRegistrationRequest request = new PlanRegistrationRequest(
-                userId, locationId, new Date()
+                userId, locationId, LocalDate.now()
         );
         lenient().when(planDao.existsPlanByUserIdAndLocationId(userId, locationId)).thenReturn(false);
         when(userDao.selectUserById(userId)).thenReturn(Optional.empty());
@@ -185,7 +191,7 @@ class PlanServiceTest {
         location.setId(locationId);
 
         PlanRegistrationRequest request = new PlanRegistrationRequest(
-                userId, locationId, new Date()
+                userId, locationId, LocalDate.now()
         );
         lenient().when(planDao.existsPlanByUserIdAndLocationId(userId, locationId)).thenReturn(false);
         lenient().when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
@@ -211,7 +217,7 @@ class PlanServiceTest {
         location.setId(locationId);
 
         PlanRegistrationRequest request = new PlanRegistrationRequest(
-                userId, locationId, new Date()
+                userId, locationId, LocalDate.now()
         );
         when(planDao.existsPlanByUserIdAndLocationId(userId, locationId)).thenReturn(true);
         lenient().when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
@@ -292,7 +298,7 @@ class PlanServiceTest {
         int locationId = 1;
         Location location = new Location();
         location.setId(locationId);
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01");
+        LocalDate date = LocalDate.now();
         Plan plan = new Plan(id, user, location, date);
 
         when(planDao.selectPlanById(id)).thenReturn(Optional.of(plan));
@@ -300,12 +306,11 @@ class PlanServiceTest {
         int newLocationId = 1;
         Location newLocation = new Location();
         newLocation.setId(newLocationId);
-        Date newDate = new SimpleDateFormat("yyyy-MM-dd").parse("2001-01-01");
+        LocalDate newDate = date.plus(90, ChronoUnit.DAYS);
         PlanUpdateRequest request = new PlanUpdateRequest(
-                userId, newLocationId, newDate
+                newLocationId, newDate
         );
 
-        when(userDao.selectUserById(userId)).thenReturn(Optional.of(user));
         when(locationDao.selectLocationById(newLocationId)).thenReturn(Optional.of(location));
         lenient().when(planDao.existsPlanByUserIdAndLocationId(userId, newLocationId)).thenReturn(false);
 
@@ -319,7 +324,6 @@ class PlanServiceTest {
         Plan capturedPlan = activityArgumentCaptor.getValue();
 
         assertThat(capturedPlan.getId()).isEqualTo(id);
-        assertThat(capturedPlan.getUser().getId()).isEqualTo(request.userId());
         assertThat(capturedPlan.getLocation().getId()).isEqualTo(request.locationId());
         assertThat(capturedPlan.getVisitDate()).isEqualTo(request.date());
 

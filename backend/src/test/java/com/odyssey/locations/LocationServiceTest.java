@@ -1,19 +1,29 @@
 package com.odyssey.locations;
 
+import com.odyssey.services.cloudinary.CloudinaryService;
+import com.odyssey.daos.LocationDao;
+import com.odyssey.dtos.LocationRegistrationDto;
+import com.odyssey.dtos.LocationUpdateDto;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
+import com.odyssey.models.Location;
+import com.odyssey.services.LocationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -22,11 +32,20 @@ class LocationServiceTest {
 
     @Mock
     private LocationDao locationDao;
+    @Mock
+    private CloudinaryService cloudinaryService;
+
+    private final String FILE_URL = "src/main/resources/images/test.png";
+    private Path path;
+    private byte[] content;
+
     private LocationService underTest;
 
     @BeforeEach
-    void setUp() {
-        underTest = new LocationService(locationDao);
+    void setUp() throws IOException {
+        underTest = new LocationService(cloudinaryService, locationDao);
+        path = Paths.get(FILE_URL);
+        content = Files.readAllBytes(path);
     }
 
     @Test
@@ -79,14 +98,19 @@ class LocationServiceTest {
         String country = "Kosovo";
         when(locationDao.existsLocationByCityAndCountry(city, country)).thenReturn(false);
 
-        LocationRegistrationRequest request = new LocationRegistrationRequest(
-                city,
-                country,
-                "Picture 1"
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
+        );
+
+        LocationRegistrationDto dto = new LocationRegistrationDto(
+                city, country, image
         );
 
         // When
-        underTest.addLocation(request);
+        underTest.addLocation(dto);
 
         // Then
         ArgumentCaptor<Location> locationArgumentCaptor = ArgumentCaptor.forClass(Location.class);
@@ -95,9 +119,9 @@ class LocationServiceTest {
         Location capturedLocation = locationArgumentCaptor.getValue();
 
         assertThat(capturedLocation.getId()).isNull();
-        assertThat(capturedLocation.getCity()).isEqualTo(request.city());
-        assertThat(capturedLocation.getCountry()).isEqualTo(request.country());
-        assertThat(capturedLocation.getPicture()).isEqualTo(request.picture());
+        assertThat(capturedLocation.getCity()).isEqualTo(dto.city());
+        assertThat(capturedLocation.getCountry()).isEqualTo(dto.country());
+        assertThat(capturedLocation.getPicture()).isEqualTo(null);
 
     }
 
@@ -108,14 +132,19 @@ class LocationServiceTest {
         String country = "Kosovo";
         when(locationDao.existsLocationByCityAndCountry(city, country)).thenReturn(true);
 
-        LocationRegistrationRequest request = new LocationRegistrationRequest(
-                city,
-                country,
-                "Picture 1"
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
+        );
+
+        LocationRegistrationDto dto = new LocationRegistrationDto(
+                city, country, image
         );
 
         // When
-        assertThatThrownBy(() -> underTest.addLocation(request))
+        assertThatThrownBy(() -> underTest.addLocation(dto))
                 .isInstanceOf(DuplicateResourceException.class)
                 .hasMessage("location already exists");
     }
@@ -165,15 +194,21 @@ class LocationServiceTest {
 
         String newCity = "New York";
         String newCountry = "USA";
-        LocationUpdateRequest request = new LocationUpdateRequest(
-                newCity,
-                newCountry,
-                "Picture 2"
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "test.png",
+                "image/png",
+                content
         );
+
+        LocationUpdateDto dto = new LocationUpdateDto(
+                newCity, newCountry, image
+        );
+
         lenient().when(locationDao.existsLocationByCityAndCountry(newCity, newCountry)).thenReturn(false);
 
         // When
-        underTest.updateLocation(id, request);
+        underTest.updateLocation(id, dto);
 
         // Then
         ArgumentCaptor<Location> locationArgumentCaptor = ArgumentCaptor.forClass(Location.class);
@@ -181,9 +216,9 @@ class LocationServiceTest {
 
         Location capturedLocation = locationArgumentCaptor.getValue();
 
-        assertThat(capturedLocation.getCity()).isEqualTo(request.city());
-        assertThat(capturedLocation.getCountry()).isEqualTo(request.country());
-        assertThat(capturedLocation.getPicture()).isEqualTo(request.picture());
+        assertThat(capturedLocation.getCity()).isEqualTo(dto.city());
+        assertThat(capturedLocation.getCountry()).isEqualTo(dto.country());
+        assertThat(capturedLocation.getPicture()).isEqualTo(null);
     }
 
 }

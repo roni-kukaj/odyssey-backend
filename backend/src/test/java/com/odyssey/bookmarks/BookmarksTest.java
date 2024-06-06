@@ -1,7 +1,8 @@
 package com.odyssey.bookmarks;
 
-import com.odyssey.locations.Location;
-import com.odyssey.user.User;
+import com.odyssey.models.Location;
+import com.odyssey.models.Bookmarks;
+import com.odyssey.models.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,9 +1,18 @@
 package com.odyssey.user;
 
+import com.odyssey.dtos.UserUpdateDto;
+import com.odyssey.services.cloudinary.CloudinaryService;
+import com.odyssey.daos.UserDao;
+import com.odyssey.dtos.UserDto;
+import com.odyssey.dtos.UserRegistrationRequest;
+import com.odyssey.dtos.UserUpdateRequest;
 import com.odyssey.exception.DuplicateResourceException;
 import com.odyssey.exception.ResourceNotFoundException;
-import com.odyssey.role.Role;
-import com.odyssey.role.RoleDao;
+import com.odyssey.models.Role;
+import com.odyssey.models.User;
+import com.odyssey.daos.RoleDao;
+import com.odyssey.services.UserService;
+import com.odyssey.services.utils.UserDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,12 +20,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -26,11 +35,16 @@ class UserServiceTest {
     @Mock
     private UserDao userDao;
     @Mock private RoleDao roleDao;
+    @Mock
+    private CloudinaryService cloudinaryService;
+    @Mock
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private UserService underTest;
+    private final UserDtoMapper userDtoMapper = new UserDtoMapper();
 
     @BeforeEach
     void setUp() {
-        underTest = new UserService(userDao, roleDao);
+        underTest = new UserService(userDao, roleDao, cloudinaryService, passwordEncoder, userDtoMapper);
     }
 
     @Test
@@ -58,11 +72,13 @@ class UserServiceTest {
 
         when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
 
+        UserDto dto = userDtoMapper.apply(user);
+
         // When
-        User actual = underTest.getUser(id);
+        UserDto actual = underTest.getUser(id);
 
         // Then
-        assertThat(actual).isEqualTo(user);
+        assertThat(actual).isEqualTo(dto);
     }
 
     @Test
@@ -89,9 +105,7 @@ class UserServiceTest {
                 "Filan Fisteku",
                 "filanfisteku",
                 "filanfisteku@gmail.com",
-                "passi",
-                "avatar1",
-                1
+                "passi"
         );
 
         Role role = new Role(1, "user"); // Create a mock Role object
@@ -110,8 +124,6 @@ class UserServiceTest {
         assertThat(capturedUser.getFullname()).isEqualTo(request.fullname());
         assertThat(capturedUser.getUsername()).isEqualTo(request.username());
         assertThat(capturedUser.getEmail()).isEqualTo(request.email());
-        assertThat(capturedUser.getPassword()).isEqualTo(request.password());
-        assertThat(capturedUser.getRole().getId()).isEqualTo(request.role_id());
     }
 
     @Test
@@ -125,9 +137,7 @@ class UserServiceTest {
                 "Filan Fisteku",
                 "filanfisteku",
                 "filani@gmail.com",
-                "passi",
-                "avatar1",
-                1
+                "passi"
         );
 
         // When
@@ -150,9 +160,7 @@ class UserServiceTest {
                 "Filan Fisteku",
                 "filanfisteku",
                 "filanfisteku@gmail.com",
-                "passi",
-                "avatar1",
-                1
+                "passi"
         );
 
         // When
@@ -209,18 +217,15 @@ class UserServiceTest {
 
         when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
 
-        String newEmail = "fisteku@gmail.com";
+        String password = "fisteku";
         String newUsername = "ff";
-        UserUpdateRequest request = new UserUpdateRequest(
+        UserUpdateDto request = new UserUpdateDto(
                 "FF",
                 newUsername,
-                newEmail,
-                "password",
-                "avatar1",
-                1
+                password,
+                null
         );
 
-        when(userDao.existsUserByEmail(newEmail)).thenReturn(false);
         when(userDao.existsUserByUsername(newUsername)).thenReturn(false);
 
         // When
@@ -234,9 +239,7 @@ class UserServiceTest {
 
         assertThat(capturedUser.getFullname()).isEqualTo(request.fullname());
         assertThat(capturedUser.getUsername()).isEqualTo(request.username());
-        assertThat(capturedUser.getEmail()).isEqualTo(request.email());
         assertThat(capturedUser.getPassword()).isEqualTo(request.password());
-        assertThat(capturedUser.getRole().getId()).isEqualTo(request.role_id());
     }
 
 }

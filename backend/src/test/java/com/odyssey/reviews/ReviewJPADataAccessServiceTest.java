@@ -1,8 +1,10 @@
 package com.odyssey.reviews;
 
-import com.odyssey.activities.ActivityJPADataAccessService;
-import com.odyssey.locations.Location;
-import com.odyssey.user.User;
+import com.odyssey.models.Location;
+import com.odyssey.models.Review;
+import com.odyssey.models.User;
+import com.odyssey.repositories.ReviewRepository;
+import com.odyssey.services.data.ReviewJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,8 +26,6 @@ public class ReviewJPADataAccessServiceTest {
         autoCloseable = MockitoAnnotations.openMocks(this);
         reviewJPADataAccessService = new ReviewJPADataAccessService(reviewRepository);
     }
-
-
 
     @AfterEach
     void tearDown() throws Exception{

@@ -1,14 +1,15 @@
 package com.odyssey.follow;
 
-import com.odyssey.user.User;
-import org.junit.After;
+import com.odyssey.models.Follow;
+import com.odyssey.models.User;
+import com.odyssey.repositories.FollowRepository;
+import com.odyssey.services.data.FollowJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 class FollowJPADataAccessServiceTest {

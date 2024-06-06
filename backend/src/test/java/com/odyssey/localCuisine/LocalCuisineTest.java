@@ -1,6 +1,7 @@
 package com.odyssey.localCuisine;
 
-import com.odyssey.locations.Location;
+import com.odyssey.models.Location;
+import com.odyssey.models.LocalCuisine;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

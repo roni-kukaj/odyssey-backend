@@ -1,6 +1,9 @@
 package com.odyssey.news;
 
-import com.odyssey.user.User;
+import com.odyssey.models.News;
+import com.odyssey.models.User;
+import com.odyssey.repositories.NewsRepository;
+import com.odyssey.services.data.NewsJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,7 +56,7 @@ public class NewsJPADataAccessServiceTest {
     @Test
     void insertNews() {
 
-        News news = new News(new User(),"Title","Description","Picture");
+        News news = new News("Title","Description","Picture", new User());
         newsJPADataAccessService.insertNews(news);
         verify(newsRepository).save(news);
     }
@@ -76,7 +79,7 @@ public class NewsJPADataAccessServiceTest {
 
     @Test
     void updateNews() {
-        News news = new News(new User(),"title","description","picture");
+        News news = new News("title","description","picture", new User());
         newsJPADataAccessService.updateNews(news);
         verify(newsRepository).save(news);
     }

@@ -1,7 +1,9 @@
 package com.odyssey.events;
 
-import com.odyssey.locations.Location;
-import org.junit.jupiter.api.AfterAll;
+import com.odyssey.models.Location;
+import com.odyssey.models.Event;
+import com.odyssey.repositories.EventRepository;
+import com.odyssey.services.data.EventJPADataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

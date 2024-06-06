@@ -1,12 +1,12 @@
 package com.odyssey.plans;
 
-import com.odyssey.locations.Location;
-import com.odyssey.user.User;
+import com.odyssey.models.Location;
+import com.odyssey.models.Plan;
+import com.odyssey.models.User;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,7 +16,7 @@ public class PlanTest {
     void testPlanGettersAndSetters() throws ParseException {
         User user = new User();
         Location location = new Location();
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01");
+        LocalDate date = LocalDate.now();
         Plan plan = new Plan();
         plan.setId(1);
         plan.setUser(user);
