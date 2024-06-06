@@ -276,7 +276,6 @@ public class LocalCuisineServiceTest {
         );
 
         when(locationDao.selectLocationById(l2.getId())).thenReturn(Optional.of(l2));
-        when(localCuisineDao.existsLocalCuisineByNameAndLocationId(dto.name(), dto.locationId())).thenReturn(false);
 
         // When
         underTest.updateLocalCuisine(id, dto);
