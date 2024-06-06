@@ -120,7 +120,7 @@ class FollowServiceTest {
                 "filani@gmail.com",
                 "passi",
                 "avatar",
-                new Role(1, "user")
+                new Role(1, "USER")
         );
 
         User following = new User(
@@ -130,7 +130,7 @@ class FollowServiceTest {
                 "filani2@gmail.com",
                 "passi2",
                 "avatar2",
-                new Role(1, "user")
+                new Role(1, "USER")
         );
 
         when(followDao.existsFollowByFollowerIdAndFollowingId(1, 2)).thenReturn(false);
