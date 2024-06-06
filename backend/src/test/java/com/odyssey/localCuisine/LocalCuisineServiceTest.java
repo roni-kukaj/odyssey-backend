@@ -313,22 +313,14 @@ public class LocalCuisineServiceTest {
 
         when(localCuisineDao.selectLocalCuisineById(id)).thenReturn(Optional.of(localCuisine));
 
-        MockMultipartFile image = new MockMultipartFile(
-                "file",
-                "test.png",
-                "image/png",
-                content
-        );
-
         LocalCuisineUpdateDto dto = new LocalCuisineUpdateDto(
                 localCuisine.getName(),
                 localCuisine.getDescription(),
                 l1.getId(),
-                image
+                null
         );
 
         when(locationDao.selectLocationById(l1.getId())).thenReturn(Optional.of(l1));
-        when(localCuisineDao.existsLocalCuisineByNameAndLocationId(dto.name(), dto.locationId())).thenReturn(false);
 
         // When
         assertThatThrownBy(() -> underTest.updateLocalCuisine(id, dto))

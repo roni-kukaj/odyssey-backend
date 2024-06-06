@@ -16,6 +16,7 @@ public class PlanDtoMapper implements Function<Plan, PlanDto> {
     public PlanDto apply(Plan plan) {
         return new PlanDto(
                 plan.getId(),
+                plan.getVisitDate(),
                 userDtoMapper.apply(plan.getUser()),
                 plan.getLocation()
         );

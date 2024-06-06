@@ -42,9 +42,10 @@ public class UserController {
     public ResponseEntity<?> registerUser(@RequestBody UserRegistrationRequest request) {
         userService.addUser(request);
         String jwtToken = jwtUtil.issueToken(request.username(), "USER");
+        UserDto user = userService.getUserByUsername(request.username());
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, jwtToken)
-                .build();
+                .body(user);
     }
 
     @PreAuthorize("hasAuthority('MAINADMIN')")
@@ -59,7 +60,7 @@ public class UserController {
         userService.deleteUser(userId);
     }
 
-    @PreAuthorize("hasAuthority('USER') and #userId == authentication.principal.userId")
+    @PreAuthorize("hasAuthority('USER')")
     @PutMapping("/{userId}")
     public void updateUserInformation(
             @PathVariable("userId") Integer userId,

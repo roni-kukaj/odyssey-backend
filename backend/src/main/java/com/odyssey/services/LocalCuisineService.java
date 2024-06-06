@@ -84,9 +84,7 @@ public class LocalCuisineService {
 
     public void updateLocalCuisine(Integer id, LocalCuisineUpdateDto dto) {
         LocalCuisine existingLocalCuisine = getLocalCuisine(id);
-        if (localCuisineDao.existsLocalCuisineByNameAndLocationId(dto.name(), dto.locationId())) {
-            throw new DuplicateResourceException("local cuisine already exists");
-        }
+
         Location location = locationDao.selectLocationById(dto.locationId())
                 .orElseThrow(() -> new ResourceNotFoundException("location with id [%s] not found".formatted(dto.locationId())));
 
@@ -104,7 +102,6 @@ public class LocalCuisineService {
             existingLocalCuisine.setLocation(location);
             changes = true;
         }
-
 
         try {
             if (dto.file() != null) {

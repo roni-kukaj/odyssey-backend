@@ -69,7 +69,7 @@ public class FollowService {
             throw new DuplicateResourceException("record already exists");
         }
 
-        if (!follower.getRole().getName().equals("user") || !following.getRole().getName().equals("user")) {
+        if (!follower.getRole().getName().equals("USER") || !following.getRole().getName().equals("USER")) {
             throw new RequestValidationException("a user can only follow another user");
         }
 

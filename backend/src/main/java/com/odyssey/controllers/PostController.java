@@ -28,7 +28,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public PostDto getPlan(@PathVariable("postId") Integer postId) {
+    public PostDto getPost(@PathVariable("postId") Integer postId) {
         return postService.getPost(postId);
     }
 
