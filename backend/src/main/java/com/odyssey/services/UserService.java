@@ -140,7 +140,7 @@ public class UserService {
             changes = true;
         }
         if (dto.password() != null && !dto.password().equals(user.getPassword())) {
-            user.setPassword(dto.password());
+            user.setPassword(passwordEncoder.encode(dto.password()));
             changes = true;
         }
         try {
