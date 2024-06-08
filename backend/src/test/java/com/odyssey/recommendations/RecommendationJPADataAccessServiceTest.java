@@ -17,7 +17,6 @@ public class RecommendationJPADataAccessServiceTest {
 
     private RecommendationJPADataAccessService recommendationJPADataAccessService;
     private AutoCloseable autoCloseable;
-
     @Mock
     private RecommendationRepository recommendationRepository;
 
